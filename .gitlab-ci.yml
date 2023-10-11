@@ -3,7 +3,7 @@
 image: "ghcr.io/cirruslabs/flutter:latest"
 
 variables:
-  PUB_VARS: "--platform vm --timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
+  PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
 
 .use-pub-cache-bin:
   # Define commands that need to be executed before each job.
