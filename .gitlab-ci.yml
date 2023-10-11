@@ -111,5 +111,6 @@ deploy:
   stage: deploy
   script: 
     - flutter build web
-    - rsync -a --delete -i id_ed25519 build/web/ ubuntu@schedule.cs.wallawalla.edu:/var/www/html
+    - ssh -i id_ed25519 ubuntu@schedule.cs.wallawalla.edu "rm -rf /var/www/html/*"
+    - scp -rp -i id_ed25519 build/web/ ubuntu@schedule.cs.wallawalla.edu:/var/www/html
   environment: production
