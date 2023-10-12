@@ -1,6 +1,6 @@
 {
-    "name": "class_open",
-    "short_name": "class_open",
+    "name": "schedule",
+    "short_name": "schedule",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
