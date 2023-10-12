@@ -115,6 +115,9 @@ deploy:
   script: 
     - flutter build web
     - chmod 600 id_ed25519
+    - whoami
+    - mkdir -p ~/.ssh
+    - touch ~/.ssh/known_hosts
     - ssh-keygen -R schedule.cs.wallawalla.edu
     - ssh -i id_ed25519 ubuntu@schedule.cs.wallawalla.edu "rm -rf /var/www/html/*"
     - scp -rp -i id_ed25519 build/web/ ubuntu@schedule.cs.wallawalla.edu:/var/www/html
