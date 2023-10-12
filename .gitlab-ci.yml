@@ -116,5 +116,5 @@ deploy:
     - flutter build web
     - chmod 600 id_ed25519
     - ssh -o StrictHostKeyChecking=no -i id_ed25519 ubuntu@schedule.cs.wallawalla.edu "rm -rf /var/www/html/*"
-    - scp -rp -i id_ed25519 build/web/ ubuntu@schedule.cs.wallawalla.edu:/var/www/html
+    - scp -rp -i id_ed25519 build/web/* ubuntu@schedule.cs.wallawalla.edu:/var/www/html/
   environment: production
