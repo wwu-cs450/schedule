@@ -1,0 +1,120 @@
+# Based on the Dart and Flutter templates
+
+image: "ghcr.io/cirruslabs/flutter:latest"
+
+variables:
+  PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
+
+.use-pub-cache-bin:
+  # Define commands that need to be executed before each job.
+  before_script:
+    # Set PUB_CACHE either here or in the CI/CD Settings if you have multiple jobs that use dart commands.
+    # PUB_CACHE is used by the `dart pub` command, it needs to be set so package dependencies are stored at the project-level for CI/CD operations.
+    - export PUB_CACHE=".pub-cache"
+    - export PATH="$PATH:$HOME/$PUB_CACHE/bin"
+
+# Cache generated files and plugins between builds.
+.upload-cache:
+  cache:
+    when: 'on_success'
+    paths:
+      - .pub-cache/bin/
+      - .pub-cache/global_packages/
+      - .pub-cache/hosted/
+      - .dart_tool/
+      - .packages
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+.download-cache:
+  cache:
+    paths:
+      - .dart_tool/
+      - .packages
+    policy: pull
+
+install-dependencies:
+  stage: .pre
+  extends:
+    - .use-pub-cache-bin
+    - .upload-cache
+  script:
+    - flutter pub get --no-precompile
+
+build:
+  stage: build
+  needs:
+    - install-dependencies
+  extends:
+    - .use-pub-cache-bin
+    - .upload-cache
+  script:
+    - flutter pub get --offline --precompile
+
+lint-test:
+  stage: test
+  needs:
+    - install-dependencies
+  extends:
+    - .use-pub-cache-bin
+    - .download-cache
+  script:
+    - dart analyze .
+
+format-test:
+  stage: test
+  needs:
+    - install-dependencies
+  extends:
+    - .use-pub-cache-bin
+    - .download-cache
+  script:
+    - dart format --set-exit-if-changed bin/ lib/ test/
+
+
+# Flutter
+
+code_quality:
+  stage: test
+  before_script:
+    - flutter pub global activate dart_code_metrics
+    - export PATH="$PATH:$HOME/.pub-cache/bin"
+  script:
+    - metrics lib -r codeclimate  > gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+
+test:
+  stage: test
+  needs:
+    - build
+  extends:
+    - .use-pub-cache-bin
+    - .download-cache
+  before_script:
+    - flutter pub global activate junitreport
+    - export PATH="$PATH:$HOME/.pub-cache/bin"
+  script:
+    - flutter test  $PUB_VARS --machine --coverage | tojunit -o report.xml
+    - lcov --summary coverage/lcov.info
+    - genhtml coverage/lcov.info --output=coverage
+  coverage: '/lines\.*: \d+\.\d+\%/'
+  artifacts:
+    name: coverage
+    paths:
+      - $CI_PROJECT_DIR/coverage
+    reports:
+      junit: report.xml
+
+deploy:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+  stage: deploy
+  script: 
+    - flutter build web
+    - chmod 600 id_ed25519
+    - ssh -o StrictHostKeyChecking=no -i id_ed25519 ubuntu@schedule.cs.wallawalla.edu "rm -rf /var/www/html/*"
+    - scp -rp -i id_ed25519 build/web/* ubuntu@schedule.cs.wallawalla.edu:/var/www/html/
+  environment: production
