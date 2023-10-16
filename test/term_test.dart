@@ -8,4 +8,14 @@ void main() {
     assert(term.code == 2239);
     assert(term.name == 'Fall 2023');
   });
+
+  test('instances', () {
+    assert(Term.instances.isEmpty);
+    Term.initialize();
+    var terms = Term.instances;
+    assert(terms.length == 3);
+    assert(terms.any(
+      (element) => element.code == 2239,
+    ));
+  });
 }
