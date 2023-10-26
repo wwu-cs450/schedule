@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:schedule/section.dart';
-import 'package:schedule/query.dart';
 import 'package:schedule/data_table.dart';
+import 'package:schedule/query.dart';
+import 'campus.dart';
+import 'department.dart';
+import 'subject.dart';
+import 'term.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,34 +37,121 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Campus? _campus;
+  Department? _department;
+  // Subject? _subject;
+  // Term? _term;
   DataTableSource sectionData = TableData({});
 
   void updateResults() {
-    sectionData = TableData(Query().results);
+    sectionData = TableData(Query(_department).results);
   }
 
-  List<DropdownMenuEntry> dropdownMenuEntries() {
-    var departments = ['Computer Science', 'Engineering', 'Math'];
-    var entries = <DropdownMenuEntry>[];
-    for (final each in departments) {
-      entries.add(DropdownMenuEntry(value: each, label: each));
+  List<DropdownMenuEntry> campusDropdownMenuEntries() {
+    var campusList = Campus.instances;
+    var campusEntries = <DropdownMenuEntry>[];
+    for (final each in campusList) {
+      campusEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
-    return entries;
+    return campusEntries;
+  }
+
+  List<DropdownMenuEntry> deptDropdownMenuEntries() {
+    var deptList = Department.instances;
+    var deptEntries = <DropdownMenuEntry>[];
+    deptEntries.add(const DropdownMenuEntry(value: null, label: "All"));
+    for (final each in deptList) {
+      deptEntries.add(DropdownMenuEntry(value: each, label: each.name));
+    }
+    return deptEntries;
+  }
+
+  List<DropdownMenuEntry> subjDropdownMenuEntries() {
+    var subjList = Subject.instances;
+    var subjEntries = <DropdownMenuEntry>[];
+    for (final each in subjList) {
+      subjEntries.add(DropdownMenuEntry(value: each, label: each.name));
+    }
+    return subjEntries;
+  }
+
+  List<DropdownMenuEntry> termDropdownMenuEntries() {
+    var termList = Term.instances;
+    var termEntries = <DropdownMenuEntry>[];
+    for (final each in termList) {
+      termEntries.add(DropdownMenuEntry(value: each, label: each.name));
+    }
+    return termEntries;
   }
 
   Widget searchCriteriaRow() {
     return Row(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Spacer(),
+        // Campus Dropdown
+        Flexible(
+          fit: FlexFit.loose,
+          flex: 15,
           child: DropdownMenu(
-            label: const Text('Department'),
-            dropdownMenuEntries: dropdownMenuEntries(),
+            label: const Text('Campus'),
+            dropdownMenuEntries: campusDropdownMenuEntries(),
             onSelected: (value) {
-              setState(() {});
+              setState(() {
+                // _campus = value;
+              });
             },
           ),
         ),
+        const Spacer(),
+        // Department Dropdown
+        Flexible(
+          fit: FlexFit.loose,
+          flex: 15,
+          child: DropdownMenu(
+            key: const Key("Department Dropdown"),
+            label: const Text('Department'),
+            dropdownMenuEntries: deptDropdownMenuEntries(),
+            onSelected: (value) {
+              setState(() {
+                _department = value;
+              });
+            },
+          ),
+        ),
+
+        const Spacer(),
+        // Subject Dropdown
+        Flexible(
+          fit: FlexFit.loose,
+          flex: 15,
+          child: DropdownMenu(
+            label: const Text('Subject'),
+            dropdownMenuEntries: subjDropdownMenuEntries(),
+            onSelected: (value) {
+              setState(() {
+                // _subject = value;
+              });
+            },
+          ),
+        ),
+
+        const Spacer(),
+        // Term Dropdown
+        Flexible(
+          fit: FlexFit.loose,
+          flex: 15,
+          child: DropdownMenu(
+            label: const Text('Term'),
+            dropdownMenuEntries: termDropdownMenuEntries(),
+            onSelected: (value) {
+              setState(() {
+                // _term = value;
+              });
+            },
+          ),
+        ),
+        const Spacer(),
+
         ElevatedButton(
           onPressed: () {
             setState(() {
@@ -72,6 +162,61 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
     );
+  }
+
+  Widget headerRow() {
+    return const Row(
+      children: [
+        SizedBox(
+          width: 80,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text('Subject'),
+          ),
+        ),
+        SizedBox(
+          width: 80,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text('Number'),
+          ),
+        ),
+        SizedBox(
+          width: 300,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text('Course Title'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> classRows() {
+    var sections = Query(_department).results;
+    final rows = <Widget>[];
+    for (final each in sections) {
+      rows.add(Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 80,
+              child: Text(each.course.subject!.code),
+            ),
+            SizedBox(
+              width: 80,
+              child: Text(each.course.number),
+            ),
+            SizedBox(
+              width: 300,
+              child: Text(each.course.title),
+            ),
+          ],
+        ),
+      ));
+    }
+    return rows;
   }
 
   @override

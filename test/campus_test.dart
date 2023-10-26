@@ -10,8 +10,6 @@ void main() {
   });
 
   test('instances', () {
-    assert(Campus.instances.isEmpty);
-    Campus.initialize();
     var campuses = Campus.instances;
     assert(campuses.length == 3);
     assert(campuses.any(

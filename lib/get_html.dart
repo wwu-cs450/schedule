@@ -9,7 +9,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 
 Future<String> fetchHtml() async {
-  final String url =
+  const String url =
       "https://classopen.wallawalla.edu/classopenps.php?strm=f2024&submit=Search";
   var response = await http.get(Uri.parse(url));
   return response.body;
