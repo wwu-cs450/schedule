@@ -11,7 +11,7 @@ void main() {
 
   test('instances', () {
     var departments = Department.instances;
-    assert(departments.length == 7);
+    assert(departments.length == 28);
     assert(departments.any(
       (element) => element.code == 'CPTR',
     ));
