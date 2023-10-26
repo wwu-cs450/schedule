@@ -33,10 +33,8 @@ class Section {
       this.waitlist = 0,
       this.section = 'A',
       this.isOpenForEnrollment = true]) {
-    Campus.initialize();
     var campuses = Campus.instances;
     campus = campuses.where((camp) => campusCode == camp.code).toList()[0];
-    Term.initialize();
     var terms = Term.instances;
     term = terms.where((term) => termCode == term.code).toList()[0];
   }

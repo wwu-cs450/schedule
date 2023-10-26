@@ -10,8 +10,6 @@ void main() {
   });
 
   test('instances', () {
-    assert(Subject.instances.isEmpty);
-    Subject.initialize();
     var subjects = Subject.instances;
     assert(subjects.length == 4);
     assert(subjects.any(

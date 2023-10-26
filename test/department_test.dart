@@ -10,10 +10,8 @@ void main() {
   });
 
   test('instances', () {
-    assert(Department.instances.isEmpty);
-    Department.initialize();
     var departments = Department.instances;
-    assert(departments.length == 6);
+    assert(departments.length == 7);
     assert(departments.any(
       (element) => element.code == 'CPTR',
     ));

@@ -4,10 +4,17 @@ class Subject {
 
   Subject(this.code, this.name);
 
-  static final instances = <Subject>{};
+  static final _instances = <Subject>{};
 
-  static void initialize() {
-    instances
+  static get instances {
+    if (_instances.isEmpty) {
+      Subject._initialize();
+    }
+    return _instances;
+  }
+
+  static void _initialize() {
+    _instances
       ..add(Subject('ACCT', 'Accounting'))
       ..add(Subject('CPTR', 'Computer Science'))
       ..add(Subject('MATH', 'Mathematics'))

@@ -10,8 +10,6 @@ void main() {
   });
 
   test('instances', () {
-    assert(Term.instances.isEmpty);
-    Term.initialize();
     var terms = Term.instances;
     assert(terms.length == 3);
     assert(terms.any(
