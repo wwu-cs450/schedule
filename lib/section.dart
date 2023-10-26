@@ -4,8 +4,6 @@ import './course.dart';
 
 import './term.dart';
 
-// import './course.dart';
-
 class Section {
   Course course;
   Term? term;
