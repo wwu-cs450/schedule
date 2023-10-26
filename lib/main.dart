@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+// import 'package:schedule/section.dart';
+import 'package:schedule/query.dart';
+import 'package:schedule/data_table.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +34,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String? _department;
+  DataTableSource sectionData = TableData({});
+
+  void updateResults() {
+    sectionData = TableData(Query().results);
+  }
 
   List<DropdownMenuEntry> dropdownMenuEntries() {
     var departments = ['Computer Science', 'Engineering', 'Math'];
@@ -51,83 +58,20 @@ class _MyHomePageState extends State<MyHomePage> {
             label: const Text('Department'),
             dropdownMenuEntries: dropdownMenuEntries(),
             onSelected: (value) {
-              setState(() {
-                _department = value;
-              });
+              setState(() {});
             },
           ),
         ),
         ElevatedButton(
           onPressed: () {
-            setState(() {});
+            setState(() {
+              updateResults();
+            });
           },
           child: const Text('Search'),
         ),
       ],
     );
-  }
-
-  Widget headerRow() {
-    return const Row(
-      children: [
-        SizedBox(
-          width: 80,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Subject'),
-          ),
-        ),
-        SizedBox(
-          width: 80,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Number'),
-          ),
-        ),
-        SizedBox(
-          width: 300,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Course Title'),
-          ),
-        ),
-      ],
-    );
-  }
-
-  List<Widget> classRows() {
-    const classes = [
-      ['CPTR', '141', 'Fundamentals of Programming I'],
-      ['CPTR', '142', 'Fundamentals of Programming II'],
-      ['CPTR', '450', 'Software Engineering'],
-      ['ENGR', '121', 'Intro to Engineering'],
-    ];
-    final rows = <Widget>[];
-    for (final each in classes) {
-      if (_department == 'Computer Science' && each[0] == 'CPTR' ||
-          _department == 'Engineering' && each[0] == 'ENGR') {
-        rows.add(Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 80,
-                child: Text(each[0]),
-              ),
-              SizedBox(
-                width: 80,
-                child: Text(each[1]),
-              ),
-              SizedBox(
-                width: 300,
-                child: Text(each[2]),
-              ),
-            ],
-          ),
-        ));
-      }
-    }
-    return rows;
   }
 
   @override
@@ -137,16 +81,14 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            searchCriteriaRow(),
-            const Divider(
-              height: 8,
-              thickness: 2,
-            ),
-            headerRow(),
-            ...classRows(),
+      body: SingleChildScrollView(
+        child: PaginatedDataTable(
+          source: sectionData,
+          header: searchCriteriaRow(),
+          columns: const [
+            DataColumn(label: Text('Subject')),
+            DataColumn(label: Text('Number')),
+            DataColumn(label: Text('Title'))
           ],
         ),
       ),
