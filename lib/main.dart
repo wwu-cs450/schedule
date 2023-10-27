@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DataTableSource sectionData = TableData({});
 
   void updateResults() {
-    sectionData = TableData(Query(_department).results);
+    sectionData = TableData(Query(_department, null).results());
   }
 
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
@@ -193,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Widget> classRows() {
-    var sections = Query(_department).results;
+    var sections = Query(_department, null).results();
     final rows = <Widget>[];
     for (final each in sections) {
       rows.add(Padding(

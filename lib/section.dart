@@ -1,7 +1,5 @@
 import './campus.dart';
-
 import './course.dart';
-
 import './term.dart';
 
 class Section {
@@ -20,6 +18,33 @@ class Section {
   String video;
   String consent;
   String specialNotes;
+
+  static final _instances = <Section>{};
+
+  static get instances {
+    if (_instances.isEmpty) {
+      Section._initialize();
+    }
+    return _instances;
+  }
+
+// Fake data. Should be replaced by #11
+  static void _initialize() {
+    for (var i = 0; i < 5; i++) {
+      var cs141 = Course('CPTR', 'CPTR', 'Fundamentals of Programming I',
+          '${200 - i}', 'lower', 4);
+      var cs141a =
+          Section(cs141, 2239, 30, 'MWRF', 'KRH 348', 'James Foster', 'CP');
+      _instances.add(cs141a);
+    }
+    for (var i = 0; i < 5; i++) {
+      var math181 =
+          Course('MATH', 'MATH', 'Calculus I', '${200 - i}', 'lower', 4);
+      var math181a =
+          Section(math181, 2239, 30, 'MWRF', 'KRH 328', 'John Foster', 'CP');
+      _instances.add(math181a);
+    }
+  }
 
   Section(this.course, int termCode, this.maxEnrollment, this.schedule,
       this.classroom, this.instructor, String campusCode,
