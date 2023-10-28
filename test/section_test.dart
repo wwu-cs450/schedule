@@ -1,21 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:schedule/course.dart';
+import 'package:schedule/instructor.dart';
 
 import 'package:schedule/section.dart';
 
+Instructor instructor = Instructor('James Foster');
 void main() {
   test('constructor and accessors', () {
     var course =
         Course('CPTR', 'CPTR', 'Software Engineering', '450', 'upper', 3);
     var section = Section(
-        course, 2239, 20, 'MWF 2:00PM-3:00PM', 'KRH 210', 'James Foster', 'CP');
+        course, 2239, 20, 'MWF 2:00PM-3:00PM', 'KRH 210', instructor, 'CP');
     assert(section.course.title == 'Software Engineering');
     assert(section.term?.name == 'Fall 2023');
     assert(section.maxEnrollment == 20);
     assert(section.schedule == 'MWF 2:00PM-3:00PM');
     assert(section.classroom == 'KRH 210');
-    assert(section.instructor == 'James Foster');
+    assert(section.instructor == instructor);
     assert(section.campus?.name == 'College Place');
     assert(section.video == '');
     assert(section.consent == '');

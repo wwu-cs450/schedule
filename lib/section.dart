@@ -1,6 +1,7 @@
 import './campus.dart';
 import './course.dart';
 import './term.dart';
+import './instructor.dart';
 
 class Section {
   Course course;
@@ -13,7 +14,7 @@ class Section {
   int fee;
   String schedule;
   String classroom;
-  String instructor;
+  Instructor instructor;
   Campus? campus;
   String video;
   String consent;
@@ -30,18 +31,20 @@ class Section {
 
 // Fake data. Should be replaced by #11
   static void _initialize() {
+    var james =
+        Instructor.instances.firstWhere((each) => each.name == 'James Foster');
+    var john =
+        Instructor.instances.firstWhere((each) => each.name == 'John Foster');
     for (var i = 0; i < 5; i++) {
       var cs141 = Course('CPTR', 'CPTR', 'Fundamentals of Programming I',
           '${200 - i}', 'lower', 4);
-      var cs141a =
-          Section(cs141, 2239, 30, 'MWRF', 'KRH 348', 'James Foster', 'CP');
+      var cs141a = Section(cs141, 2239, 30, 'MWRF', 'KRH 348', james, 'CP');
       _instances.add(cs141a);
     }
     for (var i = 0; i < 5; i++) {
       var math181 =
           Course('MATH', 'MATH', 'Calculus I', '${200 - i}', 'lower', 4);
-      var math181a =
-          Section(math181, 2239, 30, 'MWRF', 'KRH 328', 'John Foster', 'CP');
+      var math181a = Section(math181, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
       _instances.add(math181a);
     }
   }
