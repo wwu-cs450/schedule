@@ -206,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(
               width: 80,
-              child: Text(each.course.number),
+              child: Text(each.course.number.toString()),
             ),
             SizedBox(
               width: 300,

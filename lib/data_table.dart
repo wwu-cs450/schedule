@@ -7,10 +7,10 @@ class TableData extends DataTableSource {
     // Unsorted Data
     _data = sectionSet.toList();
     _data.sort((a, b) {
-      if (int.parse(a.course.number) < int.parse(b.course.number)) {
+      if (a.course.number < b.course.number) {
         return -1;
       }
-      if (int.parse(a.course.number) == int.parse(b.course.number)) {
+      if (a.course.number == b.course.number) {
         return 0;
       }
       return 1;
@@ -21,7 +21,7 @@ class TableData extends DataTableSource {
   DataRow? getRow(int index) {
     return DataRow(cells: [
       DataCell(Text(_data[index].course.subject!.code)),
-      DataCell(Text(_data[index].course.number)),
+      DataCell(Text(_data[index].course.number.toString())),
       DataCell(Text(_data[index].course.title)),
     ]);
   }
