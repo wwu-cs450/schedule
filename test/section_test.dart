@@ -9,7 +9,7 @@ Instructor instructor = Instructor('James Foster');
 void main() {
   test('constructor and accessors', () {
     var course =
-        Course('CPTR', 'CPTR', 'Software Engineering', '450', 'upper', 3);
+        Course('CPTR', 'CPTR', 'Software Engineering', 450, 'upper', 3);
     var section = Section(
         course, 2239, 20, 'MWF 2:00PM-3:00PM', 'KRH 210', instructor, 'CP');
     assert(section.course.title == 'Software Engineering');
