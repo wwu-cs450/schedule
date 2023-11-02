@@ -9,9 +9,6 @@
 */
 
 class HourMinute implements Comparable<HourMinute> {
-  // instance variables
-  late int hour, minute;
-
   // constructors
   // direct construction (24 hour time)
   HourMinute({int hour = 0, int minute = 0}) {
@@ -28,12 +25,16 @@ class HourMinute implements Comparable<HourMinute> {
     hour = date.hour;
     minute = date.minute;
   }
+  // instance variables
+  late int hour, minute;
 
   // instance methods
 
   // get HourMinute after Duration dur
   HourMinute add(Duration dur) => HourMinute(
-      hour: hour + dur.inHours, minute: minute + (dur.inMinutes % 60));
+        hour: hour + dur.inHours,
+        minute: minute + (dur.inMinutes % 60),
+      );
 
   // get Duration from other HourMinute (this-other)
   Duration durationFrom(HourMinute other) =>

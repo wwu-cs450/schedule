@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:schedule/data_table.dart';
 import 'package:schedule/query.dart';
 import 'package:schedule/section.dart';
-import 'campus.dart';
-import 'department.dart';
-import 'subject.dart';
-import 'term.dart';
+import 'package:schedule/campus.dart';
+import 'package:schedule/department.dart';
+import 'package:schedule/subject.dart';
+import 'package:schedule/term.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({required this.title, super.key});
 
   final String title;
 
@@ -97,8 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
-    var campusList = Campus.instances;
-    var campusEntries = <DropdownMenuEntry>[];
+    final campusList = Campus.instances;
+    final campusEntries = <DropdownMenuEntry>[];
     for (final each in campusList) {
       campusEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -106,9 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<DropdownMenuEntry> deptDropdownMenuEntries() {
-    var deptList = Department.instances;
-    var deptEntries = <DropdownMenuEntry>[];
-    deptEntries.add(const DropdownMenuEntry(value: null, label: "All"));
+    final deptList = Department.instances;
+    final deptEntries = <DropdownMenuEntry>[];
+    deptEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in deptList) {
       deptEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -116,8 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<DropdownMenuEntry> subjDropdownMenuEntries() {
-    var subjList = Subject.instances;
-    var subjEntries = <DropdownMenuEntry>[];
+    final subjList = Subject.instances;
+    final subjEntries = <DropdownMenuEntry>[];
     for (final each in subjList) {
       subjEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -125,8 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<DropdownMenuEntry> termDropdownMenuEntries() {
-    var termList = Term.instances;
-    var termEntries = <DropdownMenuEntry>[];
+    final termList = Term.instances;
+    final termEntries = <DropdownMenuEntry>[];
     for (final each in termList) {
       termEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
           fit: FlexFit.loose,
           flex: 15,
           child: DropdownMenu(
-            key: const Key("Department Dropdown"),
+            key: const Key('Department Dropdown'),
             label: const Text('Department'),
             dropdownMenuEntries: deptDropdownMenuEntries(),
             onSelected: (value) {
@@ -216,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget sortBySubject() {
     return ElevatedButton(
-      key: const Key("Subject Header Button"),
+      key: const Key('Subject Header Button'),
       onPressed: () {
         sortOption = 'Subject';
         setState(() {
@@ -229,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget sortByNumber() {
     return ElevatedButton(
-      key: const Key("Number Header Button"),
+      key: const Key('Number Header Button'),
       onPressed: () {
         sortOption = 'Number';
         setState(() {
@@ -242,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget sortByTitle() {
     return ElevatedButton(
-      key: const Key("Title Header Button"),
+      key: const Key('Title Header Button'),
       onPressed: () {
         sortOption = 'Title';
         setState(() {
@@ -254,28 +254,30 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Widget> classRows() {
-    var sections = Query(_department, null).results();
+    final sections = Query(_department, null).results();
     final rows = <Widget>[];
     for (final each in sections) {
-      rows.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 80,
-              child: Text(each.course.subject!.code),
-            ),
-            SizedBox(
-              width: 80,
-              child: Text(each.course.number.toString()),
-            ),
-            SizedBox(
-              width: 300,
-              child: Text(each.course.title),
-            ),
-          ],
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 80,
+                child: Text(each.course.subject!.code),
+              ),
+              SizedBox(
+                width: 80,
+                child: Text(each.course.number.toString()),
+              ),
+              SizedBox(
+                width: 300,
+                child: Text(each.course.title),
+              ),
+            ],
+          ),
         ),
-      ));
+      );
     }
     return rows;
   }
@@ -294,7 +296,7 @@ class _MyHomePageState extends State<MyHomePage> {
           columns: [
             DataColumn(label: sortBySubject()),
             DataColumn(label: sortByNumber()),
-            DataColumn(label: sortByTitle())
+            DataColumn(label: sortByTitle()),
           ],
         ),
       ),

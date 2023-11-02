@@ -1,6 +1,6 @@
 import 'package:csv/csv.dart';
 
-import './schedule.dart';
+import 'package:schedule/schedule.dart';
 
 List<List<dynamic>> getListFromCsv() {
   final csvFile = getSchedule();

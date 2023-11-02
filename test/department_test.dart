@@ -4,16 +4,18 @@ import 'package:schedule/department.dart';
 
 void main() {
   test('constructor and accessors', () {
-    var department = Department('CPTR', 'Computer Science');
+    final department = Department('CPTR', 'Computer Science');
     assert(department.code == 'CPTR');
     assert(department.name == 'Computer Science');
   });
 
   test('instances', () {
-    var departments = Department.instances;
+    final departments = Department.instances;
     assert(departments.length == 28);
-    assert(departments.any(
-      (element) => element.code == 'CPTR',
-    ));
+    assert(
+      departments.any(
+        (element) => element.code == 'CPTR',
+      ),
+    );
   });
 }

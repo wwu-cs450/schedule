@@ -1,11 +1,10 @@
 class Instructor {
-  final String name;
-
   Instructor(this.name);
+  final String name;
 
   static final _instances = <Instructor>{};
 
-  static get instances {
+  static Set<Instructor> get instances {
     if (_instances.isEmpty) {
       Instructor._initialize();
     }

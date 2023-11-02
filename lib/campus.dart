@@ -1,8 +1,9 @@
+// ignore_for_file: type_annotate_public_apis
+
 class Campus {
+  Campus(this.code, this.name);
   final String code;
   final String name;
-
-  Campus(this.code, this.name);
 
   static final _instances = <Campus>{};
 

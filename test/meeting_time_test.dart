@@ -12,8 +12,8 @@ import 'package:schedule/hourminute.dart';
 import 'package:schedule/meeting_time.dart';
 
 void main() {
-  test("adding, getting, and removing times", () {
-    MeetingTime test = MeetingTime();
+  test('adding, getting, and removing times', () {
+    final MeetingTime test = MeetingTime();
     final HourMinute time1 = HourMinute();
     final HourMinute time2 = HourMinute(hour: 1, minute: 50);
     final HourMinute time3 = HourMinute(hour: 2, minute: 30);
@@ -28,17 +28,17 @@ void main() {
     // negative day
     try {
       testBoolean = test.add(day: -1, start: time1, end: time2);
-      log("NegativeTimeException NOT thrown appropriately");
+      log('NegativeTimeException NOT thrown appropriately');
     } catch (e) {
-      log("NegativeTimeException thrown appropriately");
+      log('NegativeTimeException thrown appropriately');
       assert(e is NegativeTimeException);
     }
     // start before end
     try {
       testBoolean = test.add(day: 1, start: time2, end: time1);
-      log("EndPreceedsStart NOT thrown appropriately");
+      log('EndPreceedsStart NOT thrown appropriately');
     } catch (e) {
-      log("EndPreceedsStart thrown appropriately");
+      log('EndPreceedsStart thrown appropriately');
       assert(e is EndPreceedsStart);
     }
 
@@ -56,22 +56,32 @@ void main() {
 
     // addUsingDuration
     testBoolean = test.addUsingDuration(
-        day: DateTime.tuesday, start: time2, length: dur1);
+      day: DateTime.tuesday,
+      start: time2,
+      length: dur1,
+    );
     assert(testBoolean);
     // addUsingDuration -- already exists
     testBoolean = test.addUsingDuration(
-        day: DateTime.tuesday, start: time2, length: dur1);
+      day: DateTime.tuesday,
+      start: time2,
+      length: dur1,
+    );
     assert(!testBoolean);
     // addUsingDuration -- with conflict
     testBoolean = test.addUsingDuration(
-        day: DateTime.tuesday, start: time3, length: dur1);
+      day: DateTime.tuesday,
+      start: time3,
+      length: dur1,
+    );
     assert(!testBoolean);
     assert(test.count == 2); // should only add one additional element
 
     // check what was added
     assert(test[0] == (day: DateTime.monday, start: time1, end: time2));
     assert(
-        test[1] == (day: DateTime.tuesday, start: time2, end: time2.add(dur1)));
+      test[1] == (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
+    );
 
     // removing items
     // remove something that doesn't exist
@@ -82,12 +92,9 @@ void main() {
     testBoolean = test.remove(day: DateTime.monday, start: time1, end: time2);
     assert(testBoolean);
     assert(test.count == 1);
-    assert(test[0] ==
-        (
-          day: DateTime.tuesday,
-          start: time2,
-          end: time2.add(dur1)
-        )); // what was the second element
+    assert(
+      test[0] == (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
+    ); // what was the second element
     // remove the last remaining time
     testBoolean =
         test.remove(day: DateTime.tuesday, start: time2, end: time2.add(dur1));
@@ -95,8 +102,8 @@ void main() {
     assert(test.count == 0);
   });
 
-  test("getting info", () {
-    MeetingTime test = MeetingTime();
+  test('getting info', () {
+    final MeetingTime test = MeetingTime();
     final HourMinute time1 = HourMinute(hour: 1, minute: 50);
     final HourMinute time2 = HourMinute(hour: 2);
     final HourMinute time3 = HourMinute(hour: 2, minute: 30);
@@ -122,11 +129,13 @@ void main() {
     // three times
     testSet1 = test.getPeriodsOnDay(DateTime.monday);
     assert(testSet1.length == 3);
-    assert(setEquals(testSet1, {
-      (start: time1, end: time2),
-      (start: time3, end: time4),
-      (start: time2, end: time3)
-    }));
+    assert(
+      setEquals(testSet1, {
+        (start: time1, end: time2),
+        (start: time3, end: time4),
+        (start: time2, end: time3),
+      }),
+    );
     // zero times
     testSet1 = test.getPeriodsOnDay(DateTime.sunday);
     assert(testSet1.isEmpty);
@@ -143,8 +152,10 @@ void main() {
     assert(testDuration == Duration.zero);
 
     // weeklyDuration
-    assert(test.weeklyDuration ==
-        const Duration(hours: 1, minutes: 10 + 30 + 45 + 20));
+    assert(
+      test.weeklyDuration ==
+          const Duration(hours: 1, minutes: 10 + 30 + 45 + 20),
+    );
 
     // getDaysAtTime
     // time in the middle of a range
@@ -156,8 +167,12 @@ void main() {
     // three days
     testSet2 = test.getDaysAtTime(time1);
     assert(testSet2.length == 3);
-    assert(setEquals(
-        testSet2, {DateTime.monday, DateTime.tuesday, DateTime.wednesday}));
+    assert(
+      setEquals(
+        testSet2,
+        {DateTime.monday, DateTime.tuesday, DateTime.wednesday},
+      ),
+    );
     // zero days
     testSet2 = test.getDaysAtTime(HourMinute(hour: 13));
     assert(testSet2.isEmpty);
@@ -174,7 +189,9 @@ void main() {
     assert(testTime == null);
     // time in middle of period
     testTime = test.getPeriodOnDayAtTime(
-        time: time3.add(const Duration(minutes: 15)), day: DateTime.monday);
+      time: time3.add(const Duration(minutes: 15)),
+      day: DateTime.monday,
+    );
     assert(testTime == (start: time3, end: time4));
 
     // isAt
@@ -187,21 +204,30 @@ void main() {
     assert(test.isAt(time: HourMinute(hour: 4))!); // in range
     assert(!test.isAt(time: time4)!); // on trailing edge
     assert(
-        test.isAt(time: time1)!); // on leading edge -- multiple matching times
+      test.isAt(time: time1)!,
+    ); // on leading edge -- multiple matching times
     assert(!test.isAt(time: HourMinute(hour: 22))!); // is not at
     // day and time
     assert(test.isAt(day: DateTime.wednesday, time: time1)!); // both match
-    assert(!test.isAt(
-        day: DateTime.wednesday,
-        time: HourMinute(hour: 22))!); // time doesn't match
     assert(
-        !test.isAt(day: DateTime.thursday, time: time1)!); // day doesn't match
-    assert(!test.isAt(
-        day: DateTime.thursday, time: HourMinute(hour: 22))!); // no match
+      !test.isAt(
+        day: DateTime.wednesday,
+        time: HourMinute(hour: 22),
+      )!,
+    ); // time doesn't match
+    assert(
+      !test.isAt(day: DateTime.thursday, time: time1)!,
+    ); // day doesn't match
+    assert(
+      !test.isAt(
+        day: DateTime.thursday,
+        time: HourMinute(hour: 22),
+      )!,
+    ); // no match
   });
 
-  test("to string methods", () {
-    MeetingTime test = MeetingTime();
+  test('to string methods', () {
+    final MeetingTime test = MeetingTime();
     final HourMinute time1 = HourMinute(hour: 1, minute: 50);
     final HourMinute time2 = HourMinute(hour: 2);
     final HourMinute time3 = HourMinute(hour: 21, minute: 30);
@@ -215,36 +241,45 @@ void main() {
     test.add(day: DateTime.monday, start: time3, end: time4); // M 21:30 - 23:15
     test.add(day: DateTime.tuesday, start: time1, end: time2); // T 1:50 - 2:00
     test.add(
-        day: DateTime.wednesday, start: time1, end: time2); // W 1:50 - 2:00
+      day: DateTime.wednesday,
+      start: time1,
+      end: time2,
+    ); // W 1:50 - 2:00
 
     // toString
     // like existing ClassOpen - 24hr
     testString = test.toString();
     log(testString);
-    assert(testString == "MTW 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\n");
+    assert(testString == 'MTW 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\n');
     // like existing ClassOpen - 12hr
     testString = test.toString(is24hr: false);
     log(testString);
-    assert(testString ==
-        "MTW 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\n");
+    assert(
+      testString ==
+          'MTW 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\n',
+    );
 
     // toStringExpanded
     // expanded out by day (all on new lines) - 24hr
     testString = test.toStringExpanded();
     log(testString);
-    assert(testString ==
-        "M 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\nT 1:50 - 2:00\nW 1:50 - 2:00\n");
+    assert(
+      testString ==
+          'M 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\nT 1:50 - 2:00\nW 1:50 - 2:00\n',
+    );
     // expanded -- 12hr
     testString = test.toStringExpanded(is24hr: false);
     log(testString);
-    assert(testString ==
-        "M 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\nT 1:50AM - 2:00AM\nW 1:50AM - 2:00AM\n");
+    assert(
+      testString ==
+          'M 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\nT 1:50AM - 2:00AM\nW 1:50AM - 2:00AM\n',
+    );
   });
 
   test("comparison between MeetingTime's", () {
-    MeetingTime test1 = MeetingTime();
-    MeetingTime test2 = MeetingTime();
-    MeetingTime test3 = MeetingTime();
+    final MeetingTime test1 = MeetingTime();
+    final MeetingTime test2 = MeetingTime();
+    final MeetingTime test3 = MeetingTime();
     MeetingTime test4 = MeetingTime();
     final HourMinute time1 = HourMinute(hour: 1, minute: 50);
     final HourMinute time2 = HourMinute(hour: 2);
@@ -287,7 +322,7 @@ void main() {
     assert(test2 == test3);
     assert(test2.hashCode == test3.hashCode);
     // direct hashcode check
-    int checkHash = (DateTime.monday, time1, time2).hashCode +
+    final int checkHash = (DateTime.monday, time1, time2).hashCode +
         (DateTime.monday, time2, time3).hashCode +
         (DateTime.monday, time3, time4).hashCode +
         (DateTime.tuesday, time1, time2).hashCode +
@@ -295,13 +330,13 @@ void main() {
     assert(test1.hashCode == checkHash);
   });
 
-  test("checkConflict", () {
-    MeetingTime test1 = MeetingTime();
-    MeetingTime test2 = MeetingTime();
-    MeetingTime test3 = MeetingTime();
-    MeetingTime test4 = MeetingTime();
-    MeetingTime test6 = MeetingTime();
-    MeetingTime test7 = MeetingTime();
+  test('checkConflict', () {
+    final MeetingTime test1 = MeetingTime();
+    final MeetingTime test2 = MeetingTime();
+    final MeetingTime test3 = MeetingTime();
+    final MeetingTime test4 = MeetingTime();
+    final MeetingTime test6 = MeetingTime();
+    final MeetingTime test7 = MeetingTime();
     final HourMinute time1 = HourMinute(hour: 1, minute: 50);
     final HourMinute time2 = HourMinute(hour: 2);
     final HourMinute time3 = HourMinute(hour: 2, minute: 30);
@@ -363,25 +398,35 @@ void main() {
     // exact same
     testResults1 = test1.checkConflict(test1);
     assert(testResults1.doesConflict);
-    assert(setEquals(
-        testResults1.conflicts, {(day: DateTime.monday, time: time3)}));
+    assert(
+      setEquals(
+        testResults1.conflicts,
+        {(day: DateTime.monday, time: time3)},
+      ),
+    );
     // offset times
     testResults1 = test3.checkConflict(test4);
     testResults2 = test4.checkConflict(test3);
     assert(testResults1.doesConflict && testResults2.doesConflict);
     assert(setEquals(testResults1.conflicts, testResults2.conflicts));
-    assert(setEquals(
-        testResults1.conflicts, {(day: DateTime.thursday, time: time2)}));
+    assert(
+      setEquals(
+        testResults1.conflicts,
+        {(day: DateTime.thursday, time: time2)},
+      ),
+    );
     // several conflicts -- also different counts
     testResults1 = test6.checkConflict(test7);
     testResults2 = test7.checkConflict(test6);
     assert(testResults1.doesConflict && testResults2.doesConflict);
     assert(setEquals(testResults1.conflicts, testResults2.conflicts));
-    assert(setEquals(testResults1.conflicts, {
-      (day: DateTime.monday, time: time2),
-      (day: DateTime.monday, time: time3),
-      (day: DateTime.monday, time: time5),
-      (day: DateTime.monday, time: time6),
-    }));
+    assert(
+      setEquals(testResults1.conflicts, {
+        (day: DateTime.monday, time: time2),
+        (day: DateTime.monday, time: time3),
+        (day: DateTime.monday, time: time5),
+        (day: DateTime.monday, time: time6),
+      }),
+    );
   });
 }

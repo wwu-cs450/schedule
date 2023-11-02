@@ -16,14 +16,14 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    expect(find.byKey(const Key("Department Dropdown")), findsOneWidget);
+    expect(find.byKey(const Key('Department Dropdown')), findsOneWidget);
   });
   testWidgets('Header Button Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    expect(find.byKey(const Key("Subject Header Button")), findsOneWidget);
-    expect(find.byKey(const Key("Number Header Button")), findsOneWidget);
-    expect(find.byKey(const Key("Title Header Button")), findsOneWidget);
+    expect(find.byKey(const Key('Subject Header Button')), findsOneWidget);
+    expect(find.byKey(const Key('Number Header Button')), findsOneWidget);
+    expect(find.byKey(const Key('Title Header Button')), findsOneWidget);
   });
 }

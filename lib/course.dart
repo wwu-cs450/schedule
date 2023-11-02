@@ -1,8 +1,22 @@
-import './department.dart';
-import './subject.dart';
+import 'package:schedule/department.dart';
+import 'package:schedule/subject.dart';
 import 'package:schedule/load_csv.dart';
 
 class Course {
+  Course(
+    String departmentCode,
+    String subjectCode,
+    this.title,
+    this.number,
+    this.level,
+    this.credits, [
+    this.isGeneralStudies = false,
+  ]) {
+    final departments = Department.instances;
+    department = departments.firstWhere((dept) => departmentCode == dept.code);
+    final subjects = Subject.instances;
+    subject = subjects.firstWhere((subj) => subjectCode == subj.code);
+  }
   Department? department;
   Subject? subject;
   final String title;
@@ -11,25 +25,16 @@ class Course {
   final int credits;
   final bool isGeneralStudies;
 
-  Course(String departmentCode, String subjectCode, this.title, this.number,
-      this.level, this.credits,
-      [this.isGeneralStudies = false]) {
-    var departments = Department.instances;
-    department = departments.firstWhere((dept) => departmentCode == dept.code);
-    var subjects = Subject.instances;
-    subject = subjects.firstWhere((subj) => subjectCode == subj.code);
-  }
-
   static final _instances = <Course>{};
 
-  static get instances {
+  static Set<Course> get instances {
     if (_instances.isEmpty) {
       Course.getAllCourses();
     }
     return _instances;
   }
 
-  static bool isNumeric(var value) {
+  static bool isNumeric(dynamic value) {
     if (value == null) {
       return false;
     }
@@ -40,10 +45,10 @@ class Course {
   }
 
   static void getAllCourses() {
-    var classopenCSV = getListFromCsv();
+    final classopenCSV = getListFromCsv();
     // Remove headers
     classopenCSV.removeAt(0);
-    for (var value in classopenCSV) {
+    for (final value in classopenCSV) {
       dynamic classNumber;
       // Class number is not specified in one spot, it is specified based on the quarter, Summer, Fall, Winter, Spring, Summer2
       if (value[8] != '') {
@@ -62,12 +67,23 @@ class Course {
       // Some class numbers are integers, some are strings, formatted with a lot of extra spaces.
       classNumber = (isNumeric(classNumber))
           ? classNumber
-          : int.parse(classNumber
-              .replaceAll(' ', '')
-              .substring(0, classNumber[8].replaceAll(' ', '').length - 2));
-      var level = classNumber > 300 ? 'upper' : 'lower';
-      _instances.add(Course(value[3], value[7], value[14], classNumber, level,
-          int.tryParse(value[16]) ?? 0, value[6] == 'GS'));
+          : int.parse(
+              classNumber
+                  .replaceAll(' ', '')
+                  .substring(0, classNumber[8].replaceAll(' ', '').length - 2),
+            );
+      final level = classNumber > 300 ? 'upper' : 'lower';
+      _instances.add(
+        Course(
+          value[3],
+          value[7],
+          value[14],
+          classNumber,
+          level,
+          int.tryParse(value[16]) ?? 0,
+          value[6] == 'GS',
+        ),
+      );
     }
   }
 }
