@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schedule/data_table.dart';
 import 'package:schedule/query.dart';
+import 'package:schedule/section.dart';
 import 'campus.dart';
 import 'department.dart';
 import 'subject.dart';
@@ -41,10 +42,58 @@ class _MyHomePageState extends State<MyHomePage> {
   Department? _department;
   // Subject? _subject;
   // Term? _term;
-  DataTableSource sectionData = TableData({});
+  Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
+  List<Section> _data = <Section>[]; // To store data to be sorted
+  DataTableSource sectionData = TableData([]);
+  String? sortOption;
+
+  void sortData() {
+    if (sortOption != null) {
+      if (sortOption == 'Number') {
+        if (timesPressed['Number'] == 0) {
+          timesPressed['Number'] = 1;
+          _data.sort((a, b) {
+            return a.course.number - b.course.number;
+          });
+        } else {
+          _data = _data.reversed.toList();
+          timesPressed['Number'] = 0;
+        }
+      }
+
+      if (sortOption == 'Subject') {
+        if (timesPressed['Subject'] == 0) {
+          _data.sort((a, b) {
+            return a.course.subject!.name.compareTo(b.course.subject!.name);
+          });
+          timesPressed['Subject'] = 1;
+        } else {
+          _data = _data.reversed.toList();
+          timesPressed['Subject'] = 0;
+        }
+      }
+
+      if (sortOption == 'Title') {
+        if (timesPressed['Title'] == 0) {
+          _data.sort((a, b) {
+            return a.course.title.compareTo(b.course.title);
+          });
+          timesPressed['Title'] = 1;
+        } else {
+          _data = _data.reversed.toList();
+          timesPressed['Title'] = 0;
+        }
+      }
+    }
+  }
+
+  void updateData() {
+    _data = Query(_department, null).results().toList();
+  }
 
   void updateResults() {
-    sectionData = TableData(Query(_department, null).results());
+    sortData();
+    sectionData = TableData(_data);
   }
 
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
@@ -155,6 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ElevatedButton(
           onPressed: () {
             setState(() {
+              updateData();
               updateResults();
             });
           },
@@ -164,31 +214,42 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget headerRow() {
-    return const Row(
-      children: [
-        SizedBox(
-          width: 80,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Subject'),
-          ),
-        ),
-        SizedBox(
-          width: 80,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Number'),
-          ),
-        ),
-        SizedBox(
-          width: 300,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Course Title'),
-          ),
-        ),
-      ],
+  Widget sortBySubject() {
+    return ElevatedButton(
+      key: const Key("Subject Header Button"),
+      onPressed: () {
+        sortOption = 'Subject';
+        setState(() {
+          updateResults();
+        });
+      },
+      child: const Text('Subject'),
+    );
+  }
+
+  Widget sortByNumber() {
+    return ElevatedButton(
+      key: const Key("Number Header Button"),
+      onPressed: () {
+        sortOption = 'Number';
+        setState(() {
+          updateResults();
+        });
+      },
+      child: const Text('Number'),
+    );
+  }
+
+  Widget sortByTitle() {
+    return ElevatedButton(
+      key: const Key("Title Header Button"),
+      onPressed: () {
+        sortOption = 'Title';
+        setState(() {
+          updateResults();
+        });
+      },
+      child: const Text('Title'),
     );
   }
 
@@ -230,10 +291,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: PaginatedDataTable(
           source: sectionData,
           header: searchCriteriaRow(),
-          columns: const [
-            DataColumn(label: Text('Subject')),
-            DataColumn(label: Text('Number')),
-            DataColumn(label: Text('Title'))
+          columns: [
+            DataColumn(label: sortBySubject()),
+            DataColumn(label: sortByNumber()),
+            DataColumn(label: sortByTitle())
           ],
         ),
       ),
