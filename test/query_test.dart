@@ -7,20 +7,20 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('count query results', () {
-    var department =
+    final department =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
-    var subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    var all = Query(null, null).results().length;
-    var dCount = Query(department, null).results().length;
-    var sCount = Query(null, subject).results().length;
-    var bCount = Query(department, subject).results().length;
+    final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
+    final all = Query(null, null).results().length;
+    final dCount = Query(department, null).results().length;
+    final sCount = Query(null, subject).results().length;
+    final bCount = Query(department, subject).results().length;
     assert(all > dCount && all > sCount && all > bCount);
   });
   test('query finds CPTR', () {
-    var department =
+    final department =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
-    var subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    var list = Query(department, subject).results();
+    final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
+    final list = Query(department, subject).results();
     assert(list.every((element) => element.course.department!.code == 'CPTR'));
     assert(list.every((element) => element.course.subject!.code == 'CPTR'));
   });

@@ -13,10 +13,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:schedule/hourminute.dart';
 
 void main() {
-  test("constructor and accessors", () {
+  test('constructor and accessors', () {
     // constructors
     // default
-    HourMinute time1 = HourMinute(); // 0:00
+    final HourMinute time1 = HourMinute(); // 0:00
     // simple: hour and minute defined
     final HourMinute time2 = HourMinute(hour: 6, minute: 20); // 6:20
     // hour>23
@@ -29,9 +29,9 @@ void main() {
     // negative numbers -- should throw exception
     try {
       final HourMinute time6 = HourMinute(hour: -1, minute: -99);
-      log("exception not caught because ${time6.toString()}");
+      log('exception not caught because ${time6.toString()}');
     } catch (e) {
-      log("Successfully caught thrown exception");
+      log('Successfully caught thrown exception');
       assert(e is NegativeTimeException);
     }
 
@@ -48,7 +48,7 @@ void main() {
     assert(time1.hour == 10 && time1.minute == 23);
   });
 
-  test("durations", () {
+  test('durations', () {
     final HourMinute time1 = HourMinute(hour: 1, minute: 10); // 1:10
     final HourMinute time2 = HourMinute(hour: 6, minute: 20); // 6:20
 
@@ -72,24 +72,24 @@ void main() {
     assert(testDur == const Duration(hours: -5, minutes: -10));
   });
 
-  test("toString", () {
+  test('toString', () {
     final HourMinute time1 = HourMinute(hour: 13, minute: 10); // 13:10
     final HourMinute time2 = HourMinute(hour: 1, minute: 10); // 1:10
     final HourMinute time3 = HourMinute(hour: 1, minute: 1); // 1:01
 
     // 24hr - test 1
-    assert(time1.toString() == "13:10");
+    assert(time1.toString() == '13:10');
     // 24hr - test 2
-    assert(time1.toString(is24hr: true) == "13:10");
+    assert(time1.toString(is24hr: true) == '13:10');
     // 12hr - test 1
-    assert(time1.toString(is24hr: false) == "1:10PM");
+    assert(time1.toString(is24hr: false) == '1:10PM');
     // 12hr - test 2
-    assert(time2.toString(is24hr: false) == "1:10AM");
+    assert(time2.toString(is24hr: false) == '1:10AM');
     // correct padding
-    assert(time3.toString(is24hr: false) == "1:01AM");
+    assert(time3.toString(is24hr: false) == '1:01AM');
   });
 
-  test("comparisons", () {
+  test('comparisons', () {
     final HourMinute time1 = HourMinute(hour: 1, minute: 10); // 1:10
     final HourMinute time2 = HourMinute(hour: 6, minute: 20); // 6:20
 

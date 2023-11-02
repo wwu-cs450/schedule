@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:schedule/section.dart';
 
 class TableData extends DataTableSource {
-  final List<Section> _data;
   TableData(this._data);
+  final List<Section> _data;
 
   @override
   DataRow? getRow(int index) {
-    return DataRow(cells: [
-      DataCell(Text(_data[index].course.subject!.code)),
-      DataCell(Text(_data[index].course.number.toString())),
-      DataCell(Text(_data[index].course.title)),
-    ]);
+    return DataRow(
+      cells: [
+        DataCell(Text(_data[index].course.subject!.code)),
+        DataCell(Text(_data[index].course.number.toString())),
+        DataCell(Text(_data[index].course.title)),
+      ],
+    );
   }
 
   @override

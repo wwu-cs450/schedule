@@ -1,12 +1,11 @@
 class Term {
+  Term(this.code, this.name);
   final int code;
   final String name;
 
-  Term(this.code, this.name);
-
   static final _instances = <Term>{};
 
-  static get instances {
+  static Set<Term> get instances {
     if (_instances.isEmpty) {
       Term._initialize();
     }
