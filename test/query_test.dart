@@ -24,4 +24,15 @@ void main() {
     assert(list.every((element) => element.course.department!.code == 'CPTR'));
     assert(list.every((element) => element.course.subject!.code == 'CPTR'));
   });
+  test('query finds multiple codes within the Theology department', () {
+    final department =
+        Department.instances.firstWhere((each) => each.code == 'RELB');
+    final codes = Query(department, null).results();
+    assert(codes.any((element) => element.course.subject!.code == 'RELB'));
+    assert(codes.any((element) => element.course.subject!.code == 'RELH'));
+    assert(codes.any((element) => element.course.subject!.code == 'RELM'));
+    assert(codes.any((element) => element.course.subject!.code == 'RELP'));
+    assert(codes.any((element) => element.course.subject!.code == 'RELT'));
+    assert(codes.any((element) => element.course.subject!.code == 'SERV'));
+  });
 }
