@@ -11,7 +11,7 @@ void main() {
 
   test('instances', () {
     final campuses = Campus.instances;
-    assert(campuses.length == 3);
+    assert(campuses.length == 8);
     assert(
       campuses.any(
         (element) => element.code == 'PD',

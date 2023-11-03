@@ -1,23 +1,16 @@
-// ignore_for_file: type_annotate_public_apis
+import 'package:schedule/campus_list.dart';
 
 class Campus {
   Campus(this.code, this.name);
   final String code;
   final String name;
 
-  static final _instances = <Campus>{};
+  static var _instances = <Campus>{};
 
-  static get instances {
+  static Set<Campus> get instances {
     if (_instances.isEmpty) {
-      Campus._initialize();
+      _instances = InitializeCampus.initialList();
     }
     return _instances;
-  }
-
-  static void _initialize() {
-    _instances
-      ..add(Campus('ACA', 'Adventist Academies Abroad'))
-      ..add(Campus('CP', 'College Place'))
-      ..add(Campus('PD', 'Portland'));
   }
 }
