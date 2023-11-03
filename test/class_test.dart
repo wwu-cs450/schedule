@@ -1,8 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:schedule/campus.dart';
 import 'package:schedule/course.dart';
 import 'package:schedule/instructor.dart';
-
+import 'package:schedule/term.dart';
 import 'package:schedule/class.dart';
 
 Instructor instructor = Instructor('James Foster');
@@ -10,21 +11,25 @@ void main() {
   test('constructor and accessors', () {
     final course =
         Course('CPTR', 'CPTR', 'Software Engineering', 450, 'upper', 3);
+    final term = Term(2239, 'Fall 2023');
+    final campus = Campus('CP', 'College Place');
     final section = Class(
       course,
-      2239,
+      term,
       20,
       'MWF 2:00PM-3:00PM',
       'KRH 210',
       instructor,
-      'CP',
+      campus,
     );
     assert(section.course.title == 'Software Engineering');
-    assert(section.term?.name == 'Fall 2023');
+    assert(section.term.code == 2239);
+    assert(section.term.name == 'Fall 2023');
     assert(section.maxEnrollment == 20);
     assert(section.schedule == 'MWF 2:00PM-3:00PM');
     assert(section.classroom == 'KRH 210');
     assert(section.instructor == instructor);
+    assert(section.campus?.code == 'CP');
     assert(section.campus?.name == 'College Place');
     assert(section.video == '');
     assert(section.consent == '');

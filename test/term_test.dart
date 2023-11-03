@@ -11,7 +11,7 @@ void main() {
 
   test('instances', () {
     final terms = Term.instances;
-    assert(terms.length == 3);
+    assert(terms.length == 5);
     assert(
       terms.any(
         (element) => element.code == 2239,

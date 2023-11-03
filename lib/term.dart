@@ -16,6 +16,8 @@ class Term {
     _instances
       ..add(Term(2239, 'Fall 2023'))
       ..add(Term(2241, 'Winter 2024'))
-      ..add(Term(2243, 'Spring 2024'));
+      ..add(Term(2243, 'Spring 2024'))
+      ..add(Term(2246, 'Summer 2024'))
+      ..add(Term(2249, 'Fall 2024'));
   }
 }

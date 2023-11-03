@@ -70,7 +70,7 @@ class Course {
           : int.parse(
               classNumber
                   .replaceAll(' ', '')
-                  .substring(0, classNumber[8].replaceAll(' ', '').length - 2),
+                  .substring(0, classNumber.replaceAll(' ', '').length - 2),
             );
       final level = classNumber > 300 ? 'upper' : 'lower';
       _instances.add(
