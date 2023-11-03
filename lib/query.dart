@@ -3,16 +3,16 @@ import 'package:schedule/class.dart';
 import 'package:schedule/subject.dart';
 
 class Query {
-  Query(this.department, this.subject);
-  final Department? department;
-  final Subject? subject;
+  Query(this._department, this._subject);
+  final Department _department;
+  final Subject? _subject;
 
   Set<Class> results() {
     return Class.instances
         .where(
           (each) =>
-              (department == null || each.course.department == department) &&
-              (subject == null || each.course.subject == subject),
+              _department.includesCourse(each.course) &&
+              (_subject == null || each.course.subject == _subject),
         )
         .toSet();
   }
