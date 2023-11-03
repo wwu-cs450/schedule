@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void updateData() {
-    _data = Query(_department, null).results().toList();
+    _data = Query(_department, null, null).results().toList();
   }
 
   void updateResults() {
@@ -257,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Widget> classRows() {
-    final sections = Query(_department, null).results();
+    final sections = Query(_department, null, null).results();
     final rows = <Widget>[];
     for (final each in sections) {
       rows.add(
