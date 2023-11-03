@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:schedule/section.dart';
+import 'package:schedule/class.dart';
 
 class TableData extends DataTableSource {
   TableData(this._data);
-  final List<Section> _data;
+  final List<Class> _data;
 
   @override
   DataRow? getRow(int index) {

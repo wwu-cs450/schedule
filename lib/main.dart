@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schedule/data_table.dart';
 import 'package:schedule/query.dart';
-import 'package:schedule/section.dart';
+import 'package:schedule/class.dart';
 import 'package:schedule/campus.dart';
 import 'package:schedule/department.dart';
 import 'package:schedule/subject.dart';
@@ -43,8 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // Subject? _subject;
   // Term? _term;
   Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
-  List<Section> _data = <Section>[]; // To store data to be sorted
-  DataTableSource sectionData = TableData([]);
+  List<Class> _data = <Class>[]; // To store data to be sorted
+  DataTableSource classData = TableData([]);
   String? sortOption;
 
   void sortData() {
@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void updateResults() {
     sortData();
-    sectionData = TableData(_data);
+    classData = TableData(_data);
   }
 
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
@@ -291,7 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SingleChildScrollView(
         child: PaginatedDataTable(
-          source: sectionData,
+          source: classData,
           header: searchCriteriaRow(),
           columns: [
             DataColumn(label: sortBySubject()),
