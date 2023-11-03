@@ -6,6 +6,7 @@
 /*
    Will automatically convert time to have hour<24 and minute<60 without warning!
    Throws exception if hour or minute is negative.
+   Throws FormatException on fromString construction if not a proper string.
 */
 
 class HourMinute implements Comparable<HourMinute> {
@@ -20,11 +21,43 @@ class HourMinute implements Comparable<HourMinute> {
     this.minute = minute % 60;
   }
 
+  // construct using string
+  // 24hr or 12hr. Split hour/minute by ':'.
+  // throws FormatException on improper string.
+  factory HourMinute.fromString(String string) {
+    string = string.trim().toUpperCase();
+
+    final List<String> hourMinuteStrings = string.split(':');
+    if (hourMinuteStrings.length != 2) {
+      throw FormatException("Not deliminated by ':'.", string);
+    }
+
+    // hour parse -- possibly not padded
+    final String hourString = hourMinuteStrings[0].length < 3
+        ? hourMinuteStrings[0]
+        : hourMinuteStrings[0].substring(
+            hourMinuteStrings[0].length - 2,
+            hourMinuteStrings[0].length,
+          );
+    int hour = int.parse(hourString);
+    // 12hr check
+    if (string.contains('P')) {
+      hour += 12;
+    }
+
+    // minute parse
+    final String minString = hourMinuteStrings[1].substring(0, 2);
+    final int minute = int.parse(minString);
+
+    return HourMinute(hour: hour, minute: minute);
+  }
+
   // construct using DateTime
   HourMinute.fromDate(DateTime date) {
     hour = date.hour;
     minute = date.minute;
   }
+
   // instance variables
   late int hour, minute;
 

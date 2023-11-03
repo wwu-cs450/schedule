@@ -5,8 +5,6 @@
 /*
    
 */
-import 'dart:developer';
-import 'package:flutter/foundation.dart'; // need for setEquals -- deep comparison
 import 'package:flutter_test/flutter_test.dart';
 import 'package:schedule/hourminute.dart';
 import 'package:schedule/meeting_time.dart';
@@ -19,87 +17,88 @@ void main() {
     final HourMinute time3 = HourMinute(hour: 2, minute: 30);
     const Duration dur1 = Duration(hours: 2);
 
-    bool? testBoolean;
-
     // initally empty
-    assert(test.count == 0);
+    expect(test, hasLength(0));
+    expect(test, isEmpty);
 
     // try (badly) adding elements
     // negative day
-    try {
-      testBoolean = test.add(day: -1, start: time1, end: time2);
-      log('NegativeTimeException NOT thrown appropriately');
-    } catch (e) {
-      log('NegativeTimeException thrown appropriately');
-      assert(e is NegativeTimeException);
-    }
+    expect(
+      () => test.add(day: -1, start: time1, end: time2),
+      throwsA(isA<NegativeTimeException>()),
+    );
     // start before end
-    try {
-      testBoolean = test.add(day: 1, start: time2, end: time1);
-      log('EndPreceedsStart NOT thrown appropriately');
-    } catch (e) {
-      log('EndPreceedsStart thrown appropriately');
-      assert(e is EndPreceedsStart);
-    }
+    expect(
+      () => test.add(day: 1, start: time2, end: time1),
+      throwsA(isA<EndPreceedsStart>()),
+    );
 
-    // try (properly) adding elements
+    // properly adding elements
     // add
-    testBoolean = test.add(day: DateTime.monday, start: time1, end: time2);
-    assert(testBoolean);
+    expect(test.add(day: DateTime.monday, start: time1, end: time2), isTrue);
     // add something that already exists
-    testBoolean = test.add(day: DateTime.monday, start: time1, end: time2);
-    assert(!testBoolean);
+    expect(test.add(day: DateTime.monday, start: time1, end: time2), isFalse);
     // add something with conflict
-    testBoolean = test.add(day: DateTime.monday, start: time1, end: time3);
-    assert(!testBoolean);
-    assert(test.count == 1); // should only add one element
+    expect(test.add(day: DateTime.monday, start: time1, end: time3), isFalse);
+    expect(test, hasLength(1)); // should have only added one element
+    expect(test, isNotEmpty);
 
     // addUsingDuration
-    testBoolean = test.addUsingDuration(
-      day: DateTime.tuesday,
-      start: time2,
-      length: dur1,
+    expect(
+      test.addUsingDuration(
+        day: DateTime.tuesday,
+        start: time2,
+        length: dur1,
+      ),
+      isTrue,
     );
-    assert(testBoolean);
     // addUsingDuration -- already exists
-    testBoolean = test.addUsingDuration(
-      day: DateTime.tuesday,
-      start: time2,
-      length: dur1,
+    expect(
+      test.addUsingDuration(
+        day: DateTime.tuesday,
+        start: time2,
+        length: dur1,
+      ),
+      isFalse,
     );
-    assert(!testBoolean);
     // addUsingDuration -- with conflict
-    testBoolean = test.addUsingDuration(
-      day: DateTime.tuesday,
-      start: time3,
-      length: dur1,
+    expect(
+      test.addUsingDuration(
+        day: DateTime.tuesday,
+        start: time3,
+        length: dur1,
+      ),
+      isFalse,
     );
-    assert(!testBoolean);
-    assert(test.count == 2); // should only add one additional element
+    expect(test, hasLength(2)); // should only add one additional element
 
     // check what was added
-    assert(test[0] == (day: DateTime.monday, start: time1, end: time2));
-    assert(
-      test[1] == (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
+    expect(test[0], (day: DateTime.monday, start: time1, end: time2));
+    expect(
+      test[1],
+      (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
     );
 
     // removing items
     // remove something that doesn't exist
-    testBoolean = test.remove(day: DateTime.monday, start: time1, end: time3);
-    assert(!testBoolean);
-    assert(test.count == 2);
+    expect(
+      test.remove(day: DateTime.monday, start: time1, end: time3),
+      isFalse,
+    );
+    expect(test, hasLength(2));
     // remove first time
-    testBoolean = test.remove(day: DateTime.monday, start: time1, end: time2);
-    assert(testBoolean);
-    assert(test.count == 1);
-    assert(
-      test[0] == (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
+    expect(test.remove(day: DateTime.monday, start: time1, end: time2), isTrue);
+    expect(test, hasLength(1));
+    expect(
+      test[0],
+      (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
     ); // what was the second element
     // remove the last remaining time
-    testBoolean =
-        test.remove(day: DateTime.tuesday, start: time2, end: time2.add(dur1));
-    assert(testBoolean);
-    assert(test.count == 0);
+    expect(
+      test.remove(day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
+      isTrue,
+    );
+    expect(test, isEmpty);
   });
 
   test('getting info', () {
@@ -108,11 +107,6 @@ void main() {
     final HourMinute time2 = HourMinute(hour: 2);
     final HourMinute time3 = HourMinute(hour: 2, minute: 30);
     final HourMinute time4 = HourMinute(hour: 4, minute: 15);
-
-    Set<({HourMinute start, HourMinute end})> testSet1;
-    Set<int> testSet2;
-    Duration testDuration;
-    ({HourMinute start, HourMinute end})? testTime;
 
     // adding times
     test.add(day: DateTime.monday, start: time1, end: time2);
@@ -123,107 +117,110 @@ void main() {
 
     // getPeriodsOnDay
     // only one time
-    testSet1 = test.getPeriodsOnDay(DateTime.tuesday);
-    assert(testSet1.length == 1);
-    assert(setEquals(testSet1, {(start: time1, end: time2)}));
-    // three times
-    testSet1 = test.getPeriodsOnDay(DateTime.monday);
-    assert(testSet1.length == 3);
-    assert(
-      setEquals(testSet1, {
-        (start: time1, end: time2),
-        (start: time3, end: time4),
-        (start: time2, end: time3),
-      }),
+    expect(
+      test.getPeriodsOnDay(DateTime.tuesday),
+      unorderedEquals({(start: time1, end: time2)}),
     );
+    // three times
+    expect(test.getPeriodsOnDay(DateTime.monday), {
+      (start: time1, end: time2),
+      (start: time3, end: time4),
+      (start: time2, end: time3),
+    });
     // zero times
-    testSet1 = test.getPeriodsOnDay(DateTime.sunday);
-    assert(testSet1.isEmpty);
+    expect(test.getPeriodsOnDay(DateTime.sunday), isEmpty);
 
     // getDurationOnDay
     // with three times (all added together)
-    testDuration = test.getDurationOnDay(DateTime.monday);
-    assert(testDuration == const Duration(hours: 1, minutes: 10 + 30 + 45));
+    expect(
+      test.getDurationOnDay(DateTime.monday),
+      const Duration(hours: 1, minutes: 10 + 30 + 45),
+    );
     // with only one time
-    testDuration = test.getDurationOnDay(DateTime.wednesday);
-    assert(testDuration == const Duration(minutes: 10));
+    expect(
+      test.getDurationOnDay(DateTime.wednesday),
+      const Duration(minutes: 10),
+    );
     // zero times
-    testDuration = test.getDurationOnDay(DateTime.saturday);
-    assert(testDuration == Duration.zero);
+    expect(test.getDurationOnDay(DateTime.saturday), Duration.zero);
 
     // weeklyDuration
-    assert(
-      test.weeklyDuration ==
-          const Duration(hours: 1, minutes: 10 + 30 + 45 + 20),
+    expect(
+      test.weeklyDuration,
+      const Duration(hours: 1, minutes: 10 + 30 + 45 + 20),
     );
 
     // getDaysAtTime
     // time in the middle of a range
     // only one day
-    testSet2 = test.getDaysAtTime(HourMinute(hour: 4));
-    assert(testSet2.length == 1);
-    assert(setEquals(testSet2, {DateTime.monday}));
+    expect(
+      test.getDaysAtTime(HourMinute(hour: 4)),
+      unorderedEquals({DateTime.monday}),
+    );
     // edge time
     // three days
-    testSet2 = test.getDaysAtTime(time1);
-    assert(testSet2.length == 3);
-    assert(
-      setEquals(
-        testSet2,
+    expect(
+      test.getDaysAtTime(time1),
+      unorderedEquals(
         {DateTime.monday, DateTime.tuesday, DateTime.wednesday},
       ),
     );
     // zero days
-    testSet2 = test.getDaysAtTime(HourMinute(hour: 13));
-    assert(testSet2.isEmpty);
+    expect(test.getDaysAtTime(HourMinute(hour: 13)), isEmpty);
 
     // getPeriodOnDayAtTime
     // no period
-    testTime = test.getPeriodOnDayAtTime(time: time1, day: DateTime.thursday);
-    assert(testTime == null);
-    // time at start of period
-    testTime = test.getPeriodOnDayAtTime(time: time1, day: DateTime.tuesday);
-    assert(testTime == (start: time1, end: time2));
-    // time at end of period
-    testTime = test.getPeriodOnDayAtTime(time: time4, day: DateTime.monday);
-    assert(testTime == null);
-    // time in middle of period
-    testTime = test.getPeriodOnDayAtTime(
-      time: time3.add(const Duration(minutes: 15)),
-      day: DateTime.monday,
+    expect(
+      test.getPeriodOnDayAtTime(time: time1, day: DateTime.thursday),
+      isNull,
     );
-    assert(testTime == (start: time3, end: time4));
+    // time at start of period
+    expect(
+      test.getPeriodOnDayAtTime(time: time1, day: DateTime.tuesday),
+      (start: time1, end: time2),
+    );
+    // time at end of period
+    expect(
+      test.getPeriodOnDayAtTime(time: time4, day: DateTime.monday),
+      isNull,
+    );
+    // time in middle of period
+    expect(
+      test.getPeriodOnDayAtTime(
+        time: time3.add(const Duration(minutes: 15)),
+        day: DateTime.monday,
+      ),
+      (start: time3, end: time4),
+    );
 
     // isAt
     // null
-    assert(test.isAt() == null);
+    expect(test.isAt(), isTrue);
     // day only
-    assert(test.isAt(day: DateTime.monday)!); // is at
-    assert(!test.isAt(day: DateTime.thursday)!); // is not at
+    expect(test.isAt(day: DateTime.monday), isTrue); // is at
+    expect(test.isAt(day: DateTime.thursday), isFalse); // is not at
     // time only
-    assert(test.isAt(time: HourMinute(hour: 4))!); // in range
-    assert(!test.isAt(time: time4)!); // on trailing edge
-    assert(
-      test.isAt(time: time1)!,
-    ); // on leading edge -- multiple matching times
-    assert(!test.isAt(time: HourMinute(hour: 22))!); // is not at
+    expect(test.isAt(time: HourMinute(hour: 4)), isTrue); // in range
+    expect(test.isAt(time: time4), isFalse); // on trailing edge
+    expect(test.isAt(time: time1), isTrue); // on leading edge -- multiple
+    expect(test.isAt(time: HourMinute(hour: 22)), isFalse); // is not at
     // day and time
-    assert(test.isAt(day: DateTime.wednesday, time: time1)!); // both match
-    assert(
-      !test.isAt(
-        day: DateTime.wednesday,
-        time: HourMinute(hour: 22),
-      )!,
-    ); // time doesn't match
-    assert(
-      !test.isAt(day: DateTime.thursday, time: time1)!,
-    ); // day doesn't match
-    assert(
-      !test.isAt(
-        day: DateTime.thursday,
-        time: HourMinute(hour: 22),
-      )!,
-    ); // no match
+    expect(
+      test.isAt(day: DateTime.wednesday, time: time1),
+      isTrue,
+    ); // both match
+    // time doesn't match
+    expect(
+      test.isAt(day: DateTime.wednesday, time: HourMinute(hour: 22)),
+      isFalse,
+    );
+    // day doesn't match
+    expect(test.isAt(day: DateTime.thursday, time: time1), isFalse);
+    // no match
+    expect(
+      test.isAt(day: DateTime.thursday, time: HourMinute(hour: 22)),
+      isFalse,
+    );
   });
 
   test('to string methods', () {
@@ -233,46 +230,32 @@ void main() {
     final HourMinute time3 = HourMinute(hour: 21, minute: 30);
     final HourMinute time4 = HourMinute(hour: 23, minute: 15);
 
-    String? testString;
-
     // adding times
     test.add(day: DateTime.monday, start: time1, end: time2); // M 1:50 - 2:00
     test.add(day: DateTime.monday, start: time2, end: time3); // M 2:00 - 21:30
     test.add(day: DateTime.monday, start: time3, end: time4); // M 21:30 - 23:15
     test.add(day: DateTime.tuesday, start: time1, end: time2); // T 1:50 - 2:00
-    test.add(
-      day: DateTime.wednesday,
-      start: time1,
-      end: time2,
-    ); // W 1:50 - 2:00
+    test.add(day: DateTime.wednesday, start: time1, end: time2); // W 1:50-2:00
 
     // toString
     // like existing ClassOpen - 24hr
-    testString = test.toString();
-    log(testString);
-    assert(testString == 'MTW 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\n');
+    expect(test.toString(), 'MTW 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15');
     // like existing ClassOpen - 12hr
-    testString = test.toString(is24hr: false);
-    log(testString);
-    assert(
-      testString ==
-          'MTW 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\n',
+    expect(
+      test.toString(is24hr: false),
+      'MTW 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM',
     );
 
     // toStringExpanded
     // expanded out by day (all on new lines) - 24hr
-    testString = test.toStringExpanded();
-    log(testString);
-    assert(
-      testString ==
-          'M 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\nT 1:50 - 2:00\nW 1:50 - 2:00\n',
+    expect(
+      test.toStringExpanded(),
+      'M 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\nT 1:50 - 2:00\nW 1:50 - 2:00',
     );
     // expanded -- 12hr
-    testString = test.toStringExpanded(is24hr: false);
-    log(testString);
-    assert(
-      testString ==
-          'M 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\nT 1:50AM - 2:00AM\nW 1:50AM - 2:00AM\n',
+    expect(
+      test.toStringExpanded(is24hr: false),
+      'M 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\nT 1:50AM - 2:00AM\nW 1:50AM - 2:00AM',
     );
   });
 
@@ -304,30 +287,30 @@ void main() {
 
     // equality operator & hashCode
     // assigning one the other
-    assert(identical(test3, test4));
-    assert(test3 == test4);
-    assert(test3.hashCode == test4.hashCode);
+    expect(test3, same(test4));
+    expect(test3, test4);
+    expect(test3.hashCode, test4.hashCode);
     // same content
     test4 = MeetingTime()
       ..add(day: DateTime.thursday, start: time1, end: time2);
-    assert(!identical(test3, test4));
-    assert(test3 == test4);
-    assert(test3.hashCode == test4.hashCode);
+    expect(identical(test3, test4), isFalse);
+    expect(test3, test4);
+    expect(test3.hashCode, test4.hashCode);
     // not equal
-    assert(test2 != test3);
-    assert(test2.hashCode != test3.hashCode);
+    expect(test2 == test3, isFalse);
+    expect(test2.hashCode == test3.hashCode, isFalse);
     // changing to make equal
     test2.remove(day: DateTime.monday, start: time3, end: time4);
     test2.remove(day: DateTime.tuesday, start: time1, end: time2);
-    assert(test2 == test3);
-    assert(test2.hashCode == test3.hashCode);
+    expect(test2, test3);
+    expect(test2.hashCode, test3.hashCode);
     // direct hashcode check
     final int checkHash = (DateTime.monday, time1, time2).hashCode +
         (DateTime.monday, time2, time3).hashCode +
         (DateTime.monday, time3, time4).hashCode +
         (DateTime.tuesday, time1, time2).hashCode +
         (DateTime.wednesday, time1, time2).hashCode;
-    assert(test1.hashCode == checkHash);
+    expect(test1.hashCode, checkHash);
   });
 
   test('checkConflict', () {
@@ -383,50 +366,233 @@ void main() {
     // checkConflict - no conflicts
     // no conflict -- no matches
     testResults1 = test1.checkConflict(test2);
-    assert(!testResults1.doesConflict);
-    assert(testResults1.conflicts.isEmpty);
+    expect(testResults1.doesConflict, isFalse);
+    expect(testResults1.conflicts, isEmpty);
     // no conflict -- same times, different days
     testResults1 = test1.checkConflict(test3);
-    assert(!testResults1.doesConflict);
-    assert(testResults1.conflicts.isEmpty);
+    expect(testResults1.doesConflict, isFalse);
+    expect(testResults1.conflicts, isEmpty);
     // no conflict -- same day, different times
     testResults1 = test1.checkConflict(test4);
-    assert(!testResults1.doesConflict);
-    assert(testResults1.conflicts.isEmpty);
+    expect(testResults1.doesConflict, isFalse);
+    expect(testResults1.conflicts, isEmpty);
 
     // checkConflict - conflicts
     // exact same
     testResults1 = test1.checkConflict(test1);
-    assert(testResults1.doesConflict);
-    assert(
-      setEquals(
-        testResults1.conflicts,
-        {(day: DateTime.monday, time: time3)},
-      ),
+    expect(testResults1.doesConflict, isTrue);
+    expect(
+      testResults1.conflicts,
+      unorderedEquals({(day: DateTime.monday, time: time3)}),
     );
     // offset times
     testResults1 = test3.checkConflict(test4);
     testResults2 = test4.checkConflict(test3);
-    assert(testResults1.doesConflict && testResults2.doesConflict);
-    assert(setEquals(testResults1.conflicts, testResults2.conflicts));
-    assert(
-      setEquals(
-        testResults1.conflicts,
-        {(day: DateTime.thursday, time: time2)},
-      ),
+    expect(testResults1.doesConflict && testResults2.doesConflict, isTrue);
+    expect(testResults1.conflicts, unorderedEquals(testResults2.conflicts));
+    expect(
+      testResults1.conflicts,
+      unorderedEquals({(day: DateTime.thursday, time: time2)}),
     );
     // several conflicts -- also different counts
     testResults1 = test6.checkConflict(test7);
     testResults2 = test7.checkConflict(test6);
-    assert(testResults1.doesConflict && testResults2.doesConflict);
-    assert(setEquals(testResults1.conflicts, testResults2.conflicts));
-    assert(
-      setEquals(testResults1.conflicts, {
+    expect(testResults1.doesConflict && testResults2.doesConflict, isTrue);
+    expect(testResults1.conflicts, unorderedEquals(testResults2.conflicts));
+    expect(
+      testResults1.conflicts,
+      unorderedEquals({
         (day: DateTime.monday, time: time2),
         (day: DateTime.monday, time: time3),
         (day: DateTime.monday, time: time5),
         (day: DateTime.monday, time: time6),
       }),
+    );
+  });
+
+  test('fromString constructor', () {
+    // matching schedule.dart formatting:
+    // single day, single time
+    MeetingTime test;
+    test = MeetingTime.fromString('T 05:00 - 06:50P');
+    expect(test, hasLength(1));
+    expect(
+      test[0],
+      (
+        day: DateTime.tuesday,
+        start: HourMinute(hour: 17),
+        end: HourMinute(hour: 18, minute: 50)
+      ),
+    );
+
+    // multiple days, single time
+    test = MeetingTime.fromString('MTWF 01:00 - 01:50P');
+    expect(test, hasLength(4));
+    expect(
+      test[0],
+      (
+        day: DateTime.monday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 13, minute: 50)
+      ),
+    );
+    expect(
+      test[1],
+      (
+        day: DateTime.tuesday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 13, minute: 50)
+      ),
+    );
+    expect(
+      test[2],
+      (
+        day: DateTime.wednesday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 13, minute: 50)
+      ),
+    );
+    expect(
+      test[3],
+      (
+        day: DateTime.friday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 13, minute: 50)
+      ),
+    );
+
+    // multiple days, multiple times
+    test = MeetingTime.fromString('MWF 01:00 - 01:50P/R 02:00 - 04:50P');
+    expect(test, hasLength(4));
+    expect(
+      test[0],
+      (
+        day: DateTime.monday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 13, minute: 50)
+      ),
+    );
+    expect(
+      test[1],
+      (
+        day: DateTime.wednesday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 13, minute: 50)
+      ),
+    );
+    expect(
+      test[2],
+      (
+        day: DateTime.thursday,
+        start: HourMinute(hour: 14),
+        end: HourMinute(hour: 16, minute: 50)
+      ),
+    );
+    expect(
+      test[3],
+      (
+        day: DateTime.friday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 13, minute: 50)
+      ),
+    );
+
+    // NOT matching schedule.dart formatting
+    test = MeetingTime.fromString(
+      'RU 02:10PM-04:25PM\nS 02:00 AM-04:50 AM\nS-13:00 - 14:15',
+    );
+    expect(test, hasLength(4));
+    expect(
+      test[0],
+      (
+        day: DateTime.thursday,
+        start: HourMinute(hour: 14, minute: 10),
+        end: HourMinute(hour: 16, minute: 25)
+      ),
+    );
+    expect(
+      test[1],
+      (
+        day: DateTime.saturday,
+        start: HourMinute(hour: 2),
+        end: HourMinute(hour: 4, minute: 50)
+      ),
+    );
+    expect(
+      test[2],
+      (
+        day: DateTime.saturday,
+        start: HourMinute(hour: 13),
+        end: HourMinute(hour: 14, minute: 15)
+      ),
+    );
+    expect(
+      test[3],
+      (
+        day: DateTime.sunday,
+        start: HourMinute(hour: 14, minute: 10),
+        end: HourMinute(hour: 16, minute: 25)
+      ),
+    );
+
+    // same time listed
+    test = MeetingTime.fromString('T 05:00 - 06:50P/T 05:00 - 06:50P');
+    expect(test, hasLength(1));
+    expect(
+      test[0],
+      (
+        day: DateTime.tuesday,
+        start: HourMinute(hour: 17),
+        end: HourMinute(hour: 18, minute: 50)
+      ),
+      reason: 'handle same times in string',
+    );
+
+    // no time set
+    test = MeetingTime.fromString('ARR');
+    expect(test, isEmpty);
+
+    // consistency
+    test = MeetingTime(); // empty
+    test.add(
+      day: DateTime.tuesday,
+      start: HourMinute(hour: 14),
+      end: HourMinute(hour: 14, minute: 50),
+    );
+    test.add(
+      day: DateTime.thursday,
+      start: HourMinute(hour: 14),
+      end: HourMinute(hour: 14, minute: 50),
+    );
+    test.add(
+      day: DateTime.wednesday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 15, minute: 50),
+    );
+    final MeetingTime test2 =
+        MeetingTime.fromString(test.toString(is24hr: false));
+    expect(test, test2);
+
+    // proper error handling:
+    // improper string - no space/- between days and time
+    expect(
+      () => MeetingTime.fromString('T05:00 - 06:50P'),
+      throwsFormatException,
+    );
+    // improper string - bad day
+    expect(
+      () => MeetingTime.fromString('Q 05:00 - 06:50P'),
+      throwsFormatException,
+    );
+    // improper string - bad time
+    expect(
+      () => MeetingTime.fromString('T 0X:00 - 06:50P'),
+      throwsFormatException,
+    );
+    // improper string - bad spaces -- will go to delimination error from HourMinute because string happens to split into 3 by MeetingTime
+    expect(
+      () => MeetingTime.fromString('T09: 00 - 06:50P'),
+      throwsFormatException,
     );
   });
 }
