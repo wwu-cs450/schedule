@@ -39,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // Campus? _campus;
-  Department? _department;
+  Department _department = Department.instances.first;
   // Subject? _subject;
   // Term? _term;
   Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
@@ -108,7 +108,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> deptDropdownMenuEntries() {
     final deptList = Department.instances;
     final deptEntries = <DropdownMenuEntry>[];
-    deptEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in deptList) {
       deptEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }

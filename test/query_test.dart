@@ -7,14 +7,20 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('count query results', () {
-    final department =
+    final csDepartment =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
+    expect(csDepartment.code, 'CPTR');
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    final all = Query(null, null).results().length;
-    final dCount = Query(department, null).results().length;
-    final sCount = Query(null, subject).results().length;
-    final bCount = Query(department, subject).results().length;
-    assert(all > dCount && all > sCount && all > bCount);
+    final allDepartments = Department.instances.first;
+    expect(allDepartments.code, '');
+    expect(allDepartments.name, 'ALL');
+    final all = Query(allDepartments, null).results().length;
+    final dCount = Query(csDepartment, null).results().length;
+    final sCount = Query(allDepartments, subject).results().length;
+    final bCount = Query(csDepartment, subject).results().length;
+    assert(all > dCount);
+    assert(all > sCount);
+    assert(all > bCount);
   });
   test('query finds CPTR', () {
     final department =

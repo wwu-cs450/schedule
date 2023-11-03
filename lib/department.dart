@@ -1,4 +1,5 @@
 import 'package:schedule/departments_list.dart';
+import 'package:schedule/course.dart';
 
 class Department {
   Department(this.code, this.name);
@@ -9,8 +10,21 @@ class Department {
 
   static Set<Department> get instances {
     if (_instances.isEmpty) {
-      _instances = InitializeDepartment.initialList();
+      _instances = {AllDepartments(), ...InitializeDepartment.initialList()};
     }
     return _instances;
+  }
+
+  bool includesCourse(Course course) {
+    return course.department == this;
+  }
+}
+
+class AllDepartments extends Department {
+  AllDepartments() : super('', 'ALL');
+
+  @override
+  bool includesCourse(Course course) {
+    return true;
   }
 }
