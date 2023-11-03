@@ -1,5 +1,5 @@
 import 'package:schedule/department.dart';
-import 'package:schedule/section.dart';
+import 'package:schedule/class.dart';
 import 'package:schedule/subject.dart';
 
 class Query {
@@ -7,8 +7,8 @@ class Query {
   final Department? department;
   final Subject? subject;
 
-  Set<Section> results() {
-    return Section.instances
+  Set<Class> results() {
+    return Class.instances
         .where(
           (each) =>
               (department == null || each.course.department == department) &&

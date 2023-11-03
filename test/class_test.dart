@@ -3,14 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:schedule/course.dart';
 import 'package:schedule/instructor.dart';
 
-import 'package:schedule/section.dart';
+import 'package:schedule/class.dart';
 
 Instructor instructor = Instructor('James Foster');
 void main() {
   test('constructor and accessors', () {
     final course =
         Course('CPTR', 'CPTR', 'Software Engineering', 450, 'upper', 3);
-    final section = Section(
+    final section = Class(
       course,
       2239,
       20,
