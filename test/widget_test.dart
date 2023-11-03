@@ -16,8 +16,19 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
+    expect(find.byKey(const Key('Campus Dropdown')), findsOneWidget);
     expect(find.byKey(const Key('Department Dropdown')), findsOneWidget);
+    expect(find.byKey(const Key('Subject Dropdown')), findsOneWidget);
+    expect(find.byKey(const Key('Term Dropdown')), findsOneWidget);
+    expect(find.byKey(const Key('Search Button')), findsOneWidget);
   });
+
+  testWidgets('Search Criteria does not Overlap with Results',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+    expect(find.byKey(const Key('Search Criteria Widget')), findsOneWidget);
+  });
+
   testWidgets('Header Button Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());

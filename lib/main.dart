@@ -99,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
     final campusList = Campus.instances;
     final campusEntries = <DropdownMenuEntry>[];
+    campusEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in campusList) {
       campusEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -117,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> subjDropdownMenuEntries() {
     final subjList = Subject.instances;
     final subjEntries = <DropdownMenuEntry>[];
+    subjEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in subjList) {
       subjEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -126,21 +128,24 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> termDropdownMenuEntries() {
     final termList = Term.instances;
     final termEntries = <DropdownMenuEntry>[];
+    termEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in termList) {
       termEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
     return termEntries;
   }
 
-  Widget searchCriteriaRow() {
-    return Row(
+  Widget searchCriteriaWidget() {
+    return Wrap(
+      key: const Key('Search Criteria Widget'),
+      spacing: 8,
+      runSpacing: 8,
       children: [
-        const Spacer(),
         // Campus Dropdown
-        Flexible(
-          fit: FlexFit.loose,
-          flex: 15,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
           child: DropdownMenu(
+            key: const Key('Campus Dropdown'),
             label: const Text('Campus'),
             dropdownMenuEntries: campusDropdownMenuEntries(),
             onSelected: (value) {
@@ -150,11 +155,9 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ),
-        const Spacer(),
         // Department Dropdown
-        Flexible(
-          fit: FlexFit.loose,
-          flex: 15,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
           child: DropdownMenu(
             key: const Key('Department Dropdown'),
             label: const Text('Department'),
@@ -167,12 +170,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
 
-        const Spacer(),
         // Subject Dropdown
-        Flexible(
-          fit: FlexFit.loose,
-          flex: 15,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
           child: DropdownMenu(
+            key: const Key('Subject Dropdown'),
             label: const Text('Subject'),
             dropdownMenuEntries: subjDropdownMenuEntries(),
             onSelected: (value) {
@@ -183,12 +185,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
 
-        const Spacer(),
         // Term Dropdown
-        Flexible(
-          fit: FlexFit.loose,
-          flex: 15,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
           child: DropdownMenu(
+            key: const Key('Term Dropdown'),
             label: const Text('Term'),
             dropdownMenuEntries: termDropdownMenuEntries(),
             onSelected: (value) {
@@ -198,16 +199,19 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ),
-        const Spacer(),
-
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              updateData();
-              updateResults();
-            });
-          },
-          child: const Text('Search'),
+        // const Spacer(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            key: const Key('Search Button'),
+            onPressed: () {
+              setState(() {
+                updateData();
+                updateResults();
+              });
+            },
+            child: const Text('Search'),
+          ),
         ),
       ],
     );
@@ -289,13 +293,17 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
-        child: PaginatedDataTable(
-          source: classData,
-          header: searchCriteriaRow(),
-          columns: [
-            DataColumn(label: sortBySubject()),
-            DataColumn(label: sortByNumber()),
-            DataColumn(label: sortByTitle()),
+        child: Column(
+          children: [
+            searchCriteriaWidget(),
+            PaginatedDataTable(
+              source: classData,
+              columns: [
+                DataColumn(label: sortBySubject()),
+                DataColumn(label: sortByNumber()),
+                DataColumn(label: sortByTitle()),
+              ],
+            ),
           ],
         ),
       ),
