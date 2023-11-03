@@ -74,6 +74,40 @@ class Class {
       final math181a = Class(math181, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
       _instances.add(math181a);
     }
+    final relb = Course('RELB', 'RELB', 'Ministry of Jesus', 104, 'lower', 4);
+    final relb1 = Class(relb, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
+    _instances.add(relb1);
+    final relh =
+        Course('RELB', 'RELH', 'Biblical Archaeology', 205, 'lower', 4);
+    final relh1 = Class(relh, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
+    _instances.add(relh1);
+    final relm = Course(
+      'RELB',
+      'RELM',
+      'Intro to Cross-Cultural Ministry',
+      233,
+      'lower',
+      4,
+    );
+    final relm1 = Class(relm, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
+    _instances.add(relm1);
+    final relp =
+        Course('RELB', 'RELP', 'Intro to Faith & Ministry', 131, 'lower', 4);
+    final relp1 = Class(relp, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
+    _instances.add(relp1);
+    final relt = Course('RELB', 'RELT', 'Christian Beliefs', 202, 'lower', 4);
+    final relt1 = Class(relt, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
+    _instances.add(relt1);
+    final serv = Course(
+      'RELB',
+      'SERV',
+      'Community Engagement–Churches',
+      305,
+      'upper',
+      4,
+    );
+    final serv1 = Class(serv, 2239, 30, 'MWRF', 'KRH 328', john, 'CP');
+    _instances.add(serv1);
   }
 
   void changeEnrollmentStatus() {
