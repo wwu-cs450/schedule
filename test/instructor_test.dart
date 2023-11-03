@@ -10,7 +10,7 @@ void main() {
 
   test('instances', () {
     final instructors = Instructor.instances;
-    assert(instructors.length == 4);
+    assert(instructors.length == 258);
     assert(
       instructors.any(
         (element) => element.name == 'James Foster',

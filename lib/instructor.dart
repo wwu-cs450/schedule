@@ -1,3 +1,5 @@
+import 'package:schedule/load_csv.dart';
+
 class Instructor {
   Instructor(this.name);
   final String name;
@@ -12,10 +14,14 @@ class Instructor {
   }
 
   static void _initialize() {
-    _instances
-      ..add(Instructor('James Foster'))
-      ..add(Instructor('John Foster'))
-      ..add(Instructor('Qin Ma'))
-      ..add(Instructor('Rob Frohne'));
+    final classopenCSV = getListFromCsv();
+    // Remove headers
+    classopenCSV.removeAt(0);
+    for (final value in classopenCSV) {
+      if (!_instances.any((instructor) => instructor.name == value[23])) {
+        //TODO split multiple instructors into multiple different, instead of one.
+        _instances.add(Instructor(value[23]));
+      }
+    }
   }
 }
