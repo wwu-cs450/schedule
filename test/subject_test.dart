@@ -11,7 +11,7 @@ void main() {
 
   test('instances', () {
     final subjects = Subject.instances;
-    assert(subjects.length == 95);
+    assert(subjects.length == 96);
     assert(
       subjects.any(
         (element) => element.code == 'CPTR',
