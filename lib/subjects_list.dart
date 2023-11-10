@@ -95,7 +95,7 @@ Map<String, String> _subjects = {
   'RELP': 'Professional',
   'RELT': 'Theology',
   'SCDI': 'Scientific Diving',
-  'SERV': 'Serivce Learning',
+  'SERV': 'Service Learning',
   'SMTF': 'Student Missionary Task Force',
   'SOCI': 'Sociology',
   'SOWK': 'Social Work',
