@@ -112,6 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
     for (final each in deptList) {
       deptEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
+    deptEntries.sort((a, b) {
+      return a.label.compareTo(b.label);
+    });
     return deptEntries;
   }
 
@@ -122,6 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
     for (final each in subjList) {
       subjEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
+    subjEntries.sort((a, b) {
+      return a.label.compareTo(b.label);
+    });
     return subjEntries;
   }
 
@@ -254,35 +260,6 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       child: const Text('Title'),
     );
-  }
-
-  List<Widget> classRows() {
-    final sections = Query(_department, null, null).results();
-    final rows = <Widget>[];
-    for (final each in sections) {
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 80,
-                child: Text(each.course.subject!.code),
-              ),
-              SizedBox(
-                width: 80,
-                child: Text(each.course.number.toString()),
-              ),
-              SizedBox(
-                width: 300,
-                child: Text(each.course.title),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return rows;
   }
 
   @override
