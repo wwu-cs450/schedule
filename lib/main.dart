@@ -40,7 +40,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // Campus? _campus;
   Department _department = Department.instances.first;
-  // Subject? _subject;
+  // Subject _subject = Subject.instances.first;
   // Term? _term;
   Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
   List<Class> _data = <Class>[]; // To store data to be sorted
@@ -88,7 +88,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void updateData() {
-    _data = Query(_department, null, null).results().toList();
+    final allSubjects = Subject.instances.first;
+    final allTerms = Term.instances.first;
+
+    _data = Query(_department, allSubjects, allTerms).results().toList();
   }
 
   void updateResults() {
@@ -121,7 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> subjDropdownMenuEntries() {
     final subjList = Subject.instances;
     final subjEntries = <DropdownMenuEntry>[];
-    subjEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in subjList) {
       subjEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }

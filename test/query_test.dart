@@ -11,18 +11,25 @@ void main() {
     final csDepartment =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
     expect(csDepartment.code, 'CPTR');
-    final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
+    final csSubject =
+        Subject.instances.firstWhere((each) => each.code == 'CPTR');
     final term = Term.instances.firstWhere((each) => each.code == 2241);
     final allDepartments = Department.instances.first;
+    final allSubjects = Subject.instances.first;
+    final allTerms = Term.instances.first;
     expect(allDepartments.code, '');
     expect(allDepartments.name, 'ALL');
-    final all = Query(allDepartments, null, null).results().length;
-    final dCount = Query(csDepartment, null, null).results().length;
-    final sCount = Query(allDepartments, subject, null).results().length;
-    final tCount = Query(allDepartments, null, term).results().length;
-    final tAndsCount = Query(allDepartments, subject, term).results().length;
-    final dAndtCount = Query(csDepartment, null, term).results().length;
-    final bCount = Query(csDepartment, subject, term).results().length;
+    expect(allSubjects.code, '');
+    expect(allSubjects.name, 'ALL');
+    expect(allTerms.code, 0);
+    expect(allTerms.name, 'ALL');
+    final all = Query(allDepartments, allSubjects, allTerms).results().length;
+    final dCount = Query(csDepartment, allSubjects, allTerms).results().length;
+    final sCount = Query(allDepartments, csSubject, allTerms).results().length;
+    final tCount = Query(allDepartments, allSubjects, term).results().length;
+    final tAndsCount = Query(allDepartments, csSubject, term).results().length;
+    final dAndtCount = Query(csDepartment, allSubjects, term).results().length;
+    final bCount = Query(csDepartment, csSubject, term).results().length;
     assert(
       all > dCount &&
           all > sCount &&
@@ -33,17 +40,20 @@ void main() {
     );
   });
   test('query finds CPTR', () {
+    final allTerms = Term.instances.first;
     final department =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    final list = Query(department, subject, null).results();
+    final list = Query(department, subject, allTerms).results();
     assert(list.every((element) => element.course.department!.code == 'CPTR'));
     assert(list.every((element) => element.course.subject!.code == 'CPTR'));
   });
   test('query finds multiple codes within the Theology department', () {
+    final allSubjects = Subject.instances.first;
+    final allTerms = Term.instances.first;
     final department =
         Department.instances.firstWhere((each) => each.code == 'RELB');
-    final codes = Query(department, null, null).results();
+    final codes = Query(department, allSubjects, allTerms).results();
     assert(codes.any((element) => element.course.subject!.code == 'RELB'));
     assert(codes.any((element) => element.course.subject!.code == 'RELH'));
     assert(codes.any((element) => element.course.subject!.code == 'RELM'));
@@ -53,11 +63,10 @@ void main() {
   });
 
   test('query finds Winter 2024', () {
+    final allSubjects = Subject.instances.first;
     final allDepartments = Department.instances.first;
-    expect(allDepartments.code, '');
-    expect(allDepartments.name, 'ALL');
     final term = Term.instances.firstWhere((each) => each.code == 2241);
-    final list = Query(allDepartments, null, term).results();
-    assert(list.every((element) => element.course.term!.code == 2241));
+    final list = Query(allDepartments, allSubjects, term).results();
+    assert(list.every((element) => element.term.code == 2241));
   });
 }
