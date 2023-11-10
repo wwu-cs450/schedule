@@ -15,6 +15,16 @@ class Department {
     return _instances;
   }
 
+  static Department departmentwithCode(String code) {
+    final toSearch = instances;
+    for (final instance in toSearch) {
+      if (instance.code == code) {
+        return instance;
+      }
+    }
+    return Department('CPTR', 'Computer Science');
+  }
+
   bool includesCourse(Course course) {
     return course.department == this;
   }
