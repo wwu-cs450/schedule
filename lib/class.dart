@@ -3,6 +3,7 @@ import 'package:schedule/course.dart';
 import 'package:schedule/term.dart';
 import 'package:schedule/instructor.dart';
 import 'package:schedule/load_csv.dart';
+import 'package:schedule/meeting_time.dart';
 
 class Class {
   Class(
@@ -31,7 +32,7 @@ class Class {
   bool isOpenForEnrollment;
   int waitlist;
   int fee;
-  String schedule;
+  MeetingTime schedule;
   String classroom;
   Instructor instructor;
   Campus campus;
@@ -86,7 +87,7 @@ class Class {
           currCourse,
           currTerm,
           listing[18],
-          listing[26],
+          MeetingTime.fromString(listing[21]), // schedule
           listing[22],
           currInstructor,
           currCampus,

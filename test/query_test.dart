@@ -28,26 +28,19 @@ void main() {
     expect(allTerms.name, 'ALL');
     expect(allCampuses.code, '');
     expect(allCampuses.name, 'ALL');
-    final all = Query(allDepartments, allSubjects, allTerms, allCampuses)
-        .results()
-        .length;
-    final dCount = Query(csDepartment, allSubjects, allTerms, allCampuses)
-        .results()
-        .length;
-    final sCount = Query(allDepartments, csSubject, allTerms, allCampuses)
-        .results()
-        .length;
-    final tCount =
-        Query(allDepartments, allSubjects, term, allCampuses).results().length;
-    final cCount =
-        Query(allDepartments, allSubjects, allTerms, campus).results().length;
-    final tAndsCount =
-        Query(allDepartments, csSubject, term, allCampuses).results().length;
+    final all = Query().results().length;
+    final dCount = Query(department: csDepartment).results().length;
+    final sCount = Query(subject: csSubject).results().length;
+    final tCount = Query(term: term).results().length;
+    final cCount = Query(campus: campus).results().length;
+    final tAndsCount = Query(subject: csSubject, term: term).results().length;
     final dAndtCount =
-        Query(csDepartment, allSubjects, term, allCampuses).results().length;
+        Query(department: csDepartment, term: term).results().length;
     final bCount =
-        Query(csDepartment, csSubject, term, campus).results().length;
-    assert(
+        Query(department: csDepartment, subject: csSubject, term: term)
+            .results()
+            .length;
+    expect(
       all > dCount &&
           all > sCount &&
           all > tCount &&
@@ -55,53 +48,63 @@ void main() {
           all > tAndsCount &&
           all > dAndtCount &&
           all > bCount,
+      isTrue,
     );
   });
   test('query finds CPTR', () {
-    final allTerms = Term.instances.first;
     final department =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
-    final allCampuses = Campus.instances.first;
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    final list = Query(department, subject, allTerms, allCampuses).results();
-    assert(list.every((element) => element.course.department!.code == 'CPTR'));
-    assert(list.every((element) => element.course.subject!.code == 'CPTR'));
+    final list = Query(department: department, subject: subject).results();
+    expect(
+      list.every((element) => element.course.department!.code == 'CPTR'),
+      isTrue,
+    );
+    expect(
+      list.every((element) => element.course.subject!.code == 'CPTR'),
+      isTrue,
+    );
   });
   test('query finds multiple codes within the Theology department', () {
-    final allSubjects = Subject.instances.first;
-    final allTerms = Term.instances.first;
     final department =
         Department.instances.firstWhere((each) => each.code == 'RELB');
-    final allCampuses = Campus.instances.first;
-    final codes =
-        Query(department, allSubjects, allTerms, allCampuses).results();
-    assert(codes.any((element) => element.course.subject!.code == 'RELB'));
-    assert(codes.any((element) => element.course.subject!.code == 'RELH'));
-    assert(codes.any((element) => element.course.subject!.code == 'RELM'));
-    assert(codes.any((element) => element.course.subject!.code == 'RELP'));
-    assert(codes.any((element) => element.course.subject!.code == 'RELT'));
-    assert(codes.any((element) => element.course.subject!.code == 'SERV'));
+    final codes = Query(department: department).results();
+    expect(
+      codes.any((element) => element.course.subject!.code == 'RELB'),
+      isTrue,
+    );
+    expect(
+      codes.any((element) => element.course.subject!.code == 'RELH'),
+      isTrue,
+    );
+    expect(
+      codes.any((element) => element.course.subject!.code == 'RELM'),
+      isTrue,
+    );
+    expect(
+      codes.any((element) => element.course.subject!.code == 'RELP'),
+      isTrue,
+    );
+    expect(
+      codes.any((element) => element.course.subject!.code == 'RELT'),
+      isTrue,
+    );
+    expect(
+      codes.any((element) => element.course.subject!.code == 'SERV'),
+      isTrue,
+    );
   });
 
   test('query finds Winter 2024', () {
-    final allSubjects = Subject.instances.first;
-    final allDepartments = Department.instances.first;
-    final allCampuses = Campus.instances.first;
     final term = Term.instances.firstWhere((each) => each.code == 2241);
-    final list =
-        Query(allDepartments, allSubjects, term, allCampuses).results();
-    assert(list.every((element) => element.term.code == 2241));
+    final list = Query(term: term).results();
+    expect(list.every((element) => element.term.code == 2241), isTrue);
   });
 
   test('query finds College Place', () {
-    final allSubjects = Subject.instances.first;
-    final allDepartments = Department.instances.first;
-    final allTerms = Term.instances.first;
-    expect(allDepartments.code, '');
-    expect(allDepartments.name, 'ALL');
     final campus =
         Campus.instances.firstWhere((each) => each.name == 'College Place');
-    final list = Query(allDepartments, allSubjects, allTerms, campus).results();
-    assert(list.every((element) => element.campus.code == 'CP'));
+    final list = Query(campus: campus).results();
+    expect(list.every((element) => element.campus.code == 'CP'), isTrue);
   });
 }

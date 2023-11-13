@@ -12,7 +12,10 @@ import 'package:schedule/meeting_time.dart';
 void main() {
   test('adding, getting, and removing times', () {
     final MeetingTime test = MeetingTime();
-    final HourMinute time1 = HourMinute();
+    final MeetingTime test2 = MeetingTime();
+    final MeetingTime test3 = MeetingTime();
+    final HourMinute time0 = HourMinute();
+    final HourMinute time1 = HourMinute(minute: 10);
     final HourMinute time2 = HourMinute(hour: 1, minute: 50);
     final HourMinute time3 = HourMinute(hour: 2, minute: 30);
     const Duration dur1 = Duration(hours: 2);
@@ -40,8 +43,27 @@ void main() {
     expect(test.add(day: DateTime.monday, start: time1, end: time2), isFalse);
     // add something with conflict
     expect(test.add(day: DateTime.monday, start: time1, end: time3), isFalse);
+    // conflict surrounds other times
+    expect(test.add(day: DateTime.monday, start: time0, end: time3), isFalse);
     expect(test, hasLength(1)); // should have only added one element
     expect(test, isNotEmpty);
+
+    // adding with null -- add all days for all times
+    expect(test2.add(), isTrue);
+    expect(test2, hasLength(7));
+    expect(test2[0].start, time0);
+    expect(test2[0].end, HourMinute(hour: 23, minute: 59));
+
+    // adding several days at once
+    expect(
+      test3.addSeveralDays(
+        days: {DateTime.monday, DateTime.wednesday, DateTime.friday},
+        start: time1,
+        end: time2,
+      ),
+      isTrue,
+    );
+    expect(test3, hasLength(3));
 
     // addUsingDuration
     expect(
@@ -285,32 +307,25 @@ void main() {
     // test 4
     test4 = test3;
 
-    // equality operator & hashCode
+    // equals
     // assigning one the other
     expect(test3, same(test4));
-    expect(test3, test4);
-    expect(test3.hashCode, test4.hashCode);
+    expect(test3.equals(test4), isTrue);
+    expect(test4.equals(test3), isTrue);
     // same content
     test4 = MeetingTime()
       ..add(day: DateTime.thursday, start: time1, end: time2);
     expect(identical(test3, test4), isFalse);
-    expect(test3, test4);
-    expect(test3.hashCode, test4.hashCode);
+    expect(test3.equals(test4), isTrue);
+    expect(test4.equals(test3), isTrue);
     // not equal
-    expect(test2 == test3, isFalse);
-    expect(test2.hashCode == test3.hashCode, isFalse);
+    expect(test2.equals(test3), isFalse);
+    expect(test3.equals(test2), isFalse);
     // changing to make equal
     test2.remove(day: DateTime.monday, start: time3, end: time4);
     test2.remove(day: DateTime.tuesday, start: time1, end: time2);
-    expect(test2, test3);
-    expect(test2.hashCode, test3.hashCode);
-    // direct hashcode check
-    final int checkHash = (DateTime.monday, time1, time2).hashCode +
-        (DateTime.monday, time2, time3).hashCode +
-        (DateTime.monday, time3, time4).hashCode +
-        (DateTime.tuesday, time1, time2).hashCode +
-        (DateTime.wednesday, time1, time2).hashCode;
-    expect(test1.hashCode, checkHash);
+    expect(test2.equals(test3), isTrue);
+    expect(test3.equals(test2), isTrue);
   });
 
   test('checkConflict', () {
@@ -571,7 +586,7 @@ void main() {
     );
     final MeetingTime test2 =
         MeetingTime.fromString(test.toString(is24hr: false));
-    expect(test, test2);
+    expect(test.equals(test2), isTrue);
 
     // proper error handling:
     // improper string - no space/- between days and time
