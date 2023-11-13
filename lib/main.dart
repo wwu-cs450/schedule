@@ -38,10 +38,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // Campus? _campus;
+  Campus _campus = Campus.instances.first;
   Department _department = Department.instances.first;
-  // Subject _subject = Subject.instances.first;
-  // Term? _term;
+  Subject _subject = Subject.instances.first;
+  Term _term = Term.instances.first;
   Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
   List<Class> _data = <Class>[]; // To store data to be sorted
   DataTableSource classData = TableData([]);
@@ -88,10 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void updateData() {
-    final allSubjects = Subject.instances.first;
-    final allTerms = Term.instances.first;
-
-    _data = Query(_department, allSubjects, allTerms).results().toList();
+    _data = Query(_department, _subject, _term, _campus).results().toList();
   }
 
   void updateResults() {
@@ -158,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dropdownMenuEntries: campusDropdownMenuEntries(),
             onSelected: (value) {
               setState(() {
-                // _campus = value;
+                _campus = value;
               });
             },
           ),
@@ -187,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dropdownMenuEntries: subjDropdownMenuEntries(),
             onSelected: (value) {
               setState(() {
-                // _subject = value;
+                _subject = value;
               });
             },
           ),
@@ -202,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dropdownMenuEntries: termDropdownMenuEntries(),
             onSelected: (value) {
               setState(() {
-                // _term = value;
+                _term = value;
               });
             },
           ),

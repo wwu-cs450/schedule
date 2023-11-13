@@ -29,8 +29,8 @@ void main() {
     assert(section.schedule == 'MWF 2:00PM-3:00PM');
     assert(section.classroom == 'KRH 210');
     assert(section.instructor == instructor);
-    assert(section.campus?.code == 'CP');
-    assert(section.campus?.name == 'College Place');
+    assert(section.campus.code == 'CP');
+    assert(section.campus.name == 'College Place');
     assert(section.video == '');
     assert(section.consent == '');
     assert(section.specialNotes == '');
