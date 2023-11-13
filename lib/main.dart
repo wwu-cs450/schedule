@@ -88,7 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void updateData() {
-    _data = Query(_department, _subject, _term, _campus).results().toList();
+    _data = Query(
+      department: _department,
+      subject: _subject,
+      term: _term,
+      campus: _campus,
+    ).results().toList();
   }
 
   void updateResults() {

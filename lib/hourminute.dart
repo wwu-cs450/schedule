@@ -4,6 +4,7 @@
 // details: A 24hr time (hour, minute)
 // Notes:
 /*
+  Immutable.
    Will automatically convert time to have hour<24 and minute<60 without warning!
    Throws exception if hour or minute is negative.
    Throws FormatException on fromString construction if not a proper string.
@@ -41,7 +42,7 @@ class HourMinute implements Comparable<HourMinute> {
           );
     int hour = int.parse(hourString);
     // 12hr check
-    if (string.contains('P')) {
+    if (string.contains('P') && hour != 12) {
       hour += 12;
     }
 
@@ -57,9 +58,10 @@ class HourMinute implements Comparable<HourMinute> {
     hour = date.hour;
     minute = date.minute;
   }
-
-  // instance variables
-  late int hour, minute;
+  // class variables
+  static HourMinute get noon => HourMinute(hour: 12);
+  // instance variables - now final to keep equality operator/hashCode overrides
+  late final int hour, minute;
 
   // instance methods
 
