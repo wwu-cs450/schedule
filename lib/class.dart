@@ -34,7 +34,7 @@ class Class {
   String schedule;
   String classroom;
   Instructor instructor;
-  Campus? campus;
+  Campus campus;
   String video;
   String consent;
   String specialNotes;
