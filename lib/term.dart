@@ -28,6 +28,10 @@ class Term {
   bool includesClass(Class classInstance) {
     return classInstance.term == this;
   }
+
+  static Term allTerms() {
+    return instances.first;
+  }
 }
 
 class AllTerms extends Term {

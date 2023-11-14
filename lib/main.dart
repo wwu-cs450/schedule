@@ -38,10 +38,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Campus _campus = Campus.instances.first;
-  Department _department = Department.instances.first;
-  Subject _subject = Subject.instances.first;
-  Term _term = Term.instances.first;
+  Campus _campus = Campus.allCampuses();
+  Department _department = Department.allDepartments();
+  Subject _subject = Subject.allSubjects();
+  Term _term = Term.allTerms();
   Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
   List<Class> _data = <Class>[]; // To store data to be sorted
   final List<Class> _savedData = <Class>[]; // Saved class data

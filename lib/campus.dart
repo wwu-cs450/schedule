@@ -18,6 +18,10 @@ class Campus {
   bool includesClass(Class classInstance) {
     return classInstance.campus == this;
   }
+
+  static Campus allCampuses() {
+    return instances.first;
+  }
 }
 
 class AllCampuses extends Campus {

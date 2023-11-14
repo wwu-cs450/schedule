@@ -16,10 +16,10 @@ void main() {
         Subject.instances.firstWhere((each) => each.code == 'CPTR');
     final term = Term.instances.firstWhere((each) => each.code == 2241);
     final campus = Campus.instances.firstWhere((each) => each.code == 'CP');
-    final allCampuses = Campus.instances.first;
-    final allDepartments = Department.instances.first;
-    final allSubjects = Subject.instances.first;
-    final allTerms = Term.instances.first;
+    final allCampuses = Campus.allCampuses();
+    final allDepartments = Department.allDepartments();
+    final allSubjects = Subject.allSubjects();
+    final allTerms = Term.allTerms();
     expect(allDepartments.code, '');
     expect(allDepartments.name, 'ALL');
     expect(allSubjects.code, '');
