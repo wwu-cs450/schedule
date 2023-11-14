@@ -1,5 +1,6 @@
 // ignore_for_file: type_annotate_public_apis
 
+import 'package:schedule/meeting_time.dart';
 import 'package:universal_html/parsing.dart';
 
 import 'package:schedule/course.dart';
@@ -22,8 +23,7 @@ void addClass(var node, Course course) {
     catch (e) {}
     String schedule = 'TBA';
     try {
-      final split = node[32]!.text.split(' ');
-      schedule = split[0];
+      schedule = node[32]!.text;
     }
     // ignore: empty_catches
     catch (e) {}
@@ -42,7 +42,7 @@ void addClass(var node, Course course) {
       course,
       termCode,
       maxEnrollment,
-      schedule,
+      MeetingTime.fromString(schedule),
       classroom,
       Instructor(instructor),
       campusCode,
