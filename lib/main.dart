@@ -104,7 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
     final campusList = Campus.instances;
     final campusEntries = <DropdownMenuEntry>[];
-    campusEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in campusList) {
       campusEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -138,7 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> termDropdownMenuEntries() {
     final termList = Term.instances;
     final termEntries = <DropdownMenuEntry>[];
-    termEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in termList) {
       termEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
