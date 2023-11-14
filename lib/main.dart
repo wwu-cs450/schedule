@@ -44,7 +44,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Term _term = Term.instances.first;
   Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
   List<Class> _data = <Class>[]; // To store data to be sorted
-  DataTableSource classData = TableData([]);
+  final List<Class> _savedData = <Class>[]; // Saved class data
+  late DataTableSource classData;
   String? sortOption;
 
   void sortData() {
@@ -98,7 +99,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void updateResults() {
     sortData();
-    classData = TableData(_data);
+    classData = TableData(_savedData + _data, _savedData, saveClass);
+  }
+
+  void saveClass(Class aClass, bool shouldSave) {
+    setState(() {
+      if (shouldSave) {
+        _savedData.add(aClass);
+        _data.remove(aClass);
+      } else {
+        _savedData.remove(aClass);
+        _data.add(aClass);
+      }
+    });
+    updateResults();
   }
 
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
@@ -266,6 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    classData = TableData(_savedData + _data, _savedData, saveClass);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -276,6 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             searchCriteriaWidget(),
             PaginatedDataTable(
+              showCheckboxColumn: true,
               source: classData,
               columns: [
                 DataColumn(label: sortBySubject()),
