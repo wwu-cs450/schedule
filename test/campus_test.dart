@@ -10,6 +10,7 @@ void main() {
 
   test('instances', () {
     final campuses = Campus.instances;
+    assert(Campus.allCampuses().name == 'ALL');
     assert(campuses.length == 9);
     assert(
       campuses.any(

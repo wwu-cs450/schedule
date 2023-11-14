@@ -11,6 +11,7 @@ void main() {
 
   test('instances', () {
     final departments = Department.instances;
+    assert(Department.allDepartments().name == 'ALL');
     assert(departments.length == 29);
     assert(
       departments.any(

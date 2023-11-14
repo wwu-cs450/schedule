@@ -11,6 +11,7 @@ void main() {
 
   test('instances', () {
     final terms = Term.instances;
+    assert(Term.allTerms().name == 'ALL');
     assert(terms.length == 6);
     assert(
       terms.any(

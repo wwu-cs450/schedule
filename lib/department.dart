@@ -18,6 +18,10 @@ class Department {
   bool includesCourse(Course course) {
     return course.department == this;
   }
+
+  static Department allDepartments() {
+    return instances.first;
+  }
 }
 
 class AllDepartments extends Department {

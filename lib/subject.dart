@@ -18,6 +18,10 @@ class Subject {
   bool includesCourse(Course course) {
     return course.subject == this;
   }
+
+  static Subject allSubjects() {
+    return instances.first;
+  }
 }
 
 class AllSubjects extends Subject {
