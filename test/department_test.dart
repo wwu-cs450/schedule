@@ -24,9 +24,9 @@ void main() {
       (element) => element.code == 'TECH',
     );
     expect(flag, isTrue);
-    // final techDepartment = Department.departmentwithCode('TECH');
-    // expect(techDepartment.code, 'TECH');
-    // expect(techDepartment.name, 'Technology');
+    final techDepartment = Department.departmentwithCode('TECH');
+    expect(techDepartment.code, 'TECH');
+    expect(techDepartment.name, 'Technology');
     // expect(() => Department.departmentwithCode('FAKE'), throwsStateError);
   });
 }
