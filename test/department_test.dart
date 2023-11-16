@@ -27,6 +27,12 @@ void main() {
     final techDepartment = Department.departmentwithCode('TECH');
     expect(techDepartment.code, 'TECH');
     expect(techDepartment.name, 'Technology');
+    try {
+      Department.departmentwithCode('FAKE');
+      assert(false);
+    } catch (e) {
+      expect(e.runtimeType, StateError);
+    }
     // expect(() => Department.departmentwithCode('FAKE'), throwsStateError);
   });
 }
