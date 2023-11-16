@@ -18,12 +18,11 @@ void main() {
       ),
     );
   });
-  test('department with code for TECH and the default CPTR', () {
+  test('department with code for TECH and the stateError for a notFound code',
+      () {
     final techDepartment = Department.departmentwithCode('TECH');
-    final fakeDepartment = Department.departmentwithCode('FAKE');
     expect(techDepartment.code, 'TECH');
     expect(techDepartment.name, 'Technology');
-    expect(fakeDepartment.code, 'CPTR');
-    expect(fakeDepartment.name, 'Computer Science');
+    expect(() => Department.departmentwithCode('FAKE'), throwsStateError);
   });
 }

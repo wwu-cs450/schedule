@@ -16,13 +16,10 @@ class Department {
   }
 
   static Department departmentwithCode(String code) {
-    final toSearch = instances;
-    for (final instance in toSearch) {
-      if (instance.code == code) {
-        return instance;
-      }
-    }
-    return Department('CPTR', 'Computer Science');
+    final departmentOfCode =
+        Department._instances.firstWhere((instance) => instance.code == code);
+
+    return departmentOfCode;
   }
 
   bool includesCourse(Course course) {
