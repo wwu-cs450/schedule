@@ -7,7 +7,7 @@ import 'package:schedule/term.dart';
 import 'package:schedule/class.dart';
 import 'package:schedule/meeting_time.dart';
 
-Instructor instructor = Instructor('James Foster');
+Set<Instructor> instructors = {Instructor('James Foster')};
 void main() {
   test('constructor and accessors', () {
     final course =
@@ -20,7 +20,7 @@ void main() {
       20,
       MeetingTime.fromString('MWF 2:00PM-3:00PM'),
       'KRH 210',
-      instructor,
+      instructors,
       campus,
     );
     assert(section.course.title == 'Software Engineering');
@@ -29,7 +29,7 @@ void main() {
     assert(section.maxEnrollment == 20);
     assert(section.schedule.toString(is24hr: false) == 'MWF 2:00PM - 3:00PM');
     assert(section.classroom == 'KRH 210');
-    assert(section.instructor == instructor);
+    assert(section.instructors == instructors);
     assert(section.campus.code == 'CP');
     assert(section.campus.name == 'College Place');
     assert(section.video == '');
