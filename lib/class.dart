@@ -61,13 +61,16 @@ class Class {
           .toSet();
       final Campus currCampus =
           Campus.instances.firstWhere((each) => each.code == listing[1]);
-      final termYear = (listing[2] / 1000).truncate().toString() +
+      var termYear = (listing[2] / 1000).truncate().toString() +
           (listing[2] % 2000).toString();
       var termMonth = '';
       var termFound = '';
       for (int i = 8; i <= 12; i++) {
         termFound = listing[i].toString();
         if (termFound != '') {
+          if (i <= 9) {
+            termYear = (int.parse(termYear) - 1).toString();
+          }
           if (i == 9) {
             termMonth = '9';
           } else if (i == 10) {
