@@ -5,7 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-// import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -36,5 +35,141 @@ void main() {
     expect(find.byKey(const Key('Subject Header Button')), findsOneWidget);
     expect(find.byKey(const Key('Number Header Button')), findsOneWidget);
     expect(find.byKey(const Key('Title Header Button')), findsOneWidget);
+  });
+
+  testWidgets('Search by Campus', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    final campusDropdown = find.byKey(const Key('Campus Dropdown'));
+    final cpCampus = find.text('College Place');
+    final rosarioCampus = find.text('Rosario');
+    final resultsFinder = find.byKey(const Key('Results'));
+    final searchButton = find.byKey(const Key('Search Button'));
+    PaginatedDataTable results = tester.firstWidget(resultsFinder);
+
+    expect(campusDropdown.hitTestable(), findsOneWidget);
+    expect(cpCampus.hitTestable(), findsNothing);
+    expect(rosarioCampus.hitTestable(), findsNothing);
+    expect(resultsFinder, findsOneWidget);
+    expect(searchButton, findsOneWidget);
+
+    await tester.tap(campusDropdown);
+    await tester.pumpAndSettle();
+    expect(cpCampus.hitTestable(), findsOneWidget);
+    expect(rosarioCampus.hitTestable(), findsOneWidget);
+
+    await tester.tap(cpCampus.hitTestable());
+    await tester.pumpAndSettle();
+    expect(cpCampus.hitTestable(), findsOneWidget);
+    expect(rosarioCampus.hitTestable(), findsNothing);
+    expect(results.source.rowCount, 0);
+
+    await tester.tap(searchButton);
+    await tester.pumpAndSettle();
+    expect(resultsFinder, findsOneWidget);
+    results = tester.firstWidget(resultsFinder);
+    expect(results.source.rowCount > 0, true);
+  });
+
+  testWidgets('Search by Department', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    final departmentDropdown = find.byKey(const Key('Department Dropdown'));
+    final csDepartment = find.text('Computer Science');
+    final commDepartment = find.text('Communication');
+    final resultsFinder = find.byKey(const Key('Results'));
+    final searchButton = find.byKey(const Key('Search Button'));
+    PaginatedDataTable results = tester.firstWidget(resultsFinder);
+
+    expect(departmentDropdown.hitTestable(), findsOneWidget);
+    expect(csDepartment.hitTestable(), findsNothing);
+    expect(commDepartment.hitTestable(), findsNothing);
+    expect(resultsFinder, findsOneWidget);
+    expect(searchButton, findsOneWidget);
+
+    await tester.tap(departmentDropdown);
+    await tester.pumpAndSettle();
+    expect(csDepartment.hitTestable(), findsOneWidget);
+    expect(commDepartment.hitTestable(), findsOneWidget);
+
+    await tester.tap(csDepartment.hitTestable());
+    await tester.pumpAndSettle();
+    expect(csDepartment.hitTestable(), findsOneWidget);
+    expect(commDepartment.hitTestable(), findsNothing);
+    expect(results.source.rowCount, 0);
+
+    await tester.tap(searchButton);
+    await tester.pumpAndSettle();
+    expect(resultsFinder, findsOneWidget);
+    results = tester.firstWidget(resultsFinder);
+    expect(results.source.rowCount > 0, true);
+  });
+
+  testWidgets('Search by Subject', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    final subjectDropdown = find.byKey(const Key('Subject Dropdown'));
+    final acctSubject = find.text('Accounting');
+    final aviationSubject = find.text('Aviation');
+    final resultsFinder = find.byKey(const Key('Results'));
+    final searchButton = find.byKey(const Key('Search Button'));
+    PaginatedDataTable results = tester.firstWidget(resultsFinder);
+
+    expect(subjectDropdown.hitTestable(), findsOneWidget);
+    expect(acctSubject.hitTestable(), findsNothing);
+    expect(aviationSubject.hitTestable(), findsNothing);
+    expect(resultsFinder, findsOneWidget);
+    expect(searchButton, findsOneWidget);
+
+    await tester.tap(subjectDropdown);
+    await tester.pumpAndSettle();
+    expect(acctSubject.hitTestable(), findsOneWidget);
+    expect(aviationSubject.hitTestable(), findsOneWidget);
+
+    await tester.tap(acctSubject.hitTestable());
+    await tester.pumpAndSettle();
+    expect(acctSubject.hitTestable(), findsOneWidget);
+    expect(aviationSubject.hitTestable(), findsNothing);
+    expect(results.source.rowCount, 0);
+
+    await tester.tap(searchButton);
+    await tester.pumpAndSettle();
+    expect(resultsFinder, findsOneWidget);
+    results = tester.firstWidget(resultsFinder);
+    expect(results.source.rowCount > 0, true);
+  });
+
+  testWidgets('Search by Term', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    final termDropdown = find.byKey(const Key('Term Dropdown'));
+    final spring2024 = find.text('Spring 2024');
+    final summer2024 = find.text('Summer 2024');
+    final resultsFinder = find.byKey(const Key('Results'));
+    final searchButton = find.byKey(const Key('Search Button'));
+    PaginatedDataTable results = tester.firstWidget(resultsFinder);
+
+    expect(termDropdown.hitTestable(), findsOneWidget);
+    expect(spring2024.hitTestable(), findsNothing);
+    expect(summer2024.hitTestable(), findsNothing);
+    expect(resultsFinder, findsOneWidget);
+    expect(searchButton, findsOneWidget);
+
+    await tester.tap(termDropdown);
+    await tester.pumpAndSettle();
+    expect(spring2024.hitTestable(), findsOneWidget);
+    expect(summer2024.hitTestable(), findsOneWidget);
+
+    await tester.tap(spring2024.hitTestable());
+    await tester.pumpAndSettle();
+    expect(spring2024.hitTestable(), findsOneWidget);
+    expect(summer2024.hitTestable(), findsNothing);
+    expect(results.source.rowCount, 0);
+
+    await tester.tap(searchButton);
+    await tester.pumpAndSettle();
+    expect(resultsFinder, findsOneWidget);
+    results = tester.firstWidget(resultsFinder);
+    expect(results.source.rowCount > 0, true);
   });
 }
