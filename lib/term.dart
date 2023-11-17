@@ -29,6 +29,12 @@ class Term {
     return classInstance.term == this;
   }
 
+  static Term findCachedTerm(int code) {
+    final foundTerm =
+        Term.instances.firstWhere((instance) => instance.code == code);
+    return foundTerm;
+  }
+
   static Term allTerms() {
     return instances.first;
   }
