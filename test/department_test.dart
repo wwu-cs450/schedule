@@ -23,13 +23,12 @@ void main() {
     final techDepartment = Department.departmentwithCode('TECH');
     expect(techDepartment.code, 'TECH');
     expect(techDepartment.name, 'Technology');
-    // Object? ex;
-    // try {
-    //   Department.departmentwithCode('FAKE');
-    // } catch (e) {
-    //   ex = e;
-    // }
-    // expect(ex.runtimeType, StateError);
-    expect(() => Department.departmentwithCode('FAKE'), throwsStateError);
+    Object? ex;
+    try {
+      Department.departmentwithCode('FAKE');
+    } catch (e) {
+      ex = e;
+    }
+    expect(ex.runtimeType, StateError);
   });
 }
