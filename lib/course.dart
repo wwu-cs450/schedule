@@ -20,7 +20,7 @@ class Course {
   Department? department;
   Subject? subject;
   final String title;
-  final int number;
+  final String number;
   final String level;
   final int credits;
   final bool isGeneralStudies;
@@ -34,51 +34,37 @@ class Course {
     return _instances;
   }
 
-  static bool isNumeric(dynamic value) {
-    if (value == null) {
-      return false;
-    }
-    if (value.runtimeType == int) {
-      return true;
-    }
-    return double.tryParse(value) != null;
-  }
-
   static void getAllCourses() {
     final classopenCSV = getListFromCsv();
     // Remove headers
     classopenCSV.removeAt(0);
     for (final value in classopenCSV) {
-      dynamic classNumber;
+      String courseNumber;
+      final String courseNumberOnly;
       // Class number is not specified in one spot, it is specified based on the quarter, Summer, Fall, Winter, Spring, Summer2
       if (value[8] != '') {
-        classNumber = value[8];
+        courseNumber = value[8].toString();
       } else if (value[9] != '') {
-        classNumber = value[9];
+        courseNumber = value[9].toString();
       } else if (value[10] != '') {
-        classNumber = value[10];
+        courseNumber = value[10].toString();
       } else if (value[11] != '') {
-        classNumber = value[11];
+        courseNumber = value[11].toString();
       } else if (value[12] != '') {
-        classNumber = value[12];
+        courseNumber = value[12].toString();
       } else {
-        classNumber = 0;
+        courseNumber = '0';
       }
-      // Some class numbers are integers, some are strings, formatted with a lot of extra spaces.
-      classNumber = (isNumeric(classNumber))
-          ? classNumber
-          : int.parse(
-              classNumber
-                  .replaceAll(' ', '')
-                  .substring(0, classNumber.replaceAll(' ', '').length - 2),
-            );
-      final level = classNumber > 300 ? 'upper' : 'lower';
+
+      courseNumber = courseNumber.replaceAll(' ', '');
+      courseNumberOnly = courseNumber.replaceAll(RegExp('[^0-9]'), '');
+      final level = int.parse(courseNumberOnly) > 300 ? 'upper' : 'lower';
       _instances.add(
         Course(
           value[3],
           value[7],
           value[14],
-          classNumber,
+          courseNumber,
           level,
           int.tryParse(value[16]) ?? 0,
           value[6] == 'GS',

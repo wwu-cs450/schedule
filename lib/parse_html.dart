@@ -78,8 +78,9 @@ void addCourse(var node) {
     }
     final String courseDept = node[2]!.text;
     final String courseTitle = node[20]!.text;
-    int courseNumber = 404;
-    courseNumber = int.parse(node[0]!.text);
+    String courseNumber =
+        '404'; // Store courseNumber as a string to accommodate labs
+    courseNumber = node[0]!.text;
     //Course credits have a range on openClassRoom IE 1-16 instead of one value. +Some are half a credit
     int courseCredits = 404;
     String temp = node[18]!.text;
