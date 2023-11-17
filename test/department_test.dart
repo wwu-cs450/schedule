@@ -20,19 +20,16 @@ void main() {
   });
   test('department with code for TECH and the stateError for a notFound code',
       () {
-    final flag = Department.instances.any(
-      (element) => element.code == 'TECH',
-    );
-    expect(flag, isTrue);
     final techDepartment = Department.departmentwithCode('TECH');
     expect(techDepartment.code, 'TECH');
     expect(techDepartment.name, 'Technology');
-    try {
-      Department.departmentwithCode('FAKE');
-      assert(false);
-    } catch (e) {
-      expect(e.runtimeType, StateError);
-    }
-    // expect(() => Department.departmentwithCode('FAKE'), throwsStateError);
+    // Object? ex;
+    // try {
+    //   Department.departmentwithCode('FAKE');
+    // } catch (e) {
+    //   ex = e;
+    // }
+    // expect(ex.runtimeType, StateError);
+    expect(() => Department.departmentwithCode('FAKE'), throwsStateError);
   });
 }
