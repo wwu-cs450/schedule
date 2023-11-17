@@ -1,13 +1,20 @@
 // Fix this test
 // Currently, it only returns a set when subject and department are null
+
 import 'package:schedule/department.dart';
 import 'package:schedule/subject.dart';
 import 'package:schedule/term.dart';
 import 'package:schedule/campus.dart';
 import 'package:schedule/query.dart';
+import 'package:schedule/hourminute.dart';
+import 'package:schedule/class.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('null query (all results)', () {
+    expect(Query().results().length == 2444, isTrue);
+  });
+
   test('count query results', () {
     final csDepartment =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
@@ -106,5 +113,61 @@ void main() {
         Campus.instances.firstWhere((each) => each.name == 'College Place');
     final list = Query(campus: campus).results();
     expect(list.every((element) => element.campus.code == 'CP'), isTrue);
+  });
+
+  test('Query times', () {
+    final int allLength = Query().results().length;
+    final Set<Class> noSpecial = Query(includeSpecialTimes: false).results();
+    final Set<Class> largeRange =
+        Query(times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)))
+            .results();
+    final Set<Class> largeRangeSpecificDay = Query(
+      days: {DateTime.tuesday},
+      times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
+    ).results();
+    final int shortRangeLength =
+        Query(times: (start: HourMinute(hour: 8), end: HourMinute(hour: 10)))
+            .results()
+            .length;
+    // I think it is actually sunday but classopen doesn't follow the same day letter standard
+    final Set<Class> containsSkiing = Query(
+      days: {
+        DateTime.saturday,
+      },
+    ).results();
+
+    // check lenghts
+    expect(
+      allLength > noSpecial.length &&
+          allLength > largeRange.length &&
+          largeRange.length > largeRangeSpecificDay.length &&
+          largeRange.length > shortRangeLength,
+      isTrue,
+    );
+
+    // no special (may still include ARR if part of larger time)
+    expect(
+      noSpecial.every(
+        (e) => !(e.schedule.toString() == 'ARR') && e.schedule.isNotEmpty,
+      ),
+      isTrue,
+    );
+    expect(
+      largeRange.every(
+        (e) => !(e.schedule.toString() == 'ARR') && e.schedule.isNotEmpty,
+      ),
+      isTrue,
+    );
+    // includes tuesday (T)
+    expect(
+      largeRangeSpecificDay.every((e) => e.schedule.toString().contains('T')),
+      isTrue,
+    );
+    // only skiing
+    expect(
+      containsSkiing
+          .where((e) => e.course.title == 'Downhill Skiing/Snowboarding'),
+      isNotEmpty,
+    );
   });
 }

@@ -44,6 +44,7 @@ class MeetingTime {
     for (final time in individualMeetingTimes) {
       // need to catch ARR here in case of "MWF 10:00 - 10:50A/ARR"
       if (time == 'ARR') {
+        isARR = true;
         continue;
       }
       // format string
@@ -87,6 +88,9 @@ class MeetingTime {
 
   // private instance variables
   final List<_AMeetingTime> _meetingTimes = [];
+
+  // public instance variables
+  bool isARR = false;
 
   // private methods
   // throw FormatException where applicable
@@ -349,6 +353,11 @@ class MeetingTime {
       meetingTimesCopy.removeWhere((e) => times.contains(e));
     } while (meetingTimesCopy.isNotEmpty);
 
+    // check if ARR
+    if (isARR) {
+      returnString += 'ARR\n';
+    }
+
     return returnString.trimRight();
   }
 
@@ -359,6 +368,11 @@ class MeetingTime {
     for (final time in _meetingTimes) {
       returnString +=
           '${_dayLetter(time.day)} ${time.start.toString(is24hr: is24hr)} - ${time.end.toString(is24hr: is24hr)}\n';
+    }
+
+    // check if ARR
+    if (isARR) {
+      returnString += 'ARR\n';
     }
 
     return returnString.trimRight();
@@ -390,6 +404,10 @@ class MeetingTime {
         // each record is equal
         return false;
       }
+    }
+
+    if (isARR != other.isARR) {
+      return false;
     }
 
     return true;
