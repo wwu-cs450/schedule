@@ -46,46 +46,15 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Class> _data = <Class>[]; // To store data to be sorted
   final List<Class> _savedData = <Class>[]; // Saved class data
   late DataTableSource classData;
-  String? sortOption;
 
   void sortData() {
-    if (sortOption != null) {
-      if (sortOption == 'Number') {
-        if (timesPressed['Number'] == 0) {
-          timesPressed['Number'] = 1;
-          _data.sort((a, b) {
-            return a.course.number - b.course.number;
-          });
-        } else {
-          _data = _data.reversed.toList();
-          timesPressed['Number'] = 0;
-        }
-      }
-
-      if (sortOption == 'Subject') {
-        if (timesPressed['Subject'] == 0) {
-          _data.sort((a, b) {
-            return a.course.subject!.name.compareTo(b.course.subject!.name);
-          });
-          timesPressed['Subject'] = 1;
-        } else {
-          _data = _data.reversed.toList();
-          timesPressed['Subject'] = 0;
-        }
-      }
-
-      if (sortOption == 'Title') {
-        if (timesPressed['Title'] == 0) {
-          _data.sort((a, b) {
-            return a.course.title.compareTo(b.course.title);
-          });
-          timesPressed['Title'] = 1;
-        } else {
-          _data = _data.reversed.toList();
-          timesPressed['Title'] = 0;
-        }
-      }
-    }
+    _data.sort((Class a, Class b) {
+      final aKey =
+          '${a.course.subject!.code} ${a.course.number} ${a.term.code} ${a.section}'; //currently term and section are not displayed
+      final bKey =
+          '${b.course.subject!.code} ${b.course.number} ${b.term.code} ${b.section}';
+      return aKey.compareTo(bKey);
+    });
   }
 
   void updateData() {
@@ -243,7 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return ElevatedButton(
       key: const Key('Subject Header Button'),
       onPressed: () {
-        sortOption = 'Subject';
         setState(() {
           updateResults();
         });
@@ -256,7 +224,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return ElevatedButton(
       key: const Key('Number Header Button'),
       onPressed: () {
-        sortOption = 'Number';
         setState(() {
           updateResults();
         });
@@ -269,7 +236,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return ElevatedButton(
       key: const Key('Title Header Button'),
       onPressed: () {
-        sortOption = 'Title';
         setState(() {
           updateResults();
         });

@@ -172,4 +172,54 @@ void main() {
     results = tester.firstWidget(resultsFinder);
     expect(results.source.rowCount > 0, true);
   });
+
+  testWidgets('Default Sort', (WidgetTester tester) async {
+    // launch app
+    await tester.pumpWidget(const MyApp());
+    // select 'Computer Science'
+    final departmentDropdown = find.byKey(const Key('Department Dropdown'));
+    expect(departmentDropdown.hitTestable(), findsOneWidget);
+    await tester.tap(departmentDropdown);
+    await tester.pumpAndSettle();
+    final csDepartment = find.text('Computer Science');
+    expect(csDepartment.hitTestable(), findsOneWidget);
+    await tester.tap(csDepartment.hitTestable());
+    await tester.pumpAndSettle();
+    // search
+    final searchButton = find.byKey(const Key('Search Button'));
+    await tester.tap(searchButton);
+    await tester.pumpAndSettle();
+
+    // get results
+    final resultsFinder = find.byKey(const Key('Results'));
+    final PaginatedDataTable results = tester.firstWidget(resultsFinder);
+    final dataTableSource = results.source;
+    final count = dataTableSource.rowCount;
+    expect(
+      count > 0,
+      isTrue,
+      reason: 'Err why are there no rows? widget_test/Default Sort',
+    );
+    // verify sort order
+    String prior = '';
+    String next = '';
+    for (var i = 0; i < count; ++i) {
+      final row = dataTableSource.getRow(i);
+      // get <String>[] of the row contents
+      final cells = row!.cells.map((e) => (e.child as Text).data).toList();
+      expect(
+        cells.length,
+        3,
+        reason:
+            'Expected Cell Length Changed add cases in widget_test/Default Sort',
+      );
+      next = '${cells[0]} ${cells[1]}';
+      expect(
+        prior.compareTo(next) <= 0,
+        isTrue,
+        reason: 'Sort Failure prior:$prior next:$next.',
+      );
+      prior = next;
+    }
+  });
 }
