@@ -16,7 +16,7 @@ class TableData extends DataTableSource {
       },
       cells: [
         DataCell(Text(_data[index].course.subject!.code)),
-        DataCell(Text(_data[index].course.number.toString())),
+        DataCell(Text(_data[index].course.number)),
         DataCell(Text(_data[index].course.title)),
       ],
     );

@@ -11,7 +11,7 @@ Set<Instructor> instructors = {Instructor('James Foster')};
 void main() {
   test('constructor and accessors', () {
     final course =
-        Course('CPTR', 'CPTR', 'Software Engineering', 450, 'upper', 3);
+        Course('CPTR', 'CPTR', 'Software Engineering', '450', 'upper', 3);
     final term = Term(2239, 'Fall 2023');
     final campus = Campus('CP', 'College Place');
     final section = Class(

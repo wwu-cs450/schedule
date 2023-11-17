@@ -17,7 +17,7 @@ class Department {
 
   static Department departmentwithCode(String code) {
     final departmentOfCode =
-        Department._instances.firstWhere((instance) => instance.code == code);
+        Department.instances.firstWhere((instance) => instance.code == code);
 
     return departmentOfCode;
   }
