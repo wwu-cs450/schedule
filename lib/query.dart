@@ -13,14 +13,19 @@ class Query {
     Term? term,
     Campus? campus,
     ({HourMinute start, HourMinute end})? times,
-    int? day,
+    bool?
+        includeSpecialTimes, // ARR and '' (class with specified time AND ARR will be included regardless)
+    Set<int>? days,
   }) {
     _department = department ?? Department.instances.first;
     _subject = subject ?? Subject.instances.first;
     _term = term ?? Term.instances.first;
     _campus = campus ?? Campus.instances.first;
     _times = times;
-    _day = day;
+    times == null && days == null
+        ? _includeSpecialTimes = includeSpecialTimes ?? true
+        : _includeSpecialTimes = false;
+    _days = days;
   }
 
   late final Department _department;
@@ -28,22 +33,29 @@ class Query {
   late final Term _term;
   late final Campus _campus;
   late final ({HourMinute start, HourMinute end})? _times;
-  late final int? _day;
+  late final bool _includeSpecialTimes;
+  late final Set<int>? _days;
 
   Set<Class> results() {
     return Class.instances
         .where(
           (each) =>
-              _department.includesCourse(each.course) &&
-              _subject.includesCourse(each.course) &&
-              _term.includesClass(each) &&
-              _campus.includesClass(each) &&
-              (each.schedule
-                  .checkConflict(
-                    MeetingTime()
-                      ..add(day: _day, start: _times?.start, end: _times?.end),
-                  )
-                  .doesConflict),
+              _department.includesCourse(each.course) && //department
+              _subject.includesCourse(each.course) && // course
+              _term.includesClass(each) && // term
+              _campus.includesClass(each) && // campus
+              ((_includeSpecialTimes &&
+                      (each.schedule.isEmpty || each.schedule.isARR)) ||
+                  each.schedule
+                      .checkConflict(
+                        MeetingTime()
+                          ..addSeveralDays(
+                            days: _days,
+                            start: _times?.start,
+                            end: _times?.end,
+                          ),
+                      )
+                      .doesConflict),
         )
         .toSet();
   }

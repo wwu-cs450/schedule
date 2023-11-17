@@ -258,26 +258,30 @@ void main() {
     test.add(day: DateTime.monday, start: time3, end: time4); // M 21:30 - 23:15
     test.add(day: DateTime.tuesday, start: time1, end: time2); // T 1:50 - 2:00
     test.add(day: DateTime.wednesday, start: time1, end: time2); // W 1:50-2:00
+    test.isARR = true;
 
     // toString
     // like existing ClassOpen - 24hr
-    expect(test.toString(), 'MTW 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15');
+    expect(
+      test.toString(),
+      'MTW 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\nARR',
+    );
     // like existing ClassOpen - 12hr
     expect(
       test.toString(is24hr: false),
-      'MTW 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM',
+      'MTW 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\nARR',
     );
 
     // toStringExpanded
     // expanded out by day (all on new lines) - 24hr
     expect(
       test.toStringExpanded(),
-      'M 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\nT 1:50 - 2:00\nW 1:50 - 2:00',
+      'M 1:50 - 2:00\nM 2:00 - 21:30\nM 21:30 - 23:15\nT 1:50 - 2:00\nW 1:50 - 2:00\nARR',
     );
     // expanded -- 12hr
     expect(
       test.toStringExpanded(is24hr: false),
-      'M 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\nT 1:50AM - 2:00AM\nW 1:50AM - 2:00AM',
+      'M 1:50AM - 2:00AM\nM 2:00AM - 9:30PM\nM 9:30PM - 11:15PM\nT 1:50AM - 2:00AM\nW 1:50AM - 2:00AM\nARR',
     );
   });
 
@@ -565,6 +569,7 @@ void main() {
 
     // no time set
     test = MeetingTime.fromString('ARR');
+    expect(test.isARR, isTrue);
     expect(test, isEmpty);
 
     // consistency
