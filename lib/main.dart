@@ -291,6 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             searchCriteriaWidget(),
             PaginatedDataTable(
+              key: const Key('Results'),
               showCheckboxColumn: true,
               source: classData,
               columns: [
