@@ -5,6 +5,7 @@ import 'package:schedule/course.dart';
 import 'package:schedule/instructor.dart';
 import 'package:schedule/term.dart';
 import 'package:schedule/class.dart';
+import 'package:schedule/meeting_time.dart';
 
 Instructor instructor = Instructor('James Foster');
 void main() {
@@ -17,7 +18,7 @@ void main() {
       course,
       term,
       20,
-      'MWF 2:00PM-3:00PM',
+      MeetingTime.fromString('MWF 2:00PM-3:00PM'),
       'KRH 210',
       instructor,
       campus,
@@ -26,11 +27,11 @@ void main() {
     assert(section.term.code == 2239);
     assert(section.term.name == 'Fall 2023');
     assert(section.maxEnrollment == 20);
-    assert(section.schedule == 'MWF 2:00PM-3:00PM');
+    assert(section.schedule.toString(is24hr: false) == 'MWF 2:00PM - 3:00PM');
     assert(section.classroom == 'KRH 210');
     assert(section.instructor == instructor);
-    assert(section.campus?.code == 'CP');
-    assert(section.campus?.name == 'College Place');
+    assert(section.campus.code == 'CP');
+    assert(section.campus.name == 'College Place');
     assert(section.video == '');
     assert(section.consent == '');
     assert(section.specialNotes == '');

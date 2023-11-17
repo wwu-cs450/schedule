@@ -1,4 +1,5 @@
 import 'package:schedule/campus_list.dart';
+import 'package:schedule/class.dart';
 
 class Campus {
   Campus(this.code, this.name);
@@ -9,8 +10,25 @@ class Campus {
 
   static Set<Campus> get instances {
     if (_instances.isEmpty) {
-      _instances = InitializeCampus.initialList();
+      _instances = {AllCampuses(), ...InitializeCampus.initialList()};
     }
     return _instances;
+  }
+
+  bool includesClass(Class classInstance) {
+    return classInstance.campus == this;
+  }
+
+  static Campus allCampuses() {
+    return instances.first;
+  }
+}
+
+class AllCampuses extends Campus {
+  AllCampuses() : super('', 'ALL');
+
+  @override
+  bool includesClass(Class classInstance) {
+    return true;
   }
 }

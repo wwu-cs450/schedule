@@ -25,7 +25,7 @@ class MeetingTime {
   MeetingTime.fromString(String meetingTimeString) {
     meetingTimeString = meetingTimeString.trim().toUpperCase();
     // no time cases
-    if (meetingTimeString == 'ARR' || meetingTimeString.isEmpty) {
+    if (meetingTimeString.isEmpty) {
       return;
     }
 
@@ -42,6 +42,10 @@ class MeetingTime {
     }
 
     for (final time in individualMeetingTimes) {
+      // need to catch ARR here in case of "MWF 10:00 - 10:50A/ARR"
+      if (time == 'ARR') {
+        continue;
+      }
       // format string
       // replaces space between
       splitTime =
@@ -54,14 +58,16 @@ class MeetingTime {
       }
 
       // get day start/end times
+      final HourMinute end = HourMinute.fromString(splitTime[2]);
+      HourMinute start = HourMinute.fromString(splitTime[1]);
+      final HourMinute startPM = start.add(const Duration(hours: 12));
       // from schedule.dart, only end has AM/PM marker
       if (splitTime[2].contains('P') &&
-          !(splitTime[1].contains('P') || splitTime[1].contains('A'))) {
-        // assume start is pm if not already marked and end is pm
-        splitTime[1] += 'P';
+          !(splitTime[1].contains('P') || splitTime[1].contains('A')) &&
+          start < end &&
+          startPM < end) {
+        start = startPM;
       }
-      final HourMinute start = HourMinute.fromString(splitTime[1]);
-      final HourMinute end = HourMinute.fromString(splitTime[2]);
 
       // get days and create meeting times
       splitTime[0] = splitTime[0].trim();
@@ -81,7 +87,6 @@ class MeetingTime {
 
   // private instance variables
   final List<_AMeetingTime> _meetingTimes = [];
-  int _hashCode = 0; // need to update whenever adding/removing items
 
   // private methods
   // throw FormatException where applicable
@@ -140,12 +145,15 @@ class MeetingTime {
     final _AMeetingTime newTime =
         _AMeetingTime(start: start, end: end, day: day);
     final bool contains = _meetingTimes.contains(newTime);
-    final bool conflicts =
-        isAt(day: day, time: start) || isAt(day: day, time: end);
+    final bool conflicts = _meetingTimes
+        .where(
+          (e) =>
+              e.isWithin(newTime) ||
+              (e.day == day && (e.occursDuring(start) || e.occursDuring(end))),
+        )
+        .isNotEmpty;
     if (!(contains || conflicts)) {
-      _hashCode += newTime.hashCode;
       _meetingTimes.add(newTime);
-      // no sort
     }
 
     return !(contains || conflicts);
@@ -154,25 +162,44 @@ class MeetingTime {
   // instance methods
 
   // add time if it does not already exist and does not conflict with another existing time.
-  // Sort when adding. Update hashCode.
+  // Sort when adding.
   // returns true if time added successfully.
+  // will consider the max if null (start=0:00, end=23:59)
   bool add({
-    required int day,
-    required HourMinute start,
-    required HourMinute end,
+    int? day,
+    HourMinute? start,
+    HourMinute? end,
   }) {
-    final _AMeetingTime newTime =
-        _AMeetingTime(start: start, end: end, day: day);
-    final bool contains = _meetingTimes.contains(newTime);
-    final bool conflicts =
-        isAt(day: day, time: start) || isAt(day: day, time: end);
-    if (!(contains || conflicts)) {
-      _hashCode += newTime.hashCode;
-      _meetingTimes.add(newTime);
+    if (day == null) {
+      return addSeveralDays(start: start, end: end, days: null);
+    } else {
+      return addSeveralDays(start: start, end: end, days: {day});
+    }
+  }
+
+  // add time for several days at once.
+  // returns true if at least one time was added.
+  bool addSeveralDays({
+    Set<int>? days,
+    HourMinute? start,
+    HourMinute? end,
+  }) {
+    // handle null start/end
+    start ??= HourMinute();
+    end ??= HourMinute(hour: 23, minute: 59);
+
+    bool oneTimeAdded = false;
+
+    days ??= {1, 2, 3, 4, 5, 6, 7};
+    for (final day in days) {
+      if (_addWithoutSorting(day: day, start: start, end: end)) {
+        oneTimeAdded = true;
+      }
+    }
+    if (oneTimeAdded) {
       _meetingTimes.sort();
     }
-
-    return !(contains || conflicts);
+    return oneTimeAdded;
   }
 
   // add() but get end by using HourMinute add() method
@@ -192,9 +219,6 @@ class MeetingTime {
     final _AMeetingTime removeTime =
         _AMeetingTime(start: start, end: end, day: day);
     final bool contains = _meetingTimes.remove(removeTime);
-    if (contains) {
-      _hashCode -= removeTime.hashCode;
-    }
     return contains;
   }
 
@@ -351,9 +375,8 @@ class MeetingTime {
     return (day: time.day, start: time.start, end: time.end);
   }
 
-  @override
-  // equality operator
-  bool operator ==(Object other) {
+  // equals (not override)
+  bool equals(Object other) {
     if (identical(this, other)) {
       // if identical
       return true;
@@ -371,9 +394,6 @@ class MeetingTime {
 
     return true;
   }
-
-  @override
-  int get hashCode => _hashCode;
 }
 
 // ------------------------ private class -------------------------------
@@ -396,14 +416,22 @@ class _AMeetingTime implements Comparable<_AMeetingTime> {
     }
   }
   // instance variables
-  HourMinute start, end;
-  late int day;
+  final HourMinute start, end;
+  late final int day;
 
   // instance methods
 
   // checks if time is within _AMeetingTime
   // inclusivity: [start, end)
   bool occursDuring(HourMinute time) => time >= start && time < end;
+
+  // check if _AMeetingTime is within other
+  bool isWithin(_AMeetingTime other) =>
+      other.start <= start && other.end >= end && other.day == day;
+
+  // check if _AMeetingTime surrounds other
+  bool surrounds(_AMeetingTime other) =>
+      other.start >= start && other.end <= end && other.day == day;
 
   // checks if start and stop time are the same (doesn't care about day)
   bool sameTimes(_AMeetingTime other) =>

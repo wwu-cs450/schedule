@@ -53,12 +53,6 @@ void main() {
       () => HourMinute(hour: -1, minute: -99),
       throwsA(isA<NegativeTimeException>()),
     );
-
-    // adjust time
-    time1.minute = 23;
-    time1.hour = 10;
-    expect(time1.hour, 10);
-    expect(time1.minute, 23);
   });
 
   test('durations', () {

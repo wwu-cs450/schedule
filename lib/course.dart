@@ -1,6 +1,5 @@
 import 'package:schedule/department.dart';
 import 'package:schedule/subject.dart';
-import 'package:schedule/term.dart';
 import 'package:schedule/load_csv.dart';
 
 class Course {
@@ -20,7 +19,6 @@ class Course {
   }
   Department? department;
   Subject? subject;
-  Term? term;
   final String title;
   final int number;
   final String level;

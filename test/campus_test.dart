@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:schedule/campus.dart';
 
 void main() {
@@ -11,7 +10,8 @@ void main() {
 
   test('instances', () {
     final campuses = Campus.instances;
-    assert(campuses.length == 8);
+    assert(Campus.allCampuses().name == 'ALL');
+    assert(campuses.length == 9);
     assert(
       campuses.any(
         (element) => element.code == 'PD',

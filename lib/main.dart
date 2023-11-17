@@ -38,13 +38,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // Campus? _campus;
-  Department _department = Department.instances.first;
-  // Subject? _subject;
-  // Term? _term;
+  Campus _campus = Campus.allCampuses();
+  Department _department = Department.allDepartments();
+  Subject _subject = Subject.allSubjects();
+  Term _term = Term.allTerms();
   Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
   List<Class> _data = <Class>[]; // To store data to be sorted
-  DataTableSource classData = TableData([]);
+  final List<Class> _savedData = <Class>[]; // Saved class data
+  late DataTableSource classData;
   String? sortOption;
 
   void sortData() {
@@ -88,18 +89,35 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void updateData() {
-    _data = Query(_department, null, null).results().toList();
+    _data = Query(
+      department: _department,
+      subject: _subject,
+      term: _term,
+      campus: _campus,
+    ).results().toList();
   }
 
   void updateResults() {
     sortData();
-    classData = TableData(_data);
+    classData = TableData(_savedData + _data, _savedData, saveClass);
+  }
+
+  void saveClass(Class aClass, bool shouldSave) {
+    setState(() {
+      if (shouldSave) {
+        _savedData.add(aClass);
+        _data.remove(aClass);
+      } else {
+        _savedData.remove(aClass);
+        _data.add(aClass);
+      }
+    });
+    updateResults();
   }
 
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
     final campusList = Campus.instances;
     final campusEntries = <DropdownMenuEntry>[];
-    campusEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in campusList) {
       campusEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -112,23 +130,27 @@ class _MyHomePageState extends State<MyHomePage> {
     for (final each in deptList) {
       deptEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
+    deptEntries.sort((a, b) {
+      return a.label.compareTo(b.label);
+    });
     return deptEntries;
   }
 
   List<DropdownMenuEntry> subjDropdownMenuEntries() {
     final subjList = Subject.instances;
     final subjEntries = <DropdownMenuEntry>[];
-    subjEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in subjList) {
       subjEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
+    subjEntries.sort((a, b) {
+      return a.label.compareTo(b.label);
+    });
     return subjEntries;
   }
 
   List<DropdownMenuEntry> termDropdownMenuEntries() {
     final termList = Term.instances;
     final termEntries = <DropdownMenuEntry>[];
-    termEntries.add(const DropdownMenuEntry(value: null, label: 'All'));
     for (final each in termList) {
       termEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -150,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dropdownMenuEntries: campusDropdownMenuEntries(),
             onSelected: (value) {
               setState(() {
-                // _campus = value;
+                _campus = value;
               });
             },
           ),
@@ -179,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dropdownMenuEntries: subjDropdownMenuEntries(),
             onSelected: (value) {
               setState(() {
-                // _subject = value;
+                _subject = value;
               });
             },
           ),
@@ -194,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dropdownMenuEntries: termDropdownMenuEntries(),
             onSelected: (value) {
               setState(() {
-                // _term = value;
+                _term = value;
               });
             },
           ),
@@ -256,37 +278,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  List<Widget> classRows() {
-    final sections = Query(_department, null, null).results();
-    final rows = <Widget>[];
-    for (final each in sections) {
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 80,
-                child: Text(each.course.subject!.code),
-              ),
-              SizedBox(
-                width: 80,
-                child: Text(each.course.number.toString()),
-              ),
-              SizedBox(
-                width: 300,
-                child: Text(each.course.title),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return rows;
-  }
-
   @override
   Widget build(BuildContext context) {
+    classData = TableData(_savedData + _data, _savedData, saveClass);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -297,6 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             searchCriteriaWidget(),
             PaginatedDataTable(
+              showCheckboxColumn: true,
               source: classData,
               columns: [
                 DataColumn(label: sortBySubject()),
