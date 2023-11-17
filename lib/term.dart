@@ -17,11 +17,11 @@ class Term {
   static Set<Term> _initialize() {
     final Set<Term> instances = {};
     instances
+      ..add(Term(2236, 'Summer 2023'))
       ..add(Term(2239, 'Fall 2023'))
       ..add(Term(2241, 'Winter 2024'))
       ..add(Term(2243, 'Spring 2024'))
-      ..add(Term(2246, 'Summer 2024'))
-      ..add(Term(2249, 'Fall 2024'));
+      ..add(Term(2246, 'Summer 2024'));
     return instances;
   }
 

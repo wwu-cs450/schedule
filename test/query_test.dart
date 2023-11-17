@@ -102,10 +102,10 @@ void main() {
     );
   });
 
-  test('query finds Winter 2024', () {
-    final term = Term.instances.firstWhere((each) => each.code == 2241);
+  test('query finds Summer 2023', () {
+    final term = Term.instances.firstWhere((each) => each.code == 2236);
     final list = Query(term: term).results();
-    expect(list.every((element) => element.term.code == 2241), isTrue);
+    expect(list.every((element) => element.term.code == 2236), isTrue);
   });
 
   test('query finds College Place', () {
