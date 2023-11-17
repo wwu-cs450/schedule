@@ -18,11 +18,16 @@ class Instructor {
     // Remove headers
     classopenCSV.removeAt(0);
     for (final value in classopenCSV) {
-      if (!_instances.any((instructor) => instructor.name == value[23])) {
-        // ignore: todo
-        //TODO split multiple instructors into multiple different, instead of one.
-        _instances.add(Instructor(value[23]));
+      final List<String> instructorStrings = value[23].split(', '); // col 23
+      for (final instructorString in instructorStrings) {
+        if (!_instances
+            .any((instructor) => instructor.name == instructorString)) {
+          _instances.add(Instructor(instructorString));
+        }
       }
     }
   }
+
+  @override
+  String toString() => name;
 }

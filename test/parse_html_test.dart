@@ -12,11 +12,12 @@ void main() async {
   final testCase = evenRows[7].childNodes;
 
   test('Does addSection and addCourse Work without any exceptions?', () {
-    try {
+    addCourse(testCase);
+    /*try {
       addCourse(testCase);
     } catch (e) {
       assert(false);
-    }
+    }*/
   });
 
   test('Does the html skimming work?', () {

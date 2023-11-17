@@ -31,7 +31,11 @@ void addClass(var node, Course course) {
       schedule = 'TBA';
     }
     final String classroom = node[34]!.text;
-    final String instructor = node[36]!.text;
+    final List<String> instructorStrings = node[36]!.text.split(', ');
+    final Set<Instructor> instructors = {};
+    for (final instructorString in instructorStrings) {
+      instructors.add(Instructor(instructorString));
+    }
     Campus campusCode = Campus.instances.elementAt(0);
     for (final places in Campus.instances) {
       if (places.code == node[38]!.text) {
@@ -44,7 +48,7 @@ void addClass(var node, Course course) {
       maxEnrollment,
       MeetingTime.fromString(schedule),
       classroom,
-      Instructor(instructor),
+      instructors,
       campusCode,
     );
   } catch (e) {

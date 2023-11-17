@@ -10,11 +10,23 @@ void main() {
 
   test('instances', () {
     final instructors = Instructor.instances;
-    assert(instructors.length == 258);
+    assert(instructors.length == 238);
     assert(
       instructors.any(
         (element) => element.name == 'James Foster',
       ),
+    );
+  });
+
+  test('double instructors', () {
+    expect(
+      Instructor.instances.any((e) => e.name == 'Deisy Haid, Anali Pesqueira'),
+      isFalse,
+    ); //this double instructor used to exist before splitting
+    expect(Instructor.instances.any((e) => e.name == 'Deisy Haid'), isTrue);
+    expect(
+      Instructor.instances.any((e) => e.name == 'Anali Pesqueira'),
+      isTrue,
     );
   });
 }

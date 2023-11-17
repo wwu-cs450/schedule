@@ -12,7 +12,7 @@ class Class {
     this.maxEnrollment,
     this.schedule,
     this.classroom,
-    this.instructor,
+    this.instructors,
     this.campus, [
     this.video = '',
     this.consent = '',
@@ -34,7 +34,7 @@ class Class {
   int fee;
   MeetingTime schedule;
   String classroom;
-  Instructor instructor;
+  Set<Instructor> instructors;
   Campus campus;
   String video;
   String consent;
@@ -56,8 +56,9 @@ class Class {
     for (final listing in classListFromCsv) {
       final Course currCourse =
           Course.instances.firstWhere((each) => each.title == listing[14]);
-      final Instructor currInstructor =
-          Instructor.instances.firstWhere((each) => each.name == listing[23]);
+      final Set<Instructor> currInstructors = Instructor.instances
+          .where((each) => listing[23].contains(each.name))
+          .toSet();
       final Campus currCampus =
           Campus.instances.firstWhere((each) => each.code == listing[1]);
       final termYear = (listing[2] / 1000).truncate().toString() +
@@ -89,7 +90,7 @@ class Class {
           listing[18],
           MeetingTime.fromString(listing[21]), // schedule
           listing[22],
-          currInstructor,
+          currInstructors,
           currCampus,
         ),
       );
