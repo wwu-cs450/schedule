@@ -15,6 +15,13 @@ class Department {
     return _instances;
   }
 
+  static Department departmentwithCode(String code) {
+    final departmentOfCode =
+        Department._instances.firstWhere((instance) => instance.code == code);
+
+    return departmentOfCode;
+  }
+
   bool includesCourse(Course course) {
     return course.department == this;
   }

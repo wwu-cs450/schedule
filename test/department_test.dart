@@ -19,4 +19,17 @@ void main() {
       ),
     );
   });
+  test('department with code for TECH and the stateError for a notFound code',
+      () {
+    final techDepartment = Department.departmentwithCode('TECH');
+    expect(techDepartment.code, 'TECH');
+    expect(techDepartment.name, 'Technology');
+    Object? ex;
+    try {
+      Department.departmentwithCode('FAKE');
+    } catch (e) {
+      ex = e;
+    }
+    expect(ex.runtimeType, StateError);
+  });
 }
