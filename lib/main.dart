@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:schedule/data_table.dart';
 import 'package:schedule/query.dart';
 import 'package:schedule/class.dart';
 import 'package:schedule/campus.dart';
@@ -8,6 +7,7 @@ import 'package:schedule/subject.dart';
 import 'package:schedule/term.dart';
 
 void main() {
+  Class.instances;
   runApp(const MyApp());
 }
 
@@ -38,37 +38,147 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Campus _campus = Campus.allCampuses();
-  Department _department = Department.allDepartments();
-  Subject _subject = Subject.allSubjects();
-  Term _term = Term.allTerms();
-  Map<String, int> timesPressed = {'Number': 0, 'Subject': 0, 'Title': 0};
+  Campus _campus = Campus.allCampuses(); // Stores list of campuses
+  Department _department =
+      Department.allDepartments(); // Stores list of departments
+  Subject _subject = Subject.allSubjects(); // Stores list of subjects
+  Term _term = Term.allTerms(); // Stores list of terms
   List<Class> _data = <Class>[]; // To store data to be sorted
   final List<Class> _savedData = <Class>[]; // Saved class data
-  late DataTableSource classData;
+  List<Class> _classes = <Class>[];
+  late Row sizingRow;
 
   void sortData() {
-    _data.sort((Class a, Class b) {
+    _data.sort((a, b) {
       final aKey =
-          '${a.course.subject!.code} ${a.course.number} ${a.term.code} ${a.section}'; //currently term and section are not displayed
+          '${a.course.subject!.code} ${a.course.number} ${a.term.code} ${a.section}';
       final bKey =
           '${b.course.subject!.code} ${b.course.number} ${b.term.code} ${b.section}';
       return aKey.compareTo(bKey);
     });
   }
 
-  void updateData() {
+  void pressSearch() {
     _data = Query(
       department: _department,
       subject: _subject,
       term: _term,
       campus: _campus,
     ).results().toList();
+    _classes = [];
+    sortData();
   }
 
-  void updateResults() {
-    sortData();
-    classData = TableData(_savedData + _data, _savedData, saveClass);
+  void updateClasses() {
+    _classes = _savedData + _data;
+  }
+
+  Card cardNumber(Class offeredClass) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      color: const Color(0xFFB0B0B0),
+      shadowColor: Colors.black,
+      elevation: 15,
+      child: SizedBox(
+        width: 80,
+        height: 50,
+        child: Center(
+          child:
+              // this should be the subject followed by the code
+              Text(
+            (offeredClass.course.subject?.code ?? '') +
+                offeredClass.course.number.toString(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Card cardTerm(Class offeredClass) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      color: const Color(0xFFB0B0B0),
+      shadowColor: Colors.black,
+      elevation: 15,
+      child: SizedBox(
+        width: 95,
+        height: 50,
+        child: Center(child: Text(offeredClass.term.name)),
+      ),
+    );
+  }
+
+  Card cardTitle(Class offeredClass) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      color: const Color(0xFFB0B0B0),
+      shadowColor: Colors.black,
+      elevation: 15,
+      child: Align(
+        alignment: Alignment.center,
+        child: SizedBox(
+          width: 225,
+          height: 50,
+          child: Center(child: Text(offeredClass.course.title)),
+        ),
+      ),
+    );
+  }
+
+  Card cardCampus(Class offeredClass) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      color: const Color(0xFFB0B0B0),
+      shadowColor: Colors.black,
+      elevation: 15,
+      child: Align(
+        alignment: Alignment.center,
+        child: SizedBox(
+          width: 200,
+          height: 50,
+          child: Center(child: Text(offeredClass.campus.name)),
+        ),
+      ),
+    );
+  }
+
+  Row classRow(Class offeredClass, int index) {
+    return Row(
+      key: Key('Class-$index'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // create a checkbox for the row
+        savedBox(offeredClass),
+        // create box for the class number
+        cardNumber(offeredClass),
+        // create a box for the class title
+        cardTitle(offeredClass),
+        // create box for the class times
+        cardTerm(offeredClass),
+        // create box for campus location
+        cardCampus(offeredClass),
+      ],
+    );
+  }
+
+  Checkbox savedBox(Class offeredClass) {
+    return Checkbox(
+      value: offeredClass.saved,
+      onChanged: (bool? value) {
+        setState(() {
+          offeredClass.saved = value!;
+          saveClass(offeredClass, offeredClass.saved);
+        });
+      },
+    );
   }
 
   void saveClass(Class aClass, bool shouldSave) {
@@ -81,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _data.add(aClass);
       }
     });
-    updateResults();
+    updateClasses();
   }
 
   List<DropdownMenuEntry> campusDropdownMenuEntries() {
@@ -108,6 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DropdownMenuEntry> subjDropdownMenuEntries() {
     final subjList = Subject.instances;
     final subjEntries = <DropdownMenuEntry>[];
+
     for (final each in subjList) {
       subjEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
@@ -126,148 +237,196 @@ class _MyHomePageState extends State<MyHomePage> {
     return termEntries;
   }
 
+  Padding campusDropdown() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DropdownMenu(
+        key: const Key('Campus Dropdown'),
+        label: const Text('Campus'),
+        dropdownMenuEntries: campusDropdownMenuEntries(),
+        onSelected: (value) {
+          setState(() {
+            _campus = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Padding departmentDropdown() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DropdownMenu(
+        key: const Key('Department Dropdown'),
+        label: const Text('Department'),
+        dropdownMenuEntries: deptDropdownMenuEntries(),
+        onSelected: (value) {
+          setState(() {
+            _department = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Padding subjectDropdown() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DropdownMenu(
+        key: const Key('Subject Dropdown'),
+        label: const Text('Subject'),
+        dropdownMenuEntries: subjDropdownMenuEntries(),
+        onSelected: (value) {
+          setState(() {
+            _subject = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Padding termDropdown() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DropdownMenu(
+        key: const Key('Term Dropdown'),
+        label: const Text('Term'),
+        dropdownMenuEntries: termDropdownMenuEntries(),
+        onSelected: (value) {
+          setState(() {
+            _term = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Padding searchButton() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(
+        key: const Key('Search Button'),
+        onPressed: () {
+          setState(() {
+            pressSearch();
+            updateClasses();
+          });
+        },
+        child: const Text('Search'),
+      ),
+    );
+  }
+
   Widget searchCriteriaWidget() {
     return Wrap(
       key: const Key('Search Criteria Widget'),
       spacing: 8,
       runSpacing: 8,
       children: [
-        // Campus Dropdown
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: DropdownMenu(
-            key: const Key('Campus Dropdown'),
-            label: const Text('Campus'),
-            dropdownMenuEntries: campusDropdownMenuEntries(),
-            onSelected: (value) {
-              setState(() {
-                _campus = value;
-              });
-            },
-          ),
-        ),
-        // Department Dropdown
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: DropdownMenu(
-            key: const Key('Department Dropdown'),
-            label: const Text('Department'),
-            dropdownMenuEntries: deptDropdownMenuEntries(),
-            onSelected: (value) {
-              setState(() {
-                _department = value;
-              });
-            },
-          ),
-        ),
+        campusDropdown(), // Campus Dropdown
+        departmentDropdown(), // Department Dropdown
+        subjectDropdown(), // Subject Dropdown
+        termDropdown(), // Term Dropdown
 
-        // Subject Dropdown
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: DropdownMenu(
-            key: const Key('Subject Dropdown'),
-            label: const Text('Subject'),
-            dropdownMenuEntries: subjDropdownMenuEntries(),
-            onSelected: (value) {
-              setState(() {
-                _subject = value;
-              });
-            },
-          ),
-        ),
-
-        // Term Dropdown
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: DropdownMenu(
-            key: const Key('Term Dropdown'),
-            label: const Text('Term'),
-            dropdownMenuEntries: termDropdownMenuEntries(),
-            onSelected: (value) {
-              setState(() {
-                _term = value;
-              });
-            },
-          ),
-        ),
         // const Spacer(),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            key: const Key('Search Button'),
-            onPressed: () {
-              setState(() {
-                updateData();
-                updateResults();
-              });
-            },
-            child: const Text('Search'),
-          ),
-        ),
+        searchButton(),
       ],
     );
   }
 
-  Widget sortBySubject() {
-    return ElevatedButton(
-      key: const Key('Subject Header Button'),
-      onPressed: () {
-        setState(() {
-          updateResults();
-        });
-      },
-      child: const Text('Subject'),
+  Widget courseCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      key: const Key('Course Header Card'),
+      child: const SizedBox(
+        width: 80,
+        height: 50,
+        child: Center(child: Text('Course')),
+      ),
     );
   }
 
-  Widget sortByNumber() {
-    return ElevatedButton(
-      key: const Key('Number Header Button'),
-      onPressed: () {
-        setState(() {
-          updateResults();
-        });
-      },
-      child: const Text('Number'),
+  Widget titleCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      key: const Key('Title Header Card'),
+      child: const SizedBox(
+        width: 225,
+        height: 50,
+        child: Center(child: Text('Title')),
+      ),
     );
   }
 
-  Widget sortByTitle() {
-    return ElevatedButton(
-      key: const Key('Title Header Button'),
-      onPressed: () {
-        setState(() {
-          updateResults();
-        });
+  Widget termCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      key: const Key('Term Header Card'),
+      child: const SizedBox(
+        width: 95,
+        height: 50,
+        child: Center(child: Text('Term')),
+      ),
+    );
+  }
+
+  Widget campusCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      key: const Key('Campus Header Card'),
+      child: const SizedBox(
+        width: 200,
+        height: 50,
+        child: Center(child: Text('Campus')),
+      ),
+    );
+  }
+
+  ListView rowBuilder() {
+    return ListView.builder(
+      key: const Key('Results'),
+      itemCount: _classes.length,
+      itemBuilder: (context, index) {
+        return classRow(_classes[index], index);
       },
-      child: const Text('Title'),
+    );
+  }
+
+  Row headerRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        courseCard(),
+        titleCard(),
+        termCard(),
+        campusCard(),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    classData = TableData(_savedData + _data, _savedData, saveClass);
+    sizingRow = const Row();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            searchCriteriaWidget(),
-            PaginatedDataTable(
-              key: const Key('Results'),
-              showCheckboxColumn: true,
-              source: classData,
-              columns: [
-                DataColumn(label: sortBySubject()),
-                DataColumn(label: sortByNumber()),
-                DataColumn(label: sortByTitle()),
-              ],
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          searchCriteriaWidget(),
+          Text('${(_savedData + _data).length} classes found.'),
+          headerRow(),
+          Expanded(child: rowBuilder()),
+        ],
       ),
     );
   }

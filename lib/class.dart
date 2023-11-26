@@ -22,6 +22,7 @@ class Class {
     this.waitlist = 0,
     this.section = 'A',
     this.isOpenForEnrollment = true,
+    this.saved = false,
   ]);
 
   Course course;
@@ -39,6 +40,7 @@ class Class {
   String video;
   String consent;
   String specialNotes;
+  bool saved;
 
   static final _instances = <Class>{};
 
