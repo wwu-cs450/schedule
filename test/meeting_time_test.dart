@@ -593,6 +593,39 @@ void main() {
         MeetingTime.fromString(test.toString(is24hr: false));
     expect(test.equals(test2), isTrue);
 
+    // edge cases
+    // start in am, end in pm -- less than 12hrs (more would be confusing with current syntax)
+    test = MeetingTime.fromString('S 07:15 - 06:00P');
+    expect(test[0].start.hour, 7);
+    expect(test[0].end.hour, 18);
+    expect(test.toString(), 'S 7:15 - 18:00');
+    expect(test.toString(is24hr: false), 'S 7:15AM - 6:00PM');
+    // start at 12pm
+    test = MeetingTime.fromString('M 12:00 - 12:50P');
+    expect(test[0].start.hour, 12);
+    expect(test[0].end.hour, 12);
+    expect(test.toString(), 'M 12:00 - 12:50');
+    expect(test.toString(is24hr: false), 'M 12:00PM - 12:50PM');
+    // start at 12am
+    test = MeetingTime.fromString('M 12:00 - 12:50A');
+    expect(test[0].start.hour, 0);
+    expect(test[0].end.hour, 0);
+    expect(test.toString(), 'M 0:00 - 0:50');
+    expect(test.toString(is24hr: false), 'M 12:00AM - 12:50AM');
+    // end at 12pm (not testing ending at 12am -- doesn't happen, would be next day)
+    test = MeetingTime.fromString('M 11:00 - 12:00P');
+    expect(test[0].start.hour, 11);
+    expect(test[0].end.hour, 12);
+    expect(test.toString(), 'M 11:00 - 12:00');
+    expect(test.toString(is24hr: false), 'M 11:00AM - 12:00PM');
+
+    // confusingly mixing 12hr and 24hr
+    test = MeetingTime.fromString('S 14:00 - 05:00P');
+    expect(test[0].start.hour, 14);
+    expect(test[0].end.hour, 17);
+    expect(test.toString(), 'S 14:00 - 17:00');
+    expect(test.toString(is24hr: false), 'S 2:00PM - 5:00PM');
+
     // proper error handling:
     // improper string - no space/- between days and time
     expect(
@@ -613,6 +646,16 @@ void main() {
     expect(
       () => MeetingTime.fromString('T09: 00 - 06:50P'),
       throwsFormatException,
+    );
+    // end preceeds start - 24hr
+    expect(
+      () => MeetingTime.fromString('M 18:00 - 16:00'),
+      throwsA(isA<EndPreceedsStart>()),
+    );
+    // end preceeds start - 12hr
+    expect(
+      () => MeetingTime.fromString('M 10:00PM - 9:00PM'),
+      throwsA(isA<EndPreceedsStart>()),
     );
   });
 }

@@ -63,11 +63,18 @@ class MeetingTime {
       HourMinute start = HourMinute.fromString(splitTime[1]);
       final HourMinute startPM = start.add(const Duration(hours: 12));
       // from schedule.dart, only end has AM/PM marker
-      if (splitTime[2].contains('P') &&
-          !(splitTime[1].contains('P') || splitTime[1].contains('A')) &&
-          start < end &&
-          startPM < end) {
-        start = startPM;
+      if (!(splitTime[1].contains('P') || splitTime[1].contains('A'))) {
+        // if end is am, start<end or bad time, thus dont need to check (unless start is 12:00am -- see below)
+        if (splitTime[2].contains('P') &&
+            // prevent wrapping to am (also catches bad strings such as 14:00-5pm)
+            start.hour < 12 &&
+            // when start is actually pm it should be less than end
+            startPM < end) {
+          start = startPM;
+          // check for start is 12:xx am written as 12:xx
+        } else if (splitTime[2].contains('A') && start.hour == 12) {
+          start = startPM;
+        }
       }
 
       // get days and create meeting times
@@ -346,6 +353,7 @@ class MeetingTime {
       for (final _AMeetingTime time in times) {
         returnString += _dayLetter(time.day);
       }
+      // leading space for date at front
       returnString +=
           ' ${times.first.start.toString(is24hr: is24hr)} - ${times.first.end.toString(is24hr: is24hr)}\n';
 

@@ -44,6 +44,8 @@ class HourMinute implements Comparable<HourMinute> {
     // 12hr check
     if (string.contains('P') && hour != 12) {
       hour += 12;
+    } else if (string.contains('A') && hour == 12) {
+      hour += 12;
     }
 
     // minute parse
@@ -83,9 +85,15 @@ class HourMinute implements Comparable<HourMinute> {
     if (is24hr) {
       return "$hour:${minute.toString().padLeft(2, '0')}";
     } else {
-      return hour > 11
-          ? "${hour % 12}:${minute.toString().padLeft(2, '0')}PM"
-          : "${hour % 12}:${minute.toString().padLeft(2, '0')}AM";
+      if (hour == 12) {
+        return "12:${minute.toString().padLeft(2, '0')}PM";
+      } else if (hour == 0) {
+        return "12:${minute.toString().padLeft(2, '0')}AM";
+      } else if (hour > 12) {
+        return "${hour % 12}:${minute.toString().padLeft(2, '0')}PM";
+      } else {
+        return "$hour:${minute.toString().padLeft(2, '0')}AM";
+      }
     }
   }
 

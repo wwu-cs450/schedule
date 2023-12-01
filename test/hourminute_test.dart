@@ -119,4 +119,37 @@ void main() {
     expect(time2, greaterThanOrEqualTo(time1));
     expect(time1, greaterThanOrEqualTo(time1));
   });
+
+  test('More Strings', () {
+    // PM time
+    HourMinute time = HourMinute.fromString('2:00P');
+    expect(time.hour, 14);
+    expect(time.toString(), '14:00');
+    expect(time.toString(is24hr: false), '2:00PM');
+    // AM time
+    time = HourMinute.fromString('2:00A');
+    expect(time.hour, 2);
+    expect(time.toString(), '2:00');
+    expect(time.toString(is24hr: false), '2:00AM');
+    // 12AM
+    time = HourMinute.fromString('12:00A');
+    expect(time.hour, 0);
+    expect(time.toString(), '0:00');
+    expect(time.toString(is24hr: false), '12:00AM');
+    // 12PM
+    time = HourMinute.fromString('12:00P');
+    expect(time.hour, 12);
+    expect(time.toString(), '12:00');
+    expect(time.toString(is24hr: false), '12:00PM');
+    // Weird time
+    time = HourMinute.fromString('12:65P');
+    expect(time.hour, 13);
+    expect(time.toString(), '13:05');
+    expect(time.toString(is24hr: false), '1:05PM');
+    // Weird time -- wraps from AM to PM
+    time = HourMinute.fromString('11:65A');
+    expect(time.hour, 12);
+    expect(time.toString(), '12:05');
+    expect(time.toString(is24hr: false), '12:05PM');
+  });
 }
