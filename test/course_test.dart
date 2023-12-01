@@ -10,13 +10,14 @@ void main() {
       '141',
       'lower',
       4,
+      4,
     );
     assert(course.department?.name == 'Computer Science');
     assert(course.subject?.name == 'Computer Science');
     assert(course.title == 'Fundamentals of Programming I');
     assert(course.number == '141');
     assert(course.level == 'lower');
-    assert(course.credits == 4);
+    assert(course.creditsMin == 4);
     assert(!course.isGeneralStudies);
   });
   test('constructor and accessors on lab', () {
@@ -27,7 +28,29 @@ void main() {
       '253SN',
       'upper',
       0,
+      0,
     );
     assert(course.number == '253SN');
+  });
+  test('course credit numbers from HTML', () {
+    final courses = Course.instances;
+    assert(
+      courses.any(
+        (element) => element.creditsMin == 4.5,
+      ),
+    );
+    assert(
+      courses.any(
+        (element) => element.creditsMin == element.creditsMax,
+      ),
+    );
+  });
+  test('course titles from HTML', () {
+    final courses = Course.instances;
+    assert(
+      courses.any(
+        (element) => element.title == 'Introduction to Printmaking',
+      ),
+    );
   });
 }
