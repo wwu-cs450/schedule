@@ -268,6 +268,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onSelected: (value) {
           setState(() {
             _campus = value;
+            pressSearch();
+            updateClasses();
           });
         },
       ),
@@ -310,6 +312,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onSelected: (value) {
           setState(() {
             _department = value;
+            pressSearch();
+            updateClasses();
           });
         },
       ),
@@ -326,6 +330,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onSelected: (value) {
           setState(() {
             _subject = value;
+            pressSearch();
+            updateClasses();
           });
         },
       ),
@@ -342,24 +348,10 @@ class _MyHomePageState extends State<MyHomePage> {
         onSelected: (value) {
           setState(() {
             _term = value;
-          });
-        },
-      ),
-    );
-  }
-
-  Padding searchButton() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        key: const Key('Search Button'),
-        onPressed: () {
-          setState(() {
             pressSearch();
             updateClasses();
           });
         },
-        child: const Text('Search'),
       ),
     );
   }
@@ -375,8 +367,6 @@ class _MyHomePageState extends State<MyHomePage> {
         subjectDropdown(), // Subject Dropdown
         termDropdown(), // Term Dropdown
         classNumberTextField(),
-        // const Spacer(),
-        searchButton(),
       ],
     );
   }
