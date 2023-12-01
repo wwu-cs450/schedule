@@ -14,7 +14,7 @@ import 'package:schedule/main.dart';
 import 'package:schedule/query.dart';
 
 void main() {
-  testWidgets('Search Button Test', (WidgetTester tester) async {
+  testWidgets('Dropdown Button Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
@@ -22,7 +22,6 @@ void main() {
     expect(find.byKey(const Key('Department Dropdown')), findsOneWidget);
     expect(find.byKey(const Key('Subject Dropdown')), findsOneWidget);
     expect(find.byKey(const Key('Term Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('Search Button')), findsOneWidget);
   });
 
   testWidgets('Search Criteria does not Overlap with Results',
@@ -46,12 +45,10 @@ void main() {
     final campusDropdown = find.byKey(const Key('Campus Dropdown'));
     final cpCampus = find.text('College Place');
     final rosarioCampus = find.text('Rosario');
-    final searchButton = find.byKey(const Key('Search Button'));
 
     expect(campusDropdown.hitTestable(), findsOneWidget);
     expect(cpCampus.hitTestable(), findsNothing);
     expect(rosarioCampus.hitTestable(), findsNothing);
-    expect(searchButton, findsOneWidget);
 
     await tester.tap(campusDropdown);
     await tester.pumpAndSettle();
@@ -60,14 +57,10 @@ void main() {
 
     await tester.tap(cpCampus.hitTestable());
     await tester.pumpAndSettle();
-    expect(cpCampus.hitTestable(), findsOneWidget);
+    expect(cpCampus.hitTestable(), findsAtLeast(3));
     expect(rosarioCampus.hitTestable(), findsNothing);
     // This does not include rows.
-    expect(find.text('College Place'), findsExactly(2));
-
-    await tester.tap(searchButton);
-    await tester.pumpAndSettle();
-    expect(find.text('College Place'), findsAtLeast(3));
+    expect(find.textContaining('College Place'), findsAtLeast(3));
   });
 
   testWidgets('Search by Department', (WidgetTester tester) async {
@@ -77,13 +70,11 @@ void main() {
     final csDepartment = find.text('Computer Science');
     final commDepartment = find.text('Communication');
     final resultsFinder = find.byKey(const Key('Results'));
-    final searchButton = find.byKey(const Key('Search Button'));
 
     expect(departmentDropdown.hitTestable(), findsOneWidget);
     expect(csDepartment.hitTestable(), findsNothing);
     expect(commDepartment.hitTestable(), findsNothing);
     expect(resultsFinder, findsOneWidget);
-    expect(searchButton, findsOneWidget);
 
     await tester.tap(departmentDropdown);
     await tester.pumpAndSettle();
@@ -94,11 +85,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(csDepartment.hitTestable(), findsOneWidget);
     expect(commDepartment.hitTestable(), findsNothing);
-    expect(find.textContaining('CPTR'), findsNothing);
-
-    await tester.tap(searchButton);
-    await tester.pumpAndSettle();
-    expect(resultsFinder, findsOneWidget);
     expect(find.textContaining('CPTR'), findsAtLeast(1));
   });
 
@@ -109,13 +95,11 @@ void main() {
     final acctSubject = find.text('Accounting');
     final aviationSubject = find.text('Aviation');
     final resultsFinder = find.byKey(const Key('Results'));
-    final searchButton = find.byKey(const Key('Search Button'));
 
     expect(subjectDropdown.hitTestable(), findsOneWidget);
     expect(acctSubject.hitTestable(), findsNothing);
     expect(aviationSubject.hitTestable(), findsNothing);
     expect(resultsFinder, findsOneWidget);
-    expect(searchButton, findsOneWidget);
 
     await tester.tap(subjectDropdown);
     await tester.pumpAndSettle();
@@ -126,11 +110,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(acctSubject.hitTestable(), findsOneWidget);
     expect(aviationSubject.hitTestable(), findsNothing);
-    expect(find.textContaining('ACCT'), findsNothing);
-
-    await tester.tap(searchButton);
-    await tester.pumpAndSettle();
-    expect(resultsFinder, findsOneWidget);
     expect(find.textContaining('ACCT'), findsAtLeast(1));
   });
 
@@ -138,33 +117,26 @@ void main() {
     await tester.pumpWidget(const MyApp());
 
     final termDropdown = find.byKey(const Key('Term Dropdown'));
-    final spring2024 = find.text('Spring 2024');
-    final summer2024 = find.text('Summer 2024');
+    final spring = find.textContaining('Spring');
+    final winter = find.textContaining('Winter');
     final resultsFinder = find.byKey(const Key('Results'));
-    final searchButton = find.byKey(const Key('Search Button'));
 
     expect(termDropdown.hitTestable(), findsOneWidget);
-    expect(spring2024.hitTestable(), findsNothing);
-    expect(summer2024.hitTestable(), findsNothing);
+    expect(spring.hitTestable(), findsNothing);
+    expect(winter.hitTestable(), findsNothing);
     expect(resultsFinder, findsOneWidget);
-    expect(searchButton, findsOneWidget);
 
     await tester.tap(termDropdown);
     await tester.pumpAndSettle();
-    expect(spring2024.hitTestable(), findsOneWidget);
-    expect(summer2024.hitTestable(), findsOneWidget);
+    expect(spring.hitTestable(), findsOneWidget);
+    expect(winter.hitTestable(), findsOneWidget);
 
-    await tester.tap(spring2024.hitTestable());
+    await tester.tap(spring.hitTestable());
     await tester.pumpAndSettle();
-    expect(spring2024.hitTestable(), findsOneWidget);
-    expect(summer2024.hitTestable(), findsNothing);
+    expect(spring.hitTestable(), findsAtLeast(3));
+    expect(winter.hitTestable(), findsNothing);
     // This does not include rows.
-    expect(find.text('Spring 2024'), findsExactly(2));
-
-    await tester.tap(searchButton);
-    await tester.pumpAndSettle();
-    expect(resultsFinder, findsOneWidget);
-    expect(find.text('Spring 2024'), findsAtLeast(3));
+    expect(find.textContaining('Spring'), findsAtLeast(3));
   });
 
   testWidgets('Default Sort', (WidgetTester tester) async {
@@ -183,10 +155,6 @@ void main() {
     final csDepartment = find.text('Computer Science');
     expect(csDepartment.hitTestable(), findsOneWidget);
     await tester.tap(csDepartment.hitTestable());
-    await tester.pumpAndSettle();
-    // search
-    final searchButton = find.byKey(const Key('Search Button'));
-    await tester.tap(searchButton);
     await tester.pumpAndSettle();
     // verify that the full list exists
 
