@@ -82,22 +82,22 @@ void addCourse(var node) {
         '404'; // Store courseNumber as a string to accommodate labs
     courseNumber = node[0]!.text;
     //Course credits have a range on openClassRoom IE 1-16 instead of one value. +Some are half a credit
-    int courseCredits = 404;
-    String temp = node[18]!.text;
-    temp = temp.replaceAll(RegExp(r'\D'), '');
-    try {
-      final range = temp.split('-');
-      final int minCourseCredits = double.parse(range[0]).round();
-      // ignore: unused_local_variable
-      int maxCourseCredits = 0;
-      if (range.length > 1) {
-        maxCourseCredits = int.parse(
-          range[1],
-        ); //fix when functionality for range of credits is available.
-      }
-      courseCredits = minCourseCredits;
-    } catch (e) {
-      courseCredits = int.parse(temp);
+    double courseCreditsMin = 404;
+    double courseCreditsMax = 404;
+    String credits = node[18]!.text;
+    credits = credits.replaceAll(RegExp(r'\D'), '');
+    if (double.tryParse(credits) != null) {
+      courseCreditsMin = double.tryParse(credits)!;
+      courseCreditsMax = courseCreditsMin;
+    } else if (credits.contains('-') && credits.length >= 3) {
+      courseCreditsMin = double.tryParse(credits.split('-')[0]) ?? 0;
+      courseCreditsMax =
+          double.tryParse(credits.split('-')[1]) ?? courseCreditsMin;
+    } else {
+      throw FormatException(
+        "Neither a single number nor of the format 'n-n' : ",
+        credits,
+      );
     }
     final currentCourse = Course(
       courseDept,
@@ -105,7 +105,8 @@ void addCourse(var node) {
       courseTitle,
       courseNumber,
       courseLevel,
-      courseCredits,
+      courseCreditsMin,
+      courseCreditsMax,
       generalStudies,
     );
     addClass(node, currentCourse);
