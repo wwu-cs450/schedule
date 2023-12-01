@@ -31,6 +31,7 @@ void addClass(var node, Course course) {
       schedule = 'TBA';
     }
     final String classroom = node[34]!.text;
+    final int classNumber = int.parse(node[0]!.text);
     final List<String> instructorStrings = node[36]!.text.split(', ');
     final Set<Instructor> instructors = {};
     for (final instructorString in instructorStrings) {
@@ -50,6 +51,8 @@ void addClass(var node, Course course) {
       classroom,
       instructors,
       campusCode,
+      classNumber,
+      //Class number
     );
   } catch (e) {
     throw Exception('Failed to add Class.');

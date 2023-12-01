@@ -43,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Department.allDepartments(); // Stores list of departments
   Subject _subject = Subject.allSubjects(); // Stores list of subjects
   Term _term = Term.allTerms(); // Stores list of terms
+  int _classNumber = 0;
   List<Class> _data = <Class>[]; // To store data to be sorted
   final List<Class> _savedData = <Class>[]; // Saved class data
   List<Class> _classes = <Class>[];
@@ -64,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       subject: _subject,
       term: _term,
       campus: _campus,
+      classNumber: _classNumber,
     ).results().toList();
     _classes = [];
     sortData();
@@ -108,6 +110,22 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 95,
         height: 50,
         child: Center(child: Text(offeredClass.term.name)),
+      ),
+    );
+  }
+
+  Card cardClassNumber(Class offeredClass) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      color: const Color(0xFFB0B0B0),
+      shadowColor: Colors.black,
+      elevation: 15,
+      child: SizedBox(
+        width: 50,
+        height: 50,
+        child: Center(child: Text(offeredClass.classNumber.toString())),
       ),
     );
   }
@@ -157,7 +175,9 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         // create a checkbox for the row
         savedBox(offeredClass),
-        // create box for the class number
+        // create box for class number (NOT COURSE NUMBER, etc NOT 141)
+        cardClassNumber(offeredClass),
+        // create box for the course number
         cardNumber(offeredClass),
         // create a box for the class title
         cardTitle(offeredClass),
@@ -165,6 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
         cardTerm(offeredClass),
         // create box for campus location
         cardCampus(offeredClass),
+        // create box for classNumber
       ],
     );
   }
@@ -253,6 +274,32 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Padding classNumberTextField() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 100,
+        height: 50,
+        child: TextField(
+          decoration: const InputDecoration(
+            labelText: 'Class Number',
+          ),
+          onChanged: (value) {
+            setState(() {
+              if (value == '0' || value == '') {
+                _classNumber = 0;
+              } else if (value.length < 4) {
+                return;
+              } else {
+                _classNumber = int.parse(value);
+              }
+            });
+          },
+        ),
+      ),
+    );
+  }
+
   Padding departmentDropdown() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -327,10 +374,24 @@ class _MyHomePageState extends State<MyHomePage> {
         departmentDropdown(), // Department Dropdown
         subjectDropdown(), // Subject Dropdown
         termDropdown(), // Term Dropdown
-
+        classNumberTextField(),
         // const Spacer(),
         searchButton(),
       ],
+    );
+  }
+
+  Widget classNumberCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      key: const Key('Class Number Header Card'),
+      child: const SizedBox(
+        width: 50,
+        height: 50,
+        child: Center(child: Text('Class#')),
+      ),
     );
   }
 
@@ -404,6 +465,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        classNumberCard(),
         courseCard(),
         titleCard(),
         termCard(),

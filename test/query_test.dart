@@ -107,6 +107,11 @@ void main() {
     final list = Query(term: term).results();
     expect(list.every((element) => element.term.code == 2236), isTrue);
   });
+  test('query finds class number 1408', () {
+    final list = Query(classNumber: 1408).results();
+    expect(list.every((element) => element.classNumber == 1408), isTrue);
+    expect(list.length == 2, isTrue);
+  });
 
   test('query finds College Place', () {
     final campus =

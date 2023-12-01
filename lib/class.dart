@@ -13,7 +13,8 @@ class Class {
     this.schedule,
     this.classroom,
     this.instructors,
-    this.campus, [
+    this.campus,
+    this.classNumber, [
     this.video = '',
     this.consent = '',
     this.specialNotes = '',
@@ -39,6 +40,7 @@ class Class {
   Campus campus;
   String video;
   String consent;
+  int classNumber;
   String specialNotes;
   bool saved;
 
@@ -86,17 +88,19 @@ class Class {
         }
       }
       final termCode = int.parse(termYear + termMonth);
+      final int classNumber = listing[5];
       final Term currTerm =
           Term.instances.firstWhere((each) => each.code == termCode);
       _instances.add(
         Class(
           currCourse,
           currTerm,
-          listing[18],
+          listing[18], // Max enrollment
           MeetingTime.fromString(listing[21]), // schedule
-          listing[22],
+          listing[22], // Classroom
           currInstructors,
           currCampus,
+          classNumber, // Class Number
         ),
       );
     }

@@ -29,6 +29,7 @@ void main() {
       'KRH 210',
       instructors,
       campus,
+      9999,
     );
     assert(section.course.title == 'Software Engineering');
     assert(section.term.code == 2239);
@@ -45,6 +46,7 @@ void main() {
     assert(section.fee == 0);
     assert(section.currEnrollment == 0);
     assert(section.waitlist == 0);
+    assert(section.classNumber == 9999);
     assert(section.section == 'A');
     assert(section.isOpenForEnrollment);
 
