@@ -202,7 +202,7 @@ void main() {
         scrollable: listFinder,
       );
       final dynamic row = tester.firstElement(itemFinder);
-      expect(row.children.length, 5);
+      expect(row.children.length, 6);
       // get <String>[] of the row contents
       //  row.children.elementAt(1).widget = Card
       //  row.children.elementAt(1).widget.child = SizedBox
@@ -210,7 +210,7 @@ void main() {
       //  row.children.elementAt(1).widget.child.child.child = Text
       //  row.children.elementAt(1).widget.child.child.child.data = String
       if (i > 0) {
-        next = row.children.elementAt(1).widget.child.child.child.data;
+        next = row.children.elementAt(2).widget.child.child.child.data;
         expect(
           prior.compareTo(next) <= 0,
           isTrue,
@@ -218,7 +218,7 @@ void main() {
         );
         prior = next;
       } else {
-        prior = row.children.elementAt(1).widget.child.child.child.data;
+        prior = row.children.elementAt(2).widget.child.child.child.data;
       }
     }
   });

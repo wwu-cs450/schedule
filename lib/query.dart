@@ -16,16 +16,18 @@ class Query {
     bool?
         includeSpecialTimes, // ARR and '' (class with specified time AND ARR will be included regardless)
     Set<int>? days,
+    int? classNumber,
   }) {
-    _department = department ?? Department.instances.first;
-    _subject = subject ?? Subject.instances.first;
-    _term = term ?? Term.instances.first;
-    _campus = campus ?? Campus.instances.first;
+    _department = department ?? Department.allDepartments();
+    _subject = subject ?? Subject.allSubjects();
+    _term = term ?? Term.allTerms();
+    _campus = campus ?? Campus.allCampuses();
     _times = times;
     times == null && days == null
         ? _includeSpecialTimes = includeSpecialTimes ?? true
         : _includeSpecialTimes = false;
     _days = days;
+    _classNumber = classNumber ?? 0;
   }
 
   late final Department _department;
@@ -35,6 +37,7 @@ class Query {
   late final ({HourMinute start, HourMinute end})? _times;
   late final bool _includeSpecialTimes;
   late final Set<int>? _days;
+  late final int _classNumber;
 
   Set<Class> results() {
     return Class.instances
@@ -44,6 +47,7 @@ class Query {
               _subject.includesCourse(each.course) && // course
               _term.includesClass(each) && // term
               _campus.includesClass(each) && // campus
+              (_classNumber == 0 || _classNumber == each.classNumber) &&
               ((_includeSpecialTimes &&
                       (each.schedule.isEmpty || each.schedule.isARR)) ||
                   each.schedule
