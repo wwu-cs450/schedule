@@ -230,9 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
     for (final each in deptList) {
       deptEntries.add(DropdownMenuEntry(value: each, label: each.name));
     }
-    deptEntries.sort((a, b) {
-      return a.label.compareTo(b.label);
-    });
+
     return deptEntries;
   }
 
