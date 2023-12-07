@@ -286,12 +286,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           onChanged: (value) {
             setState(() {
-              if (value == '0' || value == '') {
+              if (value.isEmpty) {
                 _classNumber = 0;
-              } else if (value.length < 4) {
-                return;
-              } else {
+                pressSearch();
+                updateClasses();
+              } else if (value.length == 4) {
                 _classNumber = int.parse(value);
+                pressSearch();
+                updateClasses();
               }
             });
           },
