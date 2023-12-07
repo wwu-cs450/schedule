@@ -119,4 +119,42 @@ class Class {
       throw 'waitlist out of bounds';
     }
   }
+
+  String getCampus() {
+    if (campus.name == 'Adventist Colleges Abroad') {
+      return 'ACA';
+    } else if (campus.name == 'Acadeum') {
+      return 'ACDM';
+    } else if (campus.name == 'Billings') {
+      return 'BI';
+    } else if (campus.name == 'College Place') {
+      return 'CP';
+    } else if (campus.name == 'LA Film Studies Center') {
+      return 'LAFS';
+    } else if (campus.name == 'Missoula') {
+      return 'MI';
+    } else if (campus.name == 'Portland') {
+      return 'PD';
+    } else if (campus.name == 'Rosario') {
+      return 'RO';
+    } else {
+      return 'Online';
+    }
+  }
+
+  String getCode() {
+    return course.subject!.code.toString();
+  }
+
+  String getInstructors() {
+    return instructors.map((e) => e.name).join('\n');
+  }
+
+  String getClN() {
+    return classNumber.toString();
+  }
+
+  String getCoN() {
+    return course.number.toString();
+  }
 }
