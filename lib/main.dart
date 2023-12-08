@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:schedule/data_handler.dart';
 import 'package:schedule/query.dart';
 import 'package:schedule/class.dart';
 import 'package:schedule/campus.dart';
@@ -8,7 +9,8 @@ import 'package:schedule/department.dart';
 import 'package:schedule/subject.dart';
 import 'package:schedule/term.dart';
 
-void main() {
+void main() async {
+  await DataHandler.fetchData();
   Class.instances;
   runApp(const MyApp());
 }

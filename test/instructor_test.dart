@@ -1,8 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:schedule/instructor.dart';
+import 'package:schedule/data_handler.dart';
 
 void main() {
+  setUp(() async {
+    await DataHandler.fetchData(test: true);
+  });
   test('constructor and accessors', () {
     final instructor = Instructor('James Foster');
     assert(instructor.name == 'James Foster');
@@ -10,7 +14,7 @@ void main() {
 
   test('instances', () {
     final instructors = Instructor.instances;
-    expect(instructors.length, 237);
+    expect(instructors.length, 225);
     expect(
       instructors.any(
         (element) => element.name == 'James Foster',

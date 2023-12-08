@@ -4,6 +4,7 @@ import 'package:schedule/campus.dart';
 import 'package:schedule/course.dart';
 import 'package:schedule/department.dart';
 import 'package:schedule/instructor.dart';
+import 'package:schedule/data_handler.dart';
 import 'package:schedule/subject.dart';
 import 'package:schedule/term.dart';
 import 'package:schedule/class.dart';
@@ -11,6 +12,9 @@ import 'package:schedule/meeting_time.dart';
 
 Set<Instructor> instructors = {Instructor('James Foster')};
 void main() {
+  setUp(() async {
+    await DataHandler.fetchData(test: true);
+  });
   test('constructor and accessors', () {
     final course = Course(
       Department.departmentwithCode('CPTR'),

@@ -1,4 +1,4 @@
-import 'package:schedule/load_csv.dart';
+import 'package:schedule/data_handler.dart';
 
 class Instructor {
   Instructor(this.name);
@@ -21,10 +21,8 @@ class Instructor {
   }
 
   static void _initialize() {
-    final classopenCSV = getListFromCsv();
-    // Remove headers
-    classopenCSV.removeAt(0);
-    for (final value in classopenCSV) {
+    final classData = DataHandler.data;
+    for (final value in classData) {
       final List<String> instructorStrings = value[23].split(', '); // col 23
       for (final instructorString in instructorStrings) {
         if (instructorString.trim().isNotEmpty &&

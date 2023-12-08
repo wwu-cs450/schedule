@@ -1,9 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:schedule/course.dart';
+import 'package:schedule/data_handler.dart';
 import 'package:schedule/department.dart';
 import 'package:schedule/subject.dart';
 
 void main() {
+  setUp(() async {
+    await DataHandler.fetchData(test: true);
+  });
   test('constructor and accessors', () {
     final course = Course(
       Department.departmentwithCode('CPTR'),
