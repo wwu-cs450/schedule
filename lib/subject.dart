@@ -15,8 +15,15 @@ class Subject {
     return _instances;
   }
 
+  static Subject subjectWithCode(String code) {
+    final subject =
+        Subject.instances.firstWhere((instance) => instance.code == code);
+
+    return subject;
+  }
+
   bool includesCourse(Course course) {
-    return course.subject == this;
+    return course.subject.code == code;
   }
 
   static Subject allSubjects() {

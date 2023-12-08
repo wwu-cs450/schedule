@@ -2,7 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:schedule/campus.dart';
 import 'package:schedule/course.dart';
+import 'package:schedule/department.dart';
 import 'package:schedule/instructor.dart';
+import 'package:schedule/subject.dart';
 import 'package:schedule/term.dart';
 import 'package:schedule/class.dart';
 import 'package:schedule/meeting_time.dart';
@@ -11,8 +13,8 @@ Set<Instructor> instructors = {Instructor('James Foster')};
 void main() {
   test('constructor and accessors', () {
     final course = Course(
-      'CPTR',
-      'CPTR',
+      Department.departmentwithCode('CPTR'),
+      Subject.subjectWithCode('CPTR'),
       'Software Engineering',
       '450',
       'upper',

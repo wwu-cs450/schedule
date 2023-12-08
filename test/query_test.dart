@@ -64,11 +64,11 @@ void main() {
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
     final list = Query(department: department, subject: subject).results();
     expect(
-      list.every((element) => element.course.department!.code == 'CPTR'),
+      list.every((element) => element.course.department.code == 'CPTR'),
       isTrue,
     );
     expect(
-      list.every((element) => element.course.subject!.code == 'CPTR'),
+      list.every((element) => element.course.subject.code == 'CPTR'),
       isTrue,
     );
   });
@@ -77,27 +77,27 @@ void main() {
         Department.instances.firstWhere((each) => each.code == 'RELB');
     final codes = Query(department: department).results();
     expect(
-      codes.any((element) => element.course.subject!.code == 'RELB'),
+      codes.any((element) => element.course.subject.code == 'RELB'),
       isTrue,
     );
     expect(
-      codes.any((element) => element.course.subject!.code == 'RELH'),
+      codes.any((element) => element.course.subject.code == 'RELH'),
       isTrue,
     );
     expect(
-      codes.any((element) => element.course.subject!.code == 'RELM'),
+      codes.any((element) => element.course.subject.code == 'RELM'),
       isTrue,
     );
     expect(
-      codes.any((element) => element.course.subject!.code == 'RELP'),
+      codes.any((element) => element.course.subject.code == 'RELP'),
       isTrue,
     );
     expect(
-      codes.any((element) => element.course.subject!.code == 'RELT'),
+      codes.any((element) => element.course.subject.code == 'RELT'),
       isTrue,
     );
     expect(
-      codes.any((element) => element.course.subject!.code == 'SERV'),
+      codes.any((element) => element.course.subject.code == 'SERV'),
       isTrue,
     );
   });

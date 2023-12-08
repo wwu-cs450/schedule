@@ -1,6 +1,8 @@
 // ignore_for_file: type_annotate_public_apis
 
+import 'package:schedule/department.dart';
 import 'package:schedule/meeting_time.dart';
+import 'package:schedule/subject.dart';
 import 'package:universal_html/parsing.dart';
 
 import 'package:schedule/course.dart';
@@ -103,8 +105,10 @@ void addCourse(var node) {
       );
     }
     final currentCourse = Course(
-      courseDept,
-      courseDept, //Change to subject later when we get fetch_html by Dept/Subj working along with getting the sets from Dept/Subj classes.
+      Department.departmentwithCode(courseDept),
+      Subject.subjectWithCode(
+        courseDept,
+      ), //Change to subject later when we get fetch_html by Dept/Subj working along with getting the sets from Dept/Subj classes.
       courseTitle,
       courseNumber,
       courseLevel,

@@ -143,7 +143,7 @@ class Class {
   }
 
   String getCode() {
-    return course.subject!.code.toString();
+    return course.subject.code.toString();
   }
 
   String getInstructors() {

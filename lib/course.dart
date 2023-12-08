@@ -4,22 +4,17 @@ import 'package:schedule/load_csv.dart';
 
 class Course {
   Course(
-    String departmentCode,
-    String subjectCode,
+    this.department,
+    this.subject,
     this.title,
     this.number,
     this.level,
     this.creditsMin,
     this.creditsMax, [
     this.isGeneralStudies = false,
-  ]) {
-    final departments = Department.instances;
-    department = departments.firstWhere((dept) => departmentCode == dept.code);
-    final subjects = Subject.instances;
-    subject = subjects.firstWhere((subj) => subjectCode == subj.code);
-  }
-  Department? department;
-  Subject? subject;
+  ]);
+  final Department department;
+  final Subject subject;
   final String title;
   final String number;
   final String level;
@@ -79,11 +74,12 @@ class Course {
       courseNumber = courseNumber.replaceAll(' ', '');
       courseNumberOnly = courseNumber.replaceAll(RegExp('[^0-9]'), '');
       final level = int.parse(courseNumberOnly) > 300 ? 'upper' : 'lower';
-
+      final department = Department.departmentwithCode(value[3]);
+      final subject = Subject.subjectWithCode(value[7]);
       _instances.add(
         Course(
-          value[3],
-          value[7],
+          department,
+          subject,
           value[14],
           courseNumber,
           level,
