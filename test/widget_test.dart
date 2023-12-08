@@ -7,10 +7,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:schedule/data_handler.dart';
 
 import 'package:schedule/main.dart';
 
 void main() {
+  setUp(() async {
+    await DataHandler.fetchData(test: true);
+  });
+
   testWidgets('Dropdown Button Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());

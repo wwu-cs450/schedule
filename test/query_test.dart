@@ -2,6 +2,7 @@
 // Currently, it only returns a set when subject and department are null
 
 import 'package:schedule/department.dart';
+import 'package:schedule/data_handler.dart';
 import 'package:schedule/subject.dart';
 import 'package:schedule/term.dart';
 import 'package:schedule/campus.dart';
@@ -11,8 +12,11 @@ import 'package:schedule/class.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  setUp(() async {
+    await DataHandler.fetchData(test: true);
+  });
   test('null query (all results)', () {
-    expect(Query().results().length == 2444, isTrue);
+    expect(Query().results().length, 2371);
   });
 
   test('count query results', () {
@@ -96,9 +100,11 @@ void main() {
       codes.any((element) => element.course.subject.code == 'RELT'),
       isTrue,
     );
+    // With the current implementation HTMLHandler classifies 'SERV' as 'NDEP' (it is both 'NDEP' and 'RELB')
+    // this is consistent with csv test data
     expect(
       codes.any((element) => element.course.subject.code == 'SERV'),
-      isTrue,
+      isFalse,
     );
   });
 

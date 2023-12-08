@@ -1,8 +1,8 @@
 import 'package:schedule/campus.dart';
 import 'package:schedule/course.dart';
+import 'package:schedule/data_handler.dart';
 import 'package:schedule/term.dart';
 import 'package:schedule/instructor.dart';
-import 'package:schedule/load_csv.dart';
 import 'package:schedule/meeting_time.dart';
 
 class Class {
@@ -55,9 +55,8 @@ class Class {
 
   static void _initialize() {
     Course.getAllCourses();
-    final classListFromCsv = getListFromCsv();
-    classListFromCsv.removeAt(0);
-    for (final listing in classListFromCsv) {
+    final classData = DataHandler.data;
+    for (final listing in classData) {
       final Course currCourse =
           Course.instances.firstWhere((each) => each.title == listing[14]);
       final Set<Instructor> currInstructors = Instructor.instances
@@ -65,8 +64,8 @@ class Class {
           .toSet();
       final Campus currCampus =
           Campus.instances.firstWhere((each) => each.code == listing[1]);
-      var termYear = (listing[2] / 1000).truncate().toString() +
-          (listing[2] % 2000).toString();
+      var termYear = (int.parse(listing[2]) / 1000).truncate().toString() +
+          (int.parse(listing[2]) % 2000).toString();
       var termMonth = '';
       var termFound = '';
       for (int i = 8; i <= 12; i++) {
@@ -88,14 +87,14 @@ class Class {
         }
       }
       final termCode = int.parse(termYear + termMonth);
-      final int classNumber = listing[5];
+      final int classNumber = int.parse(listing[5]);
       final Term currTerm =
           Term.instances.firstWhere((each) => each.code == termCode);
       _instances.add(
         Class(
           currCourse,
           currTerm,
-          listing[18], // Max enrollment
+          int.parse(listing[18]), // Max enrollment
           MeetingTime.fromString(listing[21]), // schedule
           listing[22], // Classroom
           currInstructors,

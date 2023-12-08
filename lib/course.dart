@@ -1,6 +1,6 @@
 import 'package:schedule/department.dart';
+import 'package:schedule/data_handler.dart';
 import 'package:schedule/subject.dart';
-import 'package:schedule/load_csv.dart';
 
 class Course {
   Course(
@@ -50,10 +50,8 @@ class Course {
   }
 
   static void getAllCourses() {
-    final classopenCSV = getListFromCsv();
-    // Remove headers
-    classopenCSV.removeAt(0);
-    for (final value in classopenCSV) {
+    final classData = DataHandler.data;
+    for (final value in classData) {
       String courseNumber;
       final String courseNumberOnly;
       // Class number is not specified in one spot, it is specified based on the quarter, Summer, Fall, Winter, Spring, or Summer2
