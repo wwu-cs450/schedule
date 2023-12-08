@@ -1,19 +1,21 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:schedule/course.dart';
+import 'package:schedule/department.dart';
+import 'package:schedule/subject.dart';
 
 void main() {
   test('constructor and accessors', () {
     final course = Course(
-      'CPTR',
-      'CPTR',
+      Department.departmentwithCode('CPTR'),
+      Subject.subjectWithCode('CPTR'),
       'Fundamentals of Programming I',
       '141',
       'lower',
       4,
       4,
     );
-    assert(course.department?.name == 'Computer Science');
-    assert(course.subject?.name == 'Computer Science');
+    assert(course.department.code == 'CPTR');
+    assert(course.subject.code == 'CPTR');
     assert(course.title == 'Fundamentals of Programming I');
     assert(course.number == '141');
     assert(course.level == 'lower');
@@ -22,8 +24,8 @@ void main() {
   });
   test('constructor and accessors on lab', () {
     final course = Course(
-      'ART',
-      'DRMA',
+      Department.departmentwithCode('ART'),
+      Subject.subjectWithCode('DRMA'),
       'Performance',
       '253SN',
       'upper',
