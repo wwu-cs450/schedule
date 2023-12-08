@@ -18,7 +18,19 @@ void main() {
       true,
     );
   });
-
+  test(
+      'instructorWithName for James Foster and the stateError for a notFound name',
+      () {
+    final fosterName = Instructor.instructorWithName('James Foster');
+    expect(fosterName.name, 'James Foster');
+    Object? ex;
+    try {
+      Instructor.instructorWithName('Fake Fakemen');
+    } catch (e) {
+      ex = e;
+    }
+    expect(ex.runtimeType, StateError);
+  });
   test('double instructors', () {
     expect(
       Instructor.instances.any((e) => e.name == 'Deisy Haid, Anali Pesqueira'),

@@ -13,6 +13,13 @@ class Instructor {
     return _instances;
   }
 
+  static Instructor instructorWithName(String name) {
+    final instructorFound =
+        Instructor.instances.firstWhere((instance) => instance.name == name);
+
+    return instructorFound;
+  }
+
   static void _initialize() {
     final classopenCSV = getListFromCsv();
     // Remove headers
