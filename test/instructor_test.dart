@@ -10,11 +10,12 @@ void main() {
 
   test('instances', () {
     final instructors = Instructor.instances;
-    assert(instructors.length == 238);
-    assert(
+    expect(instructors.length, 237);
+    expect(
       instructors.any(
         (element) => element.name == 'James Foster',
       ),
+      true,
     );
   });
 

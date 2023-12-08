@@ -20,8 +20,9 @@ class Instructor {
     for (final value in classopenCSV) {
       final List<String> instructorStrings = value[23].split(', '); // col 23
       for (final instructorString in instructorStrings) {
-        if (!_instances
-            .any((instructor) => instructor.name == instructorString)) {
+        if (instructorString.trim().isNotEmpty &&
+            !_instances
+                .any((instructor) => instructor.name == instructorString)) {
           _instances.add(Instructor(instructorString));
         }
       }
