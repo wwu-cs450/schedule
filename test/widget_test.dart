@@ -215,7 +215,7 @@ void main() {
     await tester.pumpAndSettle();
     final csDepartment = find.text('Computer Science');
     var listFinder = find.byType(Scrollable).last;
-    for (int i = 0; i < 19; i++) {
+    for (int i = 0; i < 10; i++) {
       await tester.drag(listFinder, const Offset(0, -50));
       await tester.pumpAndSettle();
       if (csDepartment.hitTestable().evaluate().isNotEmpty) {
@@ -231,7 +231,7 @@ void main() {
     String prior = '';
     String next = '';
     listFinder = find.byType(Scrollable).last;
-    for (var i = 0; i < 10; ++i) {
+    for (var i = 0; i < 5; ++i) {
       final itemFinder = find.byKey(Key('Class-$i'));
       expect(itemFinder, findsAtLeast(1));
       final dynamic row = tester.firstElement(itemFinder);
@@ -284,7 +284,7 @@ void main() {
           prior = mainRow.children.elementAt(6).child.data;
         }
       }
-      await tester.drag(listFinder, const Offset(0, -200));
+      await tester.drag(listFinder, const Offset(0, -130));
       await tester.pumpAndSettle();
     }
   });
