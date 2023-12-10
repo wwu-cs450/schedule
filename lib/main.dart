@@ -65,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   };
   final startYear = 2023;
   final List<String> keys = [];
+  int selectedIndex = 0; // Page Index
   int lineHeight = 1;
 
   // We will need to adjust this in the future, but for now it isn't used.
@@ -376,25 +377,38 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ListView wideRowBuilder() {
+  ListView wideRowBuilder(List<Class> classes) {
     return ListView.builder(
       key: const Key('Results'),
-      itemCount: _classes.length,
+      itemCount: classes.length,
       itemBuilder: (context, index) {
-        return wideClassRow(_classes[index], index);
+        return wideClassRow(classes[index], index);
       },
     );
   }
 
   Column wideView() {
-    return Column(
-      children: [
-        searchCriteriaWidget(),
-        Text('${(_savedData + _data).length} classes found.'),
-        wideHeaderRow(),
-        Expanded(child: wideRowBuilder()),
-      ],
-    );
+    switch (selectedIndex) {
+      case 0:
+        return Column(
+          children: [
+            searchCriteriaWidget(),
+            Text('${(_savedData + _data).length} classes found.'),
+            wideHeaderRow(),
+            Expanded(child: wideRowBuilder(_classes)),
+          ],
+        );
+      case 1:
+        return Column(
+          children: [
+            Text('${(_savedData + _data).length} classes found.'),
+            wideHeaderRow(),
+            Expanded(child: wideRowBuilder(_savedData)),
+          ],
+        );
+      default:
+        return const Column(children: [Placeholder()]);
+    }
   }
 
   Row mediumHeaderRow() {
@@ -516,25 +530,38 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ListView mediumRowBuilder() {
+  ListView mediumRowBuilder(List<Class> classes) {
     return ListView.builder(
       key: const Key('Results'),
-      itemCount: _classes.length,
+      itemCount: classes.length,
       itemBuilder: (context, index) {
-        return mediumClassRow(_classes[index], index);
+        return mediumClassRow(classes[index], index);
       },
     );
   }
 
   Column mediumView() {
-    return Column(
-      children: [
-        searchCriteriaWidget(),
-        Text('${(_savedData + _data).length} classes found.'),
-        mediumHeaderRow(),
-        Expanded(child: mediumRowBuilder()),
-      ],
-    );
+    switch (selectedIndex) {
+      case 0:
+        return Column(
+          children: [
+            searchCriteriaWidget(),
+            Text('${(_savedData + _data).length} classes found.'),
+            mediumHeaderRow(),
+            Expanded(child: mediumRowBuilder(_classes)),
+          ],
+        );
+      case 1:
+        return Column(
+          children: [
+            Text('${(_savedData + _data).length} classes found.'),
+            mediumHeaderRow(),
+            Expanded(child: mediumRowBuilder(_savedData)),
+          ],
+        );
+      default:
+        return const Column(children: [Placeholder()]);
+    }
   }
 
   Row smallHeaderRow() {
@@ -664,25 +691,38 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ListView smallRowBuilder() {
+  ListView smallRowBuilder(List<Class> classes) {
     return ListView.builder(
       key: const Key('Results'),
-      itemCount: _classes.length,
+      itemCount: classes.length,
       itemBuilder: (context, index) {
-        return smallClassRow(_classes[index], index);
+        return smallClassRow(classes[index], index);
       },
     );
   }
 
   Column smallView() {
-    return Column(
-      children: [
-        searchCriteriaWidget(),
-        Text('${(_savedData + _data).length} classes found.'),
-        smallHeaderRow(),
-        Expanded(child: smallRowBuilder()),
-      ],
-    );
+    switch (selectedIndex) {
+      case 0:
+        return Column(
+          children: [
+            searchCriteriaWidget(),
+            Text('${(_savedData + _data).length} classes found.'),
+            smallHeaderRow(),
+            Expanded(child: smallRowBuilder(_classes)),
+          ],
+        );
+      case 1:
+        return Column(
+          children: [
+            Text('${(_savedData + _data).length} classes found.'),
+            smallHeaderRow(),
+            Expanded(child: smallRowBuilder(_savedData)),
+          ],
+        );
+      default:
+        return const Column(children: [Placeholder()]);
+    }
   }
 
   @override
@@ -708,6 +748,23 @@ class _MyHomePageState extends State<MyHomePage> {
             return const Placeholder();
           }
         },
+      ),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        destinations: const <Widget>[
+          NavigationDestination(
+            icon: Icon(Icons.list),
+            label: 'All Classes',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.event_available),
+            label: 'Saved',
+          ),
+        ],
       ),
     );
   }

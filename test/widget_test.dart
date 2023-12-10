@@ -18,6 +18,8 @@ void main() {
 
   testWidgets('Dropdown Button Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
+    await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
 
     expect(find.byKey(const Key('Campus Dropdown')), findsOneWidget);
@@ -29,13 +31,15 @@ void main() {
 
   testWidgets('Search Criteria does not Overlap with Results',
       (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
     expect(find.byKey(const Key('Search Criteria Widget')), findsOneWidget);
   });
 
   testWidgets('Header Button Test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    // NOTE: This only tests the Mobile horizon-view.
+    await tester.binding.setSurfaceSize(const Size(800, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
 
     expect(find.byKey(const Key('Class\nNumber Header Card')), findsOneWidget);
@@ -56,6 +60,8 @@ void main() {
   });
 
   testWidgets('Search by Campus', (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
 
     final campusDropdown = find.byKey(const Key('Campus Dropdown'));
