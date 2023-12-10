@@ -24,7 +24,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'WWU Class Schedule',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF656950),
+          primary: const Color(0xFF656950),
+        ),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'WWU Class Schedule'),
@@ -50,6 +53,16 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Class> _data = <Class>[]; // To store data to be sorted
   final List<Class> _savedData = <Class>[]; // Saved class data
   List<Class> _classes = <Class>[];
+  late Row sizingRow;
+  Map<String, int> palette = {
+    'green': 0xFF656950,
+    'brown': 0xFF796249,
+    'orange': 0xFFC36D2A,
+    'tan': 0xFFC7AE86,
+    'blue': 0xFF667FA4,
+    'grey-brown': 0xFF877465,
+    'brick-red': 0xFF961400,
+  };
   final startYear = 2023;
   final List<String> keys = [];
 
@@ -277,7 +290,7 @@ class _MyHomePageState extends State<MyHomePage> {
       width: width,
       key: Key('$input Header Card'),
       decoration: BoxDecoration(
-        color: const Color(0xFF336699),
+        color: Color(palette['blue']!),
         border: Border.all(color: Colors.black),
       ),
       child: Text(
@@ -767,7 +780,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.title),
       ),
       body: LayoutBuilder(
