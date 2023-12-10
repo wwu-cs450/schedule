@@ -5,7 +5,7 @@ import 'package:schedule/term.dart';
 import 'package:schedule/instructor.dart';
 import 'package:schedule/meeting_time.dart';
 
-class Class {
+class Class implements Comparable {
   Class(
     this.course,
     this.term,
@@ -15,13 +15,13 @@ class Class {
     this.instructors,
     this.campus,
     this.classNumber, [
+    this.section = 'A',
     this.video = '',
     this.consent = '',
     this.specialNotes = '',
     this.fee = 0,
     this.currEnrollment = 0,
     this.waitlist = 0,
-    this.section = 'A',
     this.isOpenForEnrollment = true,
     this.saved = false,
   ]);
@@ -86,6 +86,7 @@ class Class {
           break;
         }
       }
+      final String section = listing[13];
       final termCode = int.parse(termYear + termMonth);
       final int classNumber = int.parse(listing[5]);
       final Term currTerm =
@@ -100,6 +101,7 @@ class Class {
           currInstructors,
           currCampus,
           classNumber, // Class Number
+          section,
         ),
       );
     }
@@ -155,5 +157,13 @@ class Class {
 
   String getCoN() {
     return course.number.toString();
+  }
+
+  @override
+  int compareTo(dynamic other) {
+    return '${course.subject.code} ${course.number} ${course.title} ${term.code} $section'
+        .compareTo(
+      '${other.course.subject.code} ${other.course.number} ${other.course.title} ${other.term.code} ${other.section}',
+    );
   }
 }

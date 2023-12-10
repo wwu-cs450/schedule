@@ -1,7 +1,7 @@
 import 'package:schedule/subjects_list.dart';
 import 'package:schedule/course.dart';
 
-class Subject {
+class Subject implements Comparable {
   Subject(this.code, this.name);
   final String code;
   final String name;
@@ -28,6 +28,11 @@ class Subject {
 
   static Subject allSubjects() {
     return instances.first;
+  }
+
+  @override
+  int compareTo(dynamic other) {
+    return name.compareTo(other.name);
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:schedule/class.dart';
 
-class Term {
+class Term implements Comparable {
   Term(this.code, this.name);
   final int code;
   final String name;
@@ -37,6 +37,11 @@ class Term {
 
   static Term allTerms() {
     return instances.first;
+  }
+
+  @override
+  int compareTo(dynamic other) {
+    return code.compareTo(other.code);
   }
 }
 

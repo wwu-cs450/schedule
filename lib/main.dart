@@ -91,15 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       campus: _campus,
       classNumber: _classNumber,
     ).results().toList();
-    // Sorting will be changed by Issue 63.
-    _data.sort((a, b) {
-      final aKey =
-          '${a.course.subject.code} ${a.course.number} ${a.term.code} ${a.section}';
-      final bKey =
-          '${b.course.subject.code} ${b.course.number} ${b.term.code} ${b.section}';
-      return aKey.compareTo(bKey);
-    });
-
+    _data.sort();
     _classes = _savedData + _data;
   }
 

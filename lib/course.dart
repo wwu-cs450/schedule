@@ -2,7 +2,7 @@ import 'package:schedule/department.dart';
 import 'package:schedule/data_handler.dart';
 import 'package:schedule/subject.dart';
 
-class Course {
+class Course implements Comparable {
   Course(
     this.department,
     this.subject,
@@ -87,5 +87,11 @@ class Course {
         ),
       );
     }
+  }
+
+  @override
+  int compareTo(dynamic other) {
+    return '$number ${subject.code} $title'
+        .compareTo('${other.number} ${other.subject.code} ${other.title} ');
   }
 }
