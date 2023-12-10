@@ -31,18 +31,37 @@ class Course implements Comparable {
     return _instances;
   }
 
+  // Handle date format
   static List<double> creditSplit(String input) {
     late double creditsMin;
     late double creditsMax;
+    const List<String> months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    final monthNum = months.indexWhere((each) => input.contains(each)) + 1;
     if (double.tryParse(input) != null) {
       creditsMin = double.tryParse(input)!;
       creditsMax = creditsMin;
+    } else if (monthNum > 0) {
+      creditsMax = double.tryParse(input.split('-')[0]) ?? 0;
+      creditsMin = monthNum.toDouble();
     } else if (input.contains('-') && input.length >= 3) {
       creditsMin = double.tryParse(input.split('-')[0]) ?? 0;
       creditsMax = double.tryParse(input.split('-')[1]) ?? creditsMin;
     } else {
       throw FormatException(
-        "Neither a single number nor of the format 'n-n' : ",
+        "Neither a single number nor of the format 'n-n' nor of the format 'n-month' : ",
         input,
       );
     }

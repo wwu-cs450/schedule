@@ -38,11 +38,23 @@ void main() {
     );
     assert(course.number == '253SN');
   });
-  test('course credit numbers from HTML', () {
+  test('course credit numbers from CSV', () {
     final courses = Course.instances;
     assert(
       courses.any(
         (element) => element.creditsMin == 4.5,
+      ),
+    );
+    assert(
+      courses.any(
+        (element) =>
+            element.creditsMin == 1 &&
+            element.creditsMax == 4, // Test for NRSG494 Internship
+      ),
+    );
+    assert(
+      courses.any(
+        (element) => element.creditsMin != element.creditsMax,
       ),
     );
     assert(

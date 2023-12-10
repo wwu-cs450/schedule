@@ -8,6 +8,7 @@ import 'package:schedule/campus.dart';
 import 'package:schedule/department.dart';
 import 'package:schedule/subject.dart';
 import 'package:schedule/term.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   await DataHandler.fetchData();
@@ -475,8 +476,11 @@ class _MyHomePageState extends State<MyHomePage> {
       'Spring ${startYear + 1}',
       'Summer ${startYear + 1}',
     ];
-    final credits =
-        addLinesTo('${aClass.course.creditsMin}-${aClass.course.creditsMax}');
+    final credits = addLinesTo(
+      aClass.course.creditsMax == aClass.course.creditsMin
+          ? '${aClass.course.creditsMax}'
+          : '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
+    );
     final enroll = [
       addLinesTo(aClass.currEnrollment.toString()),
       addLinesTo(aClass.maxEnrollment.toString()),
@@ -730,7 +734,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(widget.title),
+        foregroundColor: Colors.white,
+        title: Text(
+          widget.title,
+          style: GoogleFonts.getFont('Playfair'),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
