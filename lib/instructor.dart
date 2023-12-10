@@ -1,6 +1,6 @@
 import 'package:schedule/data_handler.dart';
 
-class Instructor {
+class Instructor implements Comparable {
   Instructor(this.name);
   final String name;
 
@@ -32,6 +32,11 @@ class Instructor {
         }
       }
     }
+  }
+
+  @override
+  int compareTo(dynamic other) {
+    return name.compareTo(other.name);
   }
 
   @override

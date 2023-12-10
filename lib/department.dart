@@ -1,7 +1,7 @@
 import 'package:schedule/departments_list.dart';
 import 'package:schedule/course.dart';
 
-class Department {
+class Department implements Comparable {
   Department(this.code, this.name);
   final String code;
   final String name;
@@ -28,6 +28,11 @@ class Department {
 
   static Department allDepartments() {
     return instances.first;
+  }
+
+  @override
+  int compareTo(dynamic other) {
+    return name.compareTo(other.name);
   }
 }
 
