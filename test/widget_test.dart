@@ -83,6 +83,8 @@ void main() {
   });
 
   testWidgets('Search by Department', (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
 
     final departmentDropdown = find.byKey(const Key('Department Dropdown'));
@@ -104,19 +106,7 @@ void main() {
     // Tapping department dropdown.
     await tester.tap(departmentDropdown);
     await tester.pumpAndSettle();
-    // Department dropdown open.
-
-    // Scroll through the dropdown menu and look for both "Computer Science" and "Communication".
-    final listFinder = find.byType(Scrollable).last;
-    for (int i = 0; i < 19; i++) {
-      await tester.drag(listFinder, const Offset(0, -50));
-      await tester.pumpAndSettle();
-      if (csDepartment.hitTestable().evaluate().isNotEmpty &&
-          commDepartment.hitTestable().evaluate().isNotEmpty) {
-        break;
-      }
-    }
-    // "Computer Science" and "Communication"
+    // find "Computer Science" and "Communication"
     expect(csDepartment.hitTestable(), findsOneWidget);
     expect(commDepartment.hitTestable(), findsOneWidget);
 
@@ -131,6 +121,8 @@ void main() {
   });
 
   testWidgets('Search by Subject', (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(2000, 3000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
 
     final subjectDropdown = find.byKey(const Key('Subject Dropdown'));
@@ -148,18 +140,6 @@ void main() {
     // Open dropdown.
     await tester.tap(subjectDropdown);
     await tester.pumpAndSettle();
-
-    // Scroll through dropdown.
-    // Scroll through the dropdown menu and look for both "Health" and "History".
-    final listFinder = find.byType(Scrollable).last;
-    for (int i = 0; i < 87; i++) {
-      await tester.drag(listFinder, const Offset(0, -50));
-      await tester.pumpAndSettle();
-      if (hlthSubject.hitTestable().evaluate().isNotEmpty &&
-          histSubject.hitTestable().evaluate().isNotEmpty) {
-        break;
-      }
-    }
     expect(hlthSubject.hitTestable(), findsOneWidget);
     expect(histSubject.hitTestable(), findsOneWidget);
 
@@ -173,6 +153,8 @@ void main() {
   });
 
   testWidgets('Search by Term', (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
 
     final termDropdown = find.byKey(const Key('Term Dropdown'));
@@ -190,15 +172,6 @@ void main() {
     expect(spring.hitTestable(), findsOneWidget);
     expect(winter.hitTestable(), findsOneWidget);
 
-    final listFinder = find.byType(Scrollable).last;
-    for (int i = 0; i < 87; i++) {
-      await tester.drag(listFinder, const Offset(0, -50));
-      await tester.pumpAndSettle();
-      if (spring.hitTestable().evaluate().isNotEmpty) {
-        break;
-      }
-    }
-
     await tester.tap(spring.hitTestable());
     await tester.pumpAndSettle();
     expect(spring.hitTestable(), findsAtLeast(1));
@@ -207,90 +180,61 @@ void main() {
   });
 
   testWidgets('Default Sort', (WidgetTester tester) async {
-    // Currently this test uses the first 10 items in the CS department
-    // So, we're assuming that if the first 10 are sorted, the rest are too.
-    // Note, we may need to update this to account for the varying row heights, which is why the first 10 were the only ones used.
+    String textInCellWithKey(Element element, String key) {
+      final cellRow = element as MultiChildRenderObjectElement;
+      final cell = cellRow.children.firstWhere(
+        (element) => element.widget.key == Key(key),
+      );
+      final subjectCell = cell.widget as Container;
+      final text = subjectCell.child as Text;
+      return text.data!.trim();
+    }
 
     // launch app
+    await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MyApp());
+
     // select 'Computer Science'
     final departmentDropdown = find.byKey(const Key('Department Dropdown'));
-    expect(departmentDropdown.hitTestable(), findsOneWidget);
     await tester.tap(departmentDropdown);
     await tester.pumpAndSettle();
     final csDepartment = find.text('Computer Science');
-    var listFinder = find.byType(Scrollable).last;
-    for (int i = 0; i < 10; i++) {
-      await tester.drag(listFinder, const Offset(0, -50));
-      await tester.pumpAndSettle();
-      if (csDepartment.hitTestable().evaluate().isNotEmpty) {
-        break;
-      }
-    }
-    expect(csDepartment.hitTestable(), findsOneWidget);
     await tester.tap(csDepartment.hitTestable());
     await tester.pumpAndSettle();
-    // verify that the full list exists
 
     // verify sort order of subject number
     String prior = '';
     String next = '';
-    listFinder = find.byType(Scrollable).last;
-    for (var i = 0; i < 5; ++i) {
-      final itemFinder = find.byKey(Key('Class-$i'));
-      expect(itemFinder, findsAtLeast(1));
-      final dynamic row = tester.firstElement(itemFinder);
-      expect(row.children.length, 2);
-      final dynamic box = row.widget.children.elementAt(1);
-      expect(box.child.children.length, 3);
-
-      // get <String>[] of the row contents
-      //  row.children.elementAt(#) = Container
-      //  row.children.elementAt(#).child = Text
-      final mainRow = box.child.children.elementAt(1);
-      if (i > 0) {
-        if (mainRow.children.elementAt(2).child != ' ') {
-          // Check Sum of last year
-          next = mainRow.children.elementAt(2).child.data;
-        } else if (mainRow.children.elementAt(3).child != ' ') {
-          // Check Fall of this year
-          next = mainRow.children.elementAt(3).child.data;
-        } else if (mainRow.children.elementAt(4).child != ' ') {
-          // Check Winter of this year
-          next = mainRow.children.elementAt(4).child.data;
-        } else if (mainRow.children.elementAt(5).child != ' ') {
-          // Check Spring of this year
-          next = mainRow.children.elementAt(5).child.data;
-        } else {
-          // Check Summer of this year
-          next = mainRow.children.elementAt(6).child.data;
-        }
-        expect(
-          prior.compareTo(next) <= 0,
-          isTrue,
-          reason: 'Sort Failure prior:$prior next:$next.',
-        );
-        prior = next;
-      } else {
-        if (mainRow.children.elementAt(2).child != ' ') {
-          // Check Sum of last year
-          prior = mainRow.children.elementAt(2).child.data;
-        } else if (mainRow.children.elementAt(3).child != ' ') {
-          // Check Fall of this year
-          prior = mainRow.children.elementAt(3).child.data;
-        } else if (mainRow.children.elementAt(4).child != ' ') {
-          // Check Winter of this year
-          prior = mainRow.children.elementAt(4).child.data;
-        } else if (mainRow.children.elementAt(5).child != ' ') {
-          // Check Spring of this year
-          prior = mainRow.children.elementAt(5).child.data;
-        } else {
-          // Check Summer of this year
-          prior = mainRow.children.elementAt(6).child.data;
-        }
+    final itemFinder = find.byKey(const Key('Class'));
+    for (final each in itemFinder.evaluate()) {
+      final subject = textInCellWithKey(each, 'Subject');
+      final summer1 = textInCellWithKey(each, 'Summer1');
+      final fall = textInCellWithKey(each, 'Fall');
+      final winter = textInCellWithKey(each, 'Winter');
+      final spring = textInCellWithKey(each, 'Spring');
+      final summer2 = textInCellWithKey(each, 'Summer2');
+      final section = textInCellWithKey(each, 'Section');
+      final number = '$summer1$fall$winter$spring$summer2';
+      late int term;
+      if (summer1.isNotEmpty) {
+        term = 1;
+      } else if (fall.isNotEmpty) {
+        term = 2;
+      } else if (winter.isNotEmpty) {
+        term = 3;
+      } else if (spring.isNotEmpty) {
+        term = 4;
+      } else if (summer2.isNotEmpty) {
+        term = 5;
       }
-      await tester.drag(listFinder, const Offset(0, -130));
-      await tester.pumpAndSettle();
+      next = '$subject $number $term $section';
+      expect(
+        prior.compareTo(next) < 0,
+        isTrue,
+        reason: 'Sort Failure prior: "$prior" next: "$next".',
+      );
+      prior = next;
     }
   });
 }

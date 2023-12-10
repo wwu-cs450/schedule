@@ -161,9 +161,9 @@ class Class implements Comparable {
 
   @override
   int compareTo(dynamic other) {
-    return '${course.subject.code} ${course.number} ${course.title} ${term.code} $section'
+    return '${course.subject.code} ${course.number} ${term.code} $section'
         .compareTo(
-      '${other.course.subject.code} ${other.course.number} ${other.course.title} ${other.term.code} ${other.section}',
+      '${other.course.subject.code} ${other.course.number} ${other.term.code} ${other.section}',
     );
   }
 }
