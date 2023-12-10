@@ -65,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   };
   final startYear = 2023;
   final List<String> keys = [];
+  int lineHeight = 1;
 
   // We will need to adjust this in the future, but for now it isn't used.
   // void inputQuarters() {
@@ -113,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  String addLinesTo(String aString, int lineHeight) {
+  String addLinesTo(String aString) {
     final initialCount = aString.split('\n').length;
     var result = aString;
     for (var i = initialCount; i < lineHeight; i++) {
@@ -263,15 +264,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Container cell(String input, double width, int bkgndColor, int lineHeight) {
+  Container cell(String keyString, String input, double width, int bkgndColor) {
     return Container(
+      key: Key(keyString),
       width: width,
       decoration: BoxDecoration(
         color: Color(bkgndColor),
         border: Border.all(color: Colors.white),
       ),
       child: Text(
-        addLinesTo(input, lineHeight),
+        addLinesTo(input),
         style: const TextStyle(color: Color(0xFF00003e)),
       ),
     );
@@ -322,15 +324,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Row wideClassRow(Class aClass, int index) {
+    lineHeight = getLineHeight(aClass);
     // Default, Summer, Fall, Winter, Spring
     final List<int> aColor = getColor(index);
     final instructors = aClass.getInstructors();
     final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
-    final lineHeight = getLineHeight(aClass);
-    final room = addLinesTo(aClass.classroom, lineHeight);
-    final schedule = addLinesTo(aClass.schedule.toString(), lineHeight);
-    final instruct = addLinesTo(instructors, lineHeight);
+    final room = addLinesTo(aClass.classroom);
+    final schedule = addLinesTo(aClass.schedule.toString());
+    final instruct = addLinesTo(instructors);
     final qtrs = [
       'Summer $startYear',
       'Fall $startYear',
@@ -338,79 +340,38 @@ class _MyHomePageState extends State<MyHomePage> {
       'Spring ${startYear + 1}',
       'Summer ${startYear + 1}',
     ];
-    final credits = addLinesTo(
-      '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
-      lineHeight,
-    );
+    final credits =
+        addLinesTo('${aClass.course.creditsMin}-${aClass.course.creditsMax}');
     final enroll = [
-      addLinesTo(aClass.currEnrollment.toString(), lineHeight),
-      addLinesTo(aClass.maxEnrollment.toString(), lineHeight),
+      addLinesTo(aClass.currEnrollment.toString()),
+      addLinesTo(aClass.maxEnrollment.toString()),
     ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      key: Key('Class-$index'),
+      key: const Key('Class'),
       children: [
         savedBox(aClass),
-
-        // Class # Cell
-        cell(aClass.getClN(), 60, aColor[0], lineHeight),
-
-        // Subject Cell
-        cell(aClass.getCode(), 80.0, aColor[0], lineHeight),
-
-        // Summer 2023
-        cell(getTerm(aClass, qtrs[0]), 55.0, aColor[1], lineHeight),
-
-        // Fall 2023
-        cell(getTerm(aClass, qtrs[1]), 55.0, aColor[2], lineHeight),
-
-        // Winter 2024
-        cell(getTerm(aClass, qtrs[2]), 55.0, aColor[3], lineHeight),
-
-        // Spring 2024
-        cell(getTerm(aClass, qtrs[3]), 55.0, aColor[4], lineHeight),
-
-        // Summer 2024
-        cell(getTerm(aClass, qtrs[4]), 55.0, aColor[1], lineHeight),
-
-        // Class Section Cell
-        cell(aClass.section, 40.0, aColor[0], lineHeight),
-
-        // General Studies Cell
-        cell(gs, 40.0, aColor[0], lineHeight),
-
-        // Credits Cell
-        cell(credits, 60.0, aColor[0], lineHeight),
-
-        // Title Cell
-        cell(aClass.course.title, 300.0, aColor[0], lineHeight),
-
-        // Status Cell
-        cell(status, 65.0, aColor[0], lineHeight),
-
-        // Enrollment Count Cell
-        cell(enroll[0], 60.0, aColor[0], lineHeight),
-
-        // Enrollment Limit Cell
-        cell(enroll[1], 60.0, aColor[0], lineHeight),
-
-        // Waitlist Cell
-        cell(aClass.waitlist.toString(), 60.0, aColor[0], lineHeight),
-
-        // Fee Cell
-        cell(aClass.fee.toString(), 70.0, aColor[0], lineHeight),
-
-        // Schedule Cell
-        cell(schedule, 145.0, aColor[0], lineHeight),
-
-        // Classroom Cell
-        cell(room, 80.0, aColor[0], lineHeight),
-
-        // Instructor(s) Cell
-        cell(instruct, 150.0, aColor[0], lineHeight),
-        // Campus Cell
-        cell(aClass.getCampus(), 200.0, aColor[0], lineHeight),
+        cell('ClassNumber', aClass.getClN(), 60, aColor[0]),
+        cell('Subject', aClass.getCode(), 80.0, aColor[0]),
+        cell('Summer1', getTerm(aClass, qtrs[0]), 55.0, aColor[1]),
+        cell('Fall', getTerm(aClass, qtrs[1]), 55.0, aColor[2]),
+        cell('Winter', getTerm(aClass, qtrs[2]), 55.0, aColor[3]),
+        cell('Spring', getTerm(aClass, qtrs[3]), 55.0, aColor[4]),
+        cell('Summer2', getTerm(aClass, qtrs[4]), 55.0, aColor[1]),
+        cell('Section', aClass.section, 40.0, aColor[0]),
+        cell('GS', gs, 40.0, aColor[0]),
+        cell('Credits', credits, 60.0, aColor[0]),
+        cell('Title', aClass.course.title, 300.0, aColor[0]),
+        cell('Status', status, 65.0, aColor[0]),
+        cell('Enrollment', enroll[0], 60.0, aColor[0]),
+        cell('EnrollmentLimit', enroll[1], 60.0, aColor[0]),
+        cell('WaitlistSize', aClass.waitlist.toString(), 60.0, aColor[0]),
+        cell('Fee', aClass.fee.toString(), 70.0, aColor[0]),
+        cell('Schedule', schedule, 145.0, aColor[0]),
+        cell('Classroom', room, 80.0, aColor[0]),
+        cell('Instructors', instruct, 150.0, aColor[0]),
+        cell('Campus', aClass.getCampus(), 200.0, aColor[0]),
       ],
     );
   }
@@ -484,15 +445,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Row mediumClassRow(Class aClass, int index) {
+    lineHeight = getLineHeight(aClass);
     // Default, Summer, Fall, Winter, Spring
     final aColor = getColor(index);
     final instructors = aClass.getInstructors();
     final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
-    final lineHeight = getLineHeight(aClass);
-    final room = addLinesTo(aClass.classroom, lineHeight);
-    final schedule = addLinesTo(aClass.schedule.toString(), lineHeight);
-    final instruct = addLinesTo(instructors, lineHeight);
+    final room = addLinesTo(aClass.classroom);
+    final schedule = addLinesTo(aClass.schedule.toString());
+    final instruct = addLinesTo(instructors);
     final qtrs = [
       'Summer $startYear',
       'Fall $startYear',
@@ -500,17 +461,16 @@ class _MyHomePageState extends State<MyHomePage> {
       'Spring ${startYear + 1}',
       'Summer ${startYear + 1}',
     ];
-    final credits = addLinesTo(
-      '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
-      lineHeight,
-    );
+    final credits =
+        addLinesTo('${aClass.course.creditsMin}-${aClass.course.creditsMax}');
     final enroll = [
-      addLinesTo(aClass.currEnrollment.toString(), lineHeight),
-      addLinesTo(aClass.maxEnrollment.toString(), lineHeight),
+      addLinesTo(aClass.currEnrollment.toString()),
+      addLinesTo(aClass.maxEnrollment.toString()),
     ];
+    final waitList = aClass.waitlist.toString();
 
     return Row(
-      key: Key('Class-$index'),
+      key: const Key('Class'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         savedBox(aClass), // create a checkbox for the row
@@ -520,54 +480,33 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           position: DecorationPosition.foreground,
           child: Column(
-            key: Key('Class-$index'),
             children: [
               Row(
                 children: [
-                  // Class # Cell
-                  cell(aClass.getClN(), 120, aColor[0], 1),
-                  // Subject Cell
-                  cell(aClass.getCode(), 80.0, aColor[0], 1),
-                  // Summer 2023
-                  cell(getTerm(aClass, qtrs[0]), 70.0, aColor[1], 1),
-                  // Fall 2023
-                  cell(getTerm(aClass, qtrs[1]), 70.0, aColor[2], 1),
-                  // Winter 2024
-                  cell(getTerm(aClass, qtrs[2]), 70.0, aColor[3], 1),
-                  // Spring 2024
-                  cell(getTerm(aClass, qtrs[3]), 70.0, aColor[4], 1),
-                  // Summer 2024
-                  cell(getTerm(aClass, qtrs[4]), 70.0, aColor[1], 1),
-                  // Class Section Cell
-                  cell(aClass.section, 40.0, aColor[0], 1),
-                  // General Studies Cell
-                  cell(gs, 45.0, aColor[0], 1),
-                  // Enrollment Count Cell
-                  cell(enroll[0].trim(), 85.0, aColor[0], 1),
-                  // Enrollment Limit Cell
-                  cell(enroll[1].trim(), 85.0, aColor[0], 1),
-                  // Status Cell
-                  cell(status, 70.0, aColor[0], 1),
-                  // Waitlist Cell
-                  cell(aClass.waitlist.toString(), 65.0, aColor[0], 1),
+                  cell('ClassNumber', aClass.getClN(), 120, aColor[0]),
+                  cell('Subject', aClass.getCode(), 80.0, aColor[0]),
+                  cell('Summer1', getTerm(aClass, qtrs[0]), 70.0, aColor[1]),
+                  cell('Fall', getTerm(aClass, qtrs[1]), 70.0, aColor[2]),
+                  cell('Winter', getTerm(aClass, qtrs[2]), 70.0, aColor[3]),
+                  cell('Spring', getTerm(aClass, qtrs[3]), 70.0, aColor[4]),
+                  cell('Summer2', getTerm(aClass, qtrs[4]), 70.0, aColor[1]),
+                  cell('Section', aClass.section, 40.0, aColor[0]),
+                  cell('GS', gs, 45.0, aColor[0]),
+                  cell('Enrollment', enroll[0].trim(), 85.0, aColor[0]),
+                  cell('EnrollmentLimit', enroll[1].trim(), 85.0, aColor[0]),
+                  cell('Status', status, 70.0, aColor[0]),
+                  cell('WaitlistSize', waitList, 65.0, aColor[0]),
                 ],
               ),
               Row(
                 children: [
-                  // Title Cell
-                  cell(aClass.course.title, 310.0, aColor[0], lineHeight),
-                  // Credits Cell
-                  cell(credits, 70.0, aColor[0], lineHeight),
-                  // Schedule Cell
-                  cell(schedule, 155.0, aColor[0], lineHeight),
-                  // Classroom Cell
-                  cell(room, 100.0, aColor[0], lineHeight),
-                  // Instructor(s) Cell
-                  cell(instruct, 150.0, aColor[0], lineHeight),
-                  // Campus Cell
-                  cell(aClass.getCampus(), 80.0, aColor[0], lineHeight),
-                  // Fee Cell
-                  cell(aClass.fee.toString(), 70.0, aColor[0], lineHeight),
+                  cell('Title', aClass.course.title, 310.0, aColor[0]),
+                  cell('Credits', credits, 70.0, aColor[0]),
+                  cell('Schedule', schedule, 155.0, aColor[0]),
+                  cell('Classroom', room, 100.0, aColor[0]),
+                  cell('Instructors', instruct, 150.0, aColor[0]),
+                  cell('Campus', aClass.getCampus(), 80.0, aColor[0]),
+                  cell('Fee', aClass.fee.toString(), 70.0, aColor[0]),
                 ],
               ),
             ],
@@ -650,15 +589,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Row smallClassRow(Class aClass, int index) {
+    lineHeight = getLineHeight(aClass);
     // Default, Summer, Fall, Winter, Spring
     final aColor = getColor(index);
     final instructors = aClass.getInstructors();
     final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
-    final lineHeight = getLineHeight(aClass);
-    final room = addLinesTo(aClass.classroom, lineHeight);
-    final schedule = addLinesTo(aClass.schedule.toString(), lineHeight);
-    final instruct = addLinesTo(instructors, lineHeight);
+    final room = addLinesTo(aClass.classroom);
+    final schedule = addLinesTo(aClass.schedule.toString());
+    final instruct = addLinesTo(instructors);
     final qtrs = [
       'Summer $startYear',
       'Fall $startYear',
@@ -666,17 +605,16 @@ class _MyHomePageState extends State<MyHomePage> {
       'Spring ${startYear + 1}',
       'Summer ${startYear + 1}',
     ];
-    final credits = addLinesTo(
-      '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
-      lineHeight,
-    );
+    final credits =
+        addLinesTo('${aClass.course.creditsMin}-${aClass.course.creditsMax}');
     final enroll = [
-      addLinesTo(aClass.currEnrollment.toString(), lineHeight),
-      addLinesTo(aClass.maxEnrollment.toString(), lineHeight),
+      addLinesTo(aClass.currEnrollment.toString()),
+      addLinesTo(aClass.maxEnrollment.toString()),
     ];
+    final waitList = aClass.waitlist.toString();
 
     return Row(
-      key: Key('Class-$index'),
+      key: const Key('Class'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         savedBox(aClass), // create a checkbox for the row
@@ -686,58 +624,37 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           position: DecorationPosition.foreground,
           child: Column(
-            key: Key('Class-$index'),
             children: [
               Row(
                 children: [
-                  // Class # Cell
-                  cell(aClass.getClN(), 120, aColor[0], lineHeight),
-                  // Subject Cell
-                  cell(aClass.getCode(), 80.0, aColor[0], lineHeight),
-                  // Summer 2023
-                  cell(getTerm(aClass, qtrs[0]), 55.0, aColor[1], lineHeight),
-                  // Fall 2023
-                  cell(getTerm(aClass, qtrs[1]), 55.0, aColor[2], lineHeight),
-                  // Winter 2024
-                  cell(getTerm(aClass, qtrs[2]), 55.0, aColor[3], lineHeight),
-                  // Spring 2024
-                  cell(getTerm(aClass, qtrs[3]), 55.0, aColor[4], lineHeight),
-                  // Summer 2024
-                  cell(getTerm(aClass, qtrs[4]), 55.0, aColor[1], lineHeight),
-                  // Class Section Cell
-                  cell(aClass.section, 40.0, aColor[0], lineHeight),
-                  // Credits Cell
-                  cell(credits, 70.0, aColor[0], lineHeight),
+                  cell('ClassNumber', aClass.getClN(), 120, aColor[0]),
+                  cell('Subject', aClass.getCode(), 80.0, aColor[0]),
+                  cell('Summer1', getTerm(aClass, qtrs[0]), 55.0, aColor[1]),
+                  cell('Fall', getTerm(aClass, qtrs[1]), 55.0, aColor[2]),
+                  cell('Winter', getTerm(aClass, qtrs[2]), 55.0, aColor[3]),
+                  cell('Spring', getTerm(aClass, qtrs[3]), 55.0, aColor[4]),
+                  cell('Summer2', getTerm(aClass, qtrs[4]), 55.0, aColor[1]),
+                  cell('Section', aClass.section, 40.0, aColor[0]),
+                  cell('Credits', credits, 70.0, aColor[0]),
                 ],
               ),
               Row(
                 children: [
-                  // Title Cell
-                  cell(aClass.course.title, 310.0, aColor[0], lineHeight),
-                  // General Studies Cell
-                  cell(gs, 40.0, aColor[0], lineHeight),
-                  // Enrollment Count Cell
-                  cell(enroll[0], 85.0, aColor[0], lineHeight),
-                  // Enrollment Limit Cell
-                  cell(enroll[1], 85.0, aColor[0], lineHeight),
-                  // Waitlist Cell
-                  cell(aClass.waitlist.toString(), 65.0, aColor[0], lineHeight),
+                  cell('Title', aClass.course.title, 310.0, aColor[0]),
+                  cell('GS', gs, 40.0, aColor[0]),
+                  cell('Enrollment', enroll[0], 85.0, aColor[0]),
+                  cell('EnrollmentLimit', enroll[1], 85.0, aColor[0]),
+                  cell('WaitlistSize', waitList, 65.0, aColor[0]),
                 ],
               ),
               Row(
                 children: [
-                  // Schedule Cell
-                  cell(schedule, 155.0, aColor[0], lineHeight),
-                  // Classroom Cell
-                  cell(room, 80.0, aColor[0], lineHeight),
-                  // Instructor(s) Cell
-                  cell(instruct, 150.0, aColor[0], lineHeight),
-                  // Campus Cell
-                  cell(aClass.getCampus(), 60.0, aColor[0], lineHeight),
-                  // Fee Cell
-                  cell(aClass.fee.toString(), 70.0, aColor[0], lineHeight),
-                  // Status Cell
-                  cell(status, 70.0, aColor[0], lineHeight),
+                  cell('Schedule', schedule, 155.0, aColor[0]),
+                  cell('Classroom', room, 80.0, aColor[0]),
+                  cell('Instructors', instruct, 150.0, aColor[0]),
+                  cell('Campus', aClass.getCampus(), 60.0, aColor[0]),
+                  cell('Fee', aClass.fee.toString(), 70.0, aColor[0]),
+                  cell('Status', status, 70.0, aColor[0]),
                 ],
               ),
             ],
