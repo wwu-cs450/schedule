@@ -53,6 +53,38 @@ class Class implements Comparable {
     return _instances;
   }
 
+  /*
+  0  CRSE_OFFER_NBR
+  1  CAMPUS
+  2  ACAD_YEAR
+  3  ACAD_ORG
+  4  WWU_ACAD_ORG_DESCR
+  5  CLASS_NBR
+  6  WWU_GS
+  7  SUBJECT
+  8  WWU_SUM1
+  9  WWU_AUT
+  10  WWU_WTR
+  11  WWU_SPR
+  12  WWU_SUM2
+  13  CLASS_SECTION
+  14  DESCR
+  15  WWU_UNITS
+  16  ENRL_STAT
+  17  ENRL_TOT
+  18  ENRL_CAP
+  19  WAIT_TOT
+  20  FEE_AMT
+  21  WWU_MTG_PAT_COMB
+  22  WWU_ROOM
+  23  WWU_INSTR_NAME
+  24  DESCRLONG
+  25  INSTRUCTION_MODE
+  26  SCHEDULE_PRINT
+  27  VIDEO_LINK
+  28  CONSENT
+  29  CONSENT_DESCR
+  */
   static void _initialize() {
     Course.getAllCourses();
     final classData = DataHandler.data;
@@ -121,27 +153,7 @@ class Class implements Comparable {
     }
   }
 
-  String getCampus() {
-    if (campus.name == 'Adventist Colleges Abroad') {
-      return 'ACA';
-    } else if (campus.name == 'Acadeum') {
-      return 'ACDM';
-    } else if (campus.name == 'Billings') {
-      return 'BI';
-    } else if (campus.name == 'College Place') {
-      return 'CP';
-    } else if (campus.name == 'LA Film Studies Center') {
-      return 'LAFS';
-    } else if (campus.name == 'Missoula') {
-      return 'MI';
-    } else if (campus.name == 'Portland') {
-      return 'PD';
-    } else if (campus.name == 'Rosario') {
-      return 'RO';
-    } else {
-      return 'Online';
-    }
-  }
+  String getCampus() => campus.code;
 
   String getCode() {
     return course.subject.code.toString();
