@@ -342,8 +342,11 @@ class _MyHomePageState extends State<MyHomePage> {
       'Spring ${startYear + 1}',
       'Summer ${startYear + 1}',
     ];
-    final credits =
-        addLinesTo('${aClass.course.creditsMin}-${aClass.course.creditsMax}');
+    final credits = addLinesTo(
+      aClass.course.creditsMax == aClass.course.creditsMin
+          ? '${aClass.course.creditsMax}'
+          : '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
+    );
     final enroll = [
       addLinesTo(aClass.currEnrollment.toString()),
       addLinesTo(aClass.maxEnrollment.toString()),
@@ -636,8 +639,11 @@ class _MyHomePageState extends State<MyHomePage> {
       'Spring ${startYear + 1}',
       'Summer ${startYear + 1}',
     ];
-    final credits =
-        addLinesTo('${aClass.course.creditsMin}-${aClass.course.creditsMax}');
+    final credits = addLinesTo(
+      aClass.course.creditsMax == aClass.course.creditsMin
+          ? '${aClass.course.creditsMax}'
+          : '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
+    );
     final enroll = [
       addLinesTo(aClass.currEnrollment.toString()),
       addLinesTo(aClass.maxEnrollment.toString()),
