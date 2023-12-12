@@ -89,8 +89,15 @@ class Class implements Comparable {
     Course.getAllCourses();
     final classData = DataHandler.data;
     for (final listing in classData) {
-      final Course currCourse =
-          Course.instances.firstWhere((each) => each.title == listing[14]);
+      final courseNumber = '${listing[8].trim()}'
+          '${listing[9].trim()}'
+          '${listing[10].trim()}'
+          '${listing[11].trim()}'
+          '${listing[12].trim()}';
+      final currCourse = Course.instances.firstWhere(
+        (each) =>
+            each.subject.code == listing[7] && each.number == courseNumber,
+      );
       final Set<Instructor> currInstructors = Instructor.instances
           .where((each) => listing[23].contains(each.name))
           .toSet();
