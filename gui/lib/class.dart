@@ -1,9 +1,9 @@
-import 'package:schedule/campus.dart';
-import 'package:schedule/course.dart';
-import 'package:schedule/data_handler.dart';
-import 'package:schedule/term.dart';
-import 'package:schedule/instructor.dart';
-import 'package:schedule/meeting_time.dart';
+import 'package:gui/campus.dart';
+import 'package:gui/course.dart';
+import 'package:gui/data_handler.dart';
+import 'package:gui/term.dart';
+import 'package:gui/instructor.dart';
+import 'package:gui/meeting_time.dart';
 
 class Class implements Comparable {
   Class(

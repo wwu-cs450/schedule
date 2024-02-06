@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:schedule/instructor.dart';
-import 'package:schedule/data_handler.dart';
+import 'package:gui/instructor.dart';
+import 'package:gui/data_handler.dart';
 
 void main() {
   setUp(() async {

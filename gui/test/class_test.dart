@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:schedule/campus.dart';
-import 'package:schedule/course.dart';
-import 'package:schedule/department.dart';
-import 'package:schedule/instructor.dart';
-import 'package:schedule/data_handler.dart';
-import 'package:schedule/subject.dart';
-import 'package:schedule/term.dart';
-import 'package:schedule/class.dart';
-import 'package:schedule/meeting_time.dart';
+import 'package:gui/campus.dart';
+import 'package:gui/course.dart';
+import 'package:gui/department.dart';
+import 'package:gui/instructor.dart';
+import 'package:gui/data_handler.dart';
+import 'package:gui/subject.dart';
+import 'package:gui/term.dart';
+import 'package:gui/class.dart';
+import 'package:gui/meeting_time.dart';
 
 Set<Instructor> instructors = {Instructor('James Foster')};
 void main() {

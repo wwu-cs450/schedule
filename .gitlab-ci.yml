@@ -39,6 +39,7 @@ install-dependencies:
     - .use-pub-cache-bin
     - .upload-cache
   script:
+    - cd gui
     - flutter pub get --no-precompile
 
 build:
@@ -49,7 +50,8 @@ build:
     - .use-pub-cache-bin
     - .upload-cache
   script:
-    - flutter pub get --offline --precompile
+    - cd gui
+    - flutter pub get --precompile
 
 lint-test:
   stage: test
@@ -59,6 +61,9 @@ lint-test:
     - .use-pub-cache-bin
     - .download-cache
   script:
+    - cd gui
+    - flutter clean
+    - flutter pub get
     - dart analyze --fatal-infos
 
 format-test:
@@ -69,6 +74,7 @@ format-test:
     - .use-pub-cache-bin
     - .download-cache
   script:
+    - cd gui
     - dart format --set-exit-if-changed bin/ lib/ test/
 
 
@@ -80,6 +86,7 @@ code_quality:
     - flutter pub global activate dart_code_metrics
     - export PATH="$PATH:$HOME/.pub-cache/bin"
   script:
+    - cd gui
     - metrics lib -r codeclimate  > gl-code-quality-report.json
   artifacts:
     reports:
@@ -96,6 +103,7 @@ test:
     - flutter pub global activate junitreport
     - export PATH="$PATH:$HOME/.pub-cache/bin"
   script:
+    - cd gui
     - flutter --version
     - flutter test  $PUB_VARS --machine --coverage | tojunit -o report.xml
     - lcov --summary coverage/lcov.info
@@ -114,6 +122,7 @@ deploy:
       when: manual
   stage: deploy
   script: 
+    - cd gui
     - flutter build web
     - chmod 600 id_ed25519
     - ssh -o StrictHostKeyChecking=no -i id_ed25519 ubuntu@schedule.cs.wallawalla.edu "rm -rf /var/www/html/*"

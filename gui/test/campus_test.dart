@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:schedule/campus.dart';
+import 'package:gui/campus.dart';
 
 void main() {
   test('constructor and accessors', () {

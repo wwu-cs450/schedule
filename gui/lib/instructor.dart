@@ -1,4 +1,4 @@
-import 'package:schedule/data_handler.dart';
+import 'package:gui/data_handler.dart';
 
 class Instructor implements Comparable {
   Instructor(this.name);

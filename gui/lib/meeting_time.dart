@@ -12,7 +12,7 @@
    Recommended to use DateTime when inputting day.
 */
 
-import 'package:schedule/hourminute.dart';
+import 'package:gui/hourminute.dart';
 
 // A list of meeting times defined by the day (as int 1-7), and start/stop times (as HourMinute)
 class MeetingTime {

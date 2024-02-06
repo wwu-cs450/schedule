@@ -1,14 +1,14 @@
 // Fix this test
 // Currently, it only returns a set when subject and department are null
 
-import 'package:schedule/department.dart';
-import 'package:schedule/data_handler.dart';
-import 'package:schedule/subject.dart';
-import 'package:schedule/term.dart';
-import 'package:schedule/campus.dart';
-import 'package:schedule/query.dart';
-import 'package:schedule/hourminute.dart';
-import 'package:schedule/class.dart';
+import 'package:gui/department.dart';
+import 'package:gui/data_handler.dart';
+import 'package:gui/subject.dart';
+import 'package:gui/term.dart';
+import 'package:gui/campus.dart';
+import 'package:gui/query.dart';
+import 'package:gui/hourminute.dart';
+import 'package:gui/class.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,19 +1,21 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:schedule/data_handler.dart';
-import 'package:schedule/query.dart';
-import 'package:schedule/class.dart';
-import 'package:schedule/campus.dart';
-import 'package:schedule/department.dart';
-import 'package:schedule/subject.dart';
-import 'package:schedule/term.dart';
+import 'package:gui/data_handler.dart';
+import 'package:gui/query.dart';
+import 'package:gui/class.dart';
+import 'package:gui/campus.dart';
+import 'package:gui/department.dart';
+import 'package:gui/subject.dart';
+import 'package:gui/term.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/semantics.dart';
 
 void main() async {
   await DataHandler.fetchData();
   Class.instances;
   runApp(const MyApp());
+  SemanticsBinding.instance.ensureSemantics();
 }
 
 class MyApp extends StatelessWidget {
@@ -51,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Subject _subject = Subject.allSubjects();
   Term _term = Term.allTerms();
   int _classNumber = 0;
-  List<Class> _data = <Class>[]; // To store data to be sorted
   final List<Class> _savedData = <Class>[]; // Saved class data
   List<Class> _classes = <Class>[];
   late Row sizingRow;
@@ -87,15 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
   // }
 
   void doSearch() {
-    _data = Query(
+    _classes = Query(
       department: _department,
       subject: _subject,
       term: _term,
       campus: _campus,
       classNumber: _classNumber,
     ).results().toList();
-    _data.sort();
-    _classes = _savedData + _data;
+    _classes.sort();
   }
 
   List<int> getColor(int index) {
@@ -133,18 +133,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  SizedBox savedBox(Class aClass) {
-    return SizedBox(
-      height: 10,
-      width: 30,
-      child: Checkbox(
-        value: aClass.saved,
-        onChanged: (bool? value) {
-          setState(() {
-            aClass.saved = value!;
-            saveClass(aClass, aClass.saved);
-          });
-        },
+  Widget savedBox(Class aClass) {
+    return Semantics(
+      label: 'Class saving checkbox.',
+      hint: 'Click on this to save a class for later.',
+      child: SizedBox(
+        height: 10,
+        width: 30,
+        child: Checkbox(
+          value: aClass.saved,
+          onChanged: (bool? value) {
+            setState(() {
+              aClass.saved = value!;
+              saveClass(aClass, aClass.saved);
+            });
+          },
+        ),
       ),
     );
   }
@@ -160,13 +164,10 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       if (shouldSave) {
         _savedData.add(aClass);
-        _data.remove(aClass);
       } else {
         _savedData.remove(aClass);
-        _data.add(aClass);
       }
     });
-    _classes = _savedData + _data;
   }
 
   List<DropdownMenuEntry> dropdownEntries(String key) {
@@ -196,56 +197,68 @@ class _MyHomePageState extends State<MyHomePage> {
     return entries;
   }
 
-  Padding dropdownEntry(String keyString) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: DropdownMenu(
-        key: Key('$keyString Dropdown'),
-        label: Text(keyString),
-        dropdownMenuEntries: dropdownEntries(keyString),
-        onSelected: (value) {
-          setState(() {
-            if (keyString == 'Campus') {
-              _campus = value;
+  Widget dropdownEntry(String keyString) {
+    return Semantics(
+      label: '$keyString Dropdown Menu',
+      hint: 'Select a $keyString from the dropdown menu.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DropdownMenu(
+          key: Key('$keyString Dropdown'),
+          label: Text(keyString),
+          dropdownMenuEntries: dropdownEntries(keyString),
+          onSelected: (value) {
+            setState(() {
+              switch (keyString) {
+                case 'Campus':
+                  _campus = value;
+                  break;
+                case 'Department':
+                  _department = value;
+                  break;
+                case 'Subject':
+                  _subject = value;
+                  break;
+                case 'Term':
+                  _term = value;
+                  break;
+                default:
+                  assert(false);
+              }
               doSearch();
-            } else if (keyString == 'Department') {
-              _department = value;
-              doSearch();
-            } else if (keyString == 'Subject') {
-              _subject = value;
-              doSearch();
-            } else if (keyString == 'Term') {
-              _term = value;
-              doSearch();
-            }
-          });
-        },
+            });
+          },
+        ),
       ),
     );
   }
 
-  Padding classNumberTextField() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        key: const Key('Class Number Dropdown'),
-        width: 100,
-        height: 50,
-        child: TextField(
-          decoration: const InputDecoration(
-            labelText: 'Class Number',
+  Widget classNumberTextField() {
+    return Semantics(
+      label: 'Used to search for a class by the class number.',
+      hint: 'Enter a four digit number to search.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          key: const Key('Class Number Dropdown'),
+          width: 100,
+          height: 50,
+          child: TextField(
+            decoration: const InputDecoration(
+              labelText: 'Class Number',
+            ),
+            onChanged: (value) {
+              setState(() {
+                if (value.isEmpty) {
+                  _classNumber = 0;
+                  doSearch();
+                } else if (value.length == 4) {
+                  _classNumber = int.parse(value);
+                  doSearch();
+                }
+              });
+            },
           ),
-          onChanged: (value) {
-            setState(() {
-              if (value.isEmpty) {
-                _classNumber = 0;
-                doSearch();
-              } else if (value.length == 4) {
-                _classNumber = int.parse(value);
-                doSearch();
-              }
-            });
-          },
         ),
       ),
     );
@@ -266,32 +279,41 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Container cell(String keyString, String input, double width, int bkgndColor) {
-    return Container(
-      key: Key(keyString),
-      width: width,
-      decoration: BoxDecoration(
-        color: Color(bkgndColor),
-        border: Border.all(color: Colors.white),
-      ),
-      child: Text(
-        addLinesTo(input),
-        style: const TextStyle(color: Color(0xFF00003e)),
+  Widget cell(String keyString, String input, double width, int bkgndColor) {
+    return Semantics(
+      label: '$keyString cell.',
+      hint: 'The $keyString for this row is $input.',
+      child: Container(
+        key: Key(keyString),
+        width: width,
+        decoration: BoxDecoration(
+          color: Color(bkgndColor),
+          border: Border.all(color: Colors.white),
+        ),
+        child: Text(
+          addLinesTo(input),
+          style: const TextStyle(color: Color(0xFF00003e)),
+        ),
       ),
     );
   }
 
-  Container headerCell(String input, double width) {
-    return Container(
-      width: width,
-      key: Key('$input Header Card'),
-      decoration: BoxDecoration(
-        color: Color(palette['blue']!),
-        border: Border.all(color: Colors.black),
-      ),
-      child: Text(
-        input,
-        style: const TextStyle(color: Color(0xFFffffff)),
+  Widget headerCell(String input, double width) {
+    return Semantics(
+      // As with the Semantics,
+      // the word on the cell will come after the semantic label.
+      label: 'Below shows the: ',
+      child: Container(
+        width: width,
+        key: Key('$input Header Card'),
+        decoration: BoxDecoration(
+          color: Color(palette['blue']!),
+          border: Border.all(color: Colors.black),
+        ),
+        child: Text(
+          input,
+          style: const TextStyle(color: Color(0xFFffffff)),
+        ),
       ),
     );
   }
@@ -397,7 +419,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return Column(
           children: [
             searchCriteriaWidget(),
-            Text('${(_savedData + _data).length} classes found.'),
+            Text('${(_savedData + _classes).length} classes found.'),
             wideHeaderRow(),
             Expanded(child: wideRowBuilder(_classes)),
           ],
@@ -405,7 +427,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return Column(
           children: [
-            Text('${(_savedData + _data).length} classes found.'),
+            Text('${(_savedData + _classes).length} classes found.'),
             wideHeaderRow(),
             Expanded(child: wideRowBuilder(_savedData)),
           ],
@@ -553,7 +575,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return Column(
           children: [
             searchCriteriaWidget(),
-            Text('${(_savedData + _data).length} classes found.'),
+            Text('${(_savedData + _classes).length} classes found.'),
             mediumHeaderRow(),
             Expanded(child: mediumRowBuilder(_classes)),
           ],
@@ -561,7 +583,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return Column(
           children: [
-            Text('${(_savedData + _data).length} classes found.'),
+            Text('${(_savedData + _classes).length} classes found.'),
             mediumHeaderRow(),
             Expanded(child: mediumRowBuilder(_savedData)),
           ],
@@ -717,7 +739,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return Column(
           children: [
             searchCriteriaWidget(),
-            Text('${(_savedData + _data).length} classes found.'),
+            Text('${(_savedData + _classes).length} classes found.'),
             smallHeaderRow(),
             Expanded(child: smallRowBuilder(_classes)),
           ],
@@ -725,7 +747,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return Column(
           children: [
-            Text('${(_savedData + _data).length} classes found.'),
+            Text('${(_savedData + _classes).length} classes found.'),
             smallHeaderRow(),
             Expanded(child: smallRowBuilder(_savedData)),
           ],

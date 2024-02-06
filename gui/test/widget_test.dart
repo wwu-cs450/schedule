@@ -7,9 +7,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:schedule/data_handler.dart';
+import 'package:gui/data_handler.dart';
 
-import 'package:schedule/main.dart';
+import 'package:gui/main.dart';
 
 void main() {
   setUp(() async {
@@ -188,10 +188,18 @@ void main() {
   testWidgets('Default Sort', (WidgetTester tester) async {
     String textInCellWithKey(Element element, String key) {
       final cellRow = element as MultiChildRenderObjectElement;
-      final cell = cellRow.children.firstWhere(
-        (element) => element.widget.key == Key(key),
-      );
-      final subjectCell = cell.widget as Container;
+      final semanticsCell = cellRow.children.firstWhere(
+        (element) {
+          if (element.widget is Semantics) {
+            final semantics = element.widget as Semantics;
+            if (semantics.child!.key == Key(key)) {
+              return true;
+            }
+          }
+          return false;
+        },
+      ).widget as Semantics;
+      final subjectCell = semanticsCell.child as Container;
       final text = subjectCell.child as Text;
       return text.data!.trim();
     }
