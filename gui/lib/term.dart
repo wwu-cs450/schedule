@@ -1,4 +1,4 @@
-import 'package:schedule/class.dart';
+import 'package:gui/class.dart';
 
 class Term implements Comparable {
   Term(this.code, this.name);

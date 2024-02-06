@@ -1,5 +1,5 @@
-import 'package:schedule/csv_handler.dart';
-import 'package:schedule/html_handler.dart';
+import 'package:gui/csv_handler.dart';
+import 'package:gui/html_handler.dart';
 
 class DataHandler {
   static const bool _useCsv = true; //Default: Using CSV

@@ -1,6 +1,6 @@
 import 'package:csv/csv.dart';
-import 'package:schedule/sample_csv.dart';
-import 'package:schedule/schedule.dart';
+import 'package:gui/sample_csv.dart';
+import 'package:gui/schedule.dart';
 
 class CSVHandler {
   // cache containing data from schedule.dart as list of list of strings
