@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gui/data_handler.dart';
+import 'package:gui/hourminute.dart';
 import 'package:gui/query.dart';
 import 'package:gui/class.dart';
 import 'package:gui/campus.dart';
@@ -10,6 +11,7 @@ import 'package:gui/subject.dart';
 import 'package:gui/term.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/semantics.dart';
+import 'package:multiselect/multiselect.dart';
 
 void main() async {
   await DataHandler.fetchData();
@@ -53,6 +55,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Subject _subject = Subject.allSubjects();
   Term _term = Term.allTerms();
   int _classNumber = 0;
+  String _levelString = '';
+  String _creditString = '';
+  bool _gsFlag = false;
+  bool _statusFlag = false;
+  String _instructorString = '';
+
+  List<String> _scheduleList = [];
+  HourMinute? _startTime;
+  HourMinute? _endTime;
+
   final List<Class> _savedData = <Class>[]; // Saved class data
   List<Class> _classes = <Class>[];
   late Row sizingRow;
@@ -94,6 +106,14 @@ class _MyHomePageState extends State<MyHomePage> {
       term: _term,
       campus: _campus,
       classNumber: _classNumber,
+      level: _levelString,
+      credits: _creditString,
+      gs: _gsFlag,
+      status: _statusFlag,
+      instructor: _instructorString,
+      scheduledDays: _scheduleList,
+      startTime: _startTime,
+      endTime: _endTime,
     ).results().toList();
     _classes.sort();
   }
@@ -170,31 +190,119 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List<String> multiDropdownValues(String keyString) {
+    final List<String> values = [];
+    if (keyString == 'Schedule') {
+      return [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ];
+    }
+    return values;
+  }
+
   List<DropdownMenuEntry> dropdownEntries(String key) {
     final entries = <DropdownMenuEntry>[];
-    dynamic instances;
+    Map<String, dynamic> map = {};
+
     switch (key) {
       case 'Campus':
-        instances = Campus.instances;
+        map = {for (final e in Campus.instances) '${e.code} ${e.name}': e};
         break;
       case 'Department':
-        instances = Department.instances;
+        map = {for (final e in Department.instances) '${e.code} ${e.name}': e};
         break;
       case 'Subject':
-        instances = Subject.instances;
+        map = {for (final e in Subject.instances) '${e.code} ${e.name}': e};
         break;
       case 'Term':
-        instances = Term.instances;
+        map = {for (final e in Term.instances) '${e.code} ${e.name}': e};
+        break;
+      case 'Level':
+        map = {
+          'Any': 'Any',
+          'Lower': 'Lower',
+          'Upper': 'Upper',
+          'Grad': 'Grad',
+        };
+        break;
+      case 'Credits':
+        map = {
+          'Any': 'Any',
+          '0': '0',
+          '1': '1',
+          '2': '2',
+          '3': '3',
+          '4': '4',
+          '>4': '>4',
+        };
+        break;
+      case 'Start Time':
+        entries.add(const DropdownMenuEntry(value: null, label: 'Any Time'));
+        for (HourMinute time = HourMinute(hour: 7, minute: 0);
+            time <= HourMinute(hour: 20, minute: 0);
+            time = time.add(const Duration(hours: 1))) {
+          entries.add(
+            DropdownMenuEntry(
+              value: time,
+              label: time.toString(is24hr: false),
+            ),
+          );
+        }
+        break;
+      case 'End Time':
+        entries.add(const DropdownMenuEntry(value: null, label: 'Any Time'));
+        for (HourMinute time = HourMinute(hour: 7, minute: 50);
+            time <= HourMinute(hour: 20, minute: 50);
+            time = time.add(const Duration(hours: 1))) {
+          entries.add(
+            DropdownMenuEntry(
+              value: time,
+              label: time.toString(is24hr: false),
+            ),
+          );
+        }
         break;
       default:
         assert(false);
     }
-    if (instances != null) {
-      for (final instance in instances) {
-        entries.add(DropdownMenuEntry(value: instance, label: instance.name));
+    if (map.isNotEmpty) {
+      for (final key in map.keys) {
+        entries.add(DropdownMenuEntry(value: map[key], label: key));
       }
     }
     return entries;
+  }
+
+  Widget multiDropdown(String keyString, List<String> inputList) {
+    return Semantics(
+      label: '$keyString multi-select dropdown Menu',
+      hint: 'Select one or more of the objects from the dropdown menu.',
+      child: SizedBox(
+        width: 200,
+        height: 50,
+        child: DropDownMultiSelect(
+          onChanged: (List<String> values) {
+            setState(() {
+              switch (keyString) {
+                case 'Schedule':
+                  _scheduleList = values;
+                  break;
+              }
+              doSearch();
+            });
+          },
+          options: multiDropdownValues(keyString),
+          selectedValues: inputList,
+          whenEmpty: 'Any Day',
+        ),
+      ),
+    );
   }
 
   Widget dropdownEntry(String keyString) {
@@ -205,7 +313,10 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(8.0),
         child: DropdownMenu(
           key: Key('$keyString Dropdown'),
-          label: Text(keyString),
+          label: Text(
+            keyString,
+            style: const TextStyle(fontSize: 12),
+          ),
           dropdownMenuEntries: dropdownEntries(keyString),
           onSelected: (value) {
             setState(() {
@@ -222,12 +333,94 @@ class _MyHomePageState extends State<MyHomePage> {
                 case 'Term':
                   _term = value;
                   break;
-                default:
-                  assert(false);
+                case 'Level':
+                  _levelString = value;
+                  break;
+                case 'Credits':
+                  _creditString = value;
+                  break;
+                case 'Start Time':
+                  _startTime = value;
+                  break;
+                case 'End Time':
+                  _endTime = value;
               }
               doSearch();
             });
           },
+        ),
+      ),
+    );
+  }
+
+  List<Widget> gsSelector() {
+    final widgets = <Widget>[];
+    widgets.add(
+      Semantics(
+        label: 'Used to filter classes by General Studies.',
+        hint: 'Check this box to filter classes by General Studies.',
+        child: Checkbox(
+          key: const Key('GS Checkbox'),
+          value: _gsFlag,
+          onChanged: (bool? value) {
+            setState(() {
+              _gsFlag = value!;
+              doSearch();
+            });
+          },
+        ),
+      ),
+    );
+    widgets.add(const Text('Only GS'));
+    return widgets;
+  }
+
+  List<Widget> statusSelector() {
+    final widgets = <Widget>[];
+    widgets.add(
+      Semantics(
+        label: 'Used to filter classes by Open status.',
+        hint: 'Check this box to filter classes by Open status.',
+        child: Checkbox(
+          key: const Key('Status Checkbox'),
+          value: _statusFlag,
+          onChanged: (bool? value) {
+            setState(() {
+              _statusFlag = value!;
+              doSearch();
+            });
+          },
+        ),
+      ),
+    );
+    widgets.add(const Text('Only Open'));
+    return widgets;
+  }
+
+  Widget instructorTextField() {
+    return Semantics(
+      label: 'Used to search for a class by the instructor.',
+      hint: 'Enter the name of an instructor to search.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          key: const Key('Instructor Text Box'),
+          width: 100,
+          height: 50,
+          child: TextField(
+            decoration: const InputDecoration(
+              labelText: 'Instructor',
+              labelStyle: TextStyle(fontSize: 12),
+            ),
+            onChanged: (value) {
+              setState(() {
+                if (value.isNotEmpty) {
+                  _instructorString = value;
+                }
+                doSearch();
+              });
+            },
+          ),
         ),
       ),
     );
@@ -240,22 +433,26 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          key: const Key('Class Number Dropdown'),
+          key: const Key('Class Number Text Box'),
           width: 100,
           height: 50,
           child: TextField(
             decoration: const InputDecoration(
               labelText: 'Class Number',
+              labelStyle: TextStyle(fontSize: 12),
             ),
             onChanged: (value) {
               setState(() {
-                if (value.isEmpty) {
+                if (value.length == 4) {
+                  try {
+                    _classNumber = int.parse(value);
+                  } on FormatException {
+                    _classNumber = 0;
+                  }
+                } else if (value.isEmpty) {
                   _classNumber = 0;
-                  doSearch();
-                } else if (value.length == 4) {
-                  _classNumber = int.parse(value);
-                  doSearch();
                 }
+                doSearch();
               });
             },
           ),
@@ -270,11 +467,19 @@ class _MyHomePageState extends State<MyHomePage> {
       spacing: 8,
       runSpacing: 8,
       children: [
-        dropdownEntry('Campus'),
+        classNumberTextField(),
         dropdownEntry('Department'),
         dropdownEntry('Subject'),
+        dropdownEntry('Campus'),
+        dropdownEntry('Level'),
+        instructorTextField(),
         dropdownEntry('Term'),
-        classNumberTextField(),
+        dropdownEntry('Credits'),
+        multiDropdown('Schedule', _scheduleList),
+        dropdownEntry('Start Time'),
+        dropdownEntry('End Time'),
+        ...statusSelector(),
+        ...gsSelector(),
       ],
     );
   }
@@ -284,7 +489,7 @@ class _MyHomePageState extends State<MyHomePage> {
       label: '$keyString cell.',
       hint: 'The $keyString for this row is $input.',
       child: Container(
-        key: Key(keyString),
+        key: Key('$keyString Cell'),
         width: width,
         decoration: BoxDecoration(
           color: Color(bkgndColor),
@@ -292,7 +497,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: Text(
           addLinesTo(input),
-          style: const TextStyle(color: Color(0xFF00003e)),
+          style: const TextStyle(
+            color: Color(0xFF00003e),
+            fontSize: 12,
+          ),
         ),
       ),
     );
@@ -305,14 +513,20 @@ class _MyHomePageState extends State<MyHomePage> {
       label: 'Below shows the: ',
       child: Container(
         width: width,
-        key: Key('$input Header Card'),
+        key: Key('${input.trim()} Header Card'),
         decoration: BoxDecoration(
           color: Color(palette['blue']!),
           border: Border.all(color: Colors.black),
         ),
-        child: Text(
-          input,
-          style: const TextStyle(color: Color(0xFFffffff)),
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            input,
+            style: const TextStyle(
+              color: Color(0xFFffffff),
+              fontSize: 12,
+            ),
+          ),
         ),
       ),
     );
@@ -323,16 +537,16 @@ class _MyHomePageState extends State<MyHomePage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Opacity(opacity: 0, child: invisibleBox()),
-        headerCell('Class\nNumber', 60),
-        headerCell('Subject\n', 80.0),
-        headerCell('Sum $startYear', 55.0),
-        headerCell('Aut $startYear', 55.0),
-        headerCell('Wtr ${startYear + 1}', 55.0),
-        headerCell('Spr ${startYear + 1}', 55.0),
-        headerCell('Sum ${startYear + 1}', 55.0),
+        headerCell('Class#\n', 55),
+        headerCell('Subject\n', 45.0),
+        headerCell('Sum ${startYear % 1000}\n', 50.0),
+        headerCell('Aut ${startYear % 1000}\n', 50.0),
+        headerCell('Wtr ${(startYear + 1) % 1000}\n', 50.0),
+        headerCell('Spr ${(startYear + 1) % 1000}\n', 50.0),
+        headerCell('Sum ${(startYear + 1) % 1000}\n', 50.0),
         headerCell('Sec\n', 40.0),
-        headerCell('GS\n', 40.0),
-        headerCell('Credits\n', 60.0),
+        headerCell('GS\n', 25.0),
+        headerCell('Cr\n', 30.0),
         headerCell('Course Title\n', 300.0),
         headerCell('Status\n', 65.0),
         headerCell('Enroll\nCount', 60.0),
@@ -341,8 +555,10 @@ class _MyHomePageState extends State<MyHomePage> {
         headerCell('Fee\n', 70.0),
         headerCell('Meeting Time\n', 145.0),
         headerCell('Classroom\n', 80.0),
-        headerCell('Instructor(s)\n'.toString(), 150.0),
-        headerCell('Campus\n', 200.0),
+        headerCell('Instructor(s)\n'.toString(), 200.0),
+        headerCell('Campus\n', 60.0),
+        headerCell('Video\n', 60.0),
+        headerCell('Consent\n', 200.0),
       ],
     );
   }
@@ -379,16 +595,16 @@ class _MyHomePageState extends State<MyHomePage> {
       key: const Key('Class'),
       children: [
         savedBox(aClass),
-        cell('ClassNumber', aClass.getClN(), 60, aColor[0]),
-        cell('Subject', aClass.getCode(), 80.0, aColor[0]),
-        cell('Summer1', getTerm(aClass, qtrs[0]), 55.0, aColor[1]),
-        cell('Fall', getTerm(aClass, qtrs[1]), 55.0, aColor[2]),
-        cell('Winter', getTerm(aClass, qtrs[2]), 55.0, aColor[3]),
-        cell('Spring', getTerm(aClass, qtrs[3]), 55.0, aColor[4]),
-        cell('Summer2', getTerm(aClass, qtrs[4]), 55.0, aColor[1]),
+        cell('ClassNumber', aClass.getClN(), 55, aColor[0]),
+        cell('Subject', aClass.getCode(), 45.0, aColor[0]),
+        cell('Summer1', getTerm(aClass, qtrs[0]), 50.0, aColor[1]),
+        cell('Fall', getTerm(aClass, qtrs[1]), 50.0, aColor[2]),
+        cell('Winter', getTerm(aClass, qtrs[2]), 50.0, aColor[3]),
+        cell('Spring', getTerm(aClass, qtrs[3]), 50.0, aColor[4]),
+        cell('Summer2', getTerm(aClass, qtrs[4]), 50.0, aColor[1]),
         cell('Section', aClass.section, 40.0, aColor[0]),
-        cell('GS', gs, 40.0, aColor[0]),
-        cell('Credits', credits, 60.0, aColor[0]),
+        cell('GS', gs, 25.0, aColor[0]),
+        cell('Cr', credits, 30.0, aColor[0]),
         cell('Title', aClass.course.title, 300.0, aColor[0]),
         cell('Status', status, 65.0, aColor[0]),
         cell('Enrollment', enroll[0], 60.0, aColor[0]),
@@ -397,8 +613,10 @@ class _MyHomePageState extends State<MyHomePage> {
         cell('Fee', aClass.fee.toString(), 70.0, aColor[0]),
         cell('Schedule', schedule, 145.0, aColor[0]),
         cell('Classroom', room, 80.0, aColor[0]),
-        cell('Instructors', instruct, 150.0, aColor[0]),
-        cell('Campus', aClass.getCampus(), 200.0, aColor[0]),
+        cell('Instructors', instruct, 200.0, aColor[0]),
+        cell('Campus', aClass.getCampus(), 60.0, aColor[0]),
+        cell('Video', aClass.video, 60.0, aColor[0]),
+        cell('Consent', aClass.consent, 200.0, aColor[0]),
       ],
     );
   }
@@ -418,8 +636,19 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return Column(
           children: [
-            searchCriteriaWidget(),
-            Text('${(_savedData + _classes).length} classes found.'),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Color(0xFFa8ac9c)),
+                child: searchCriteriaWidget(),
+              ),
+            ),
+            Semantics(
+              child: Text(
+                key: const Key('Class Found'),
+                '${_classes.length} classes found.',
+              ),
+            ),
             wideHeaderRow(),
             Expanded(child: wideRowBuilder(_classes)),
           ],
@@ -427,7 +656,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return Column(
           children: [
-            Text('${(_savedData + _classes).length} classes found.'),
+            Text('${_classes.length} classes found.'),
             wideHeaderRow(),
             Expanded(child: wideRowBuilder(_savedData)),
           ],
@@ -574,8 +803,19 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return Column(
           children: [
-            searchCriteriaWidget(),
-            Text('${(_savedData + _classes).length} classes found.'),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Color(0xFFa8ac9c)),
+                child: searchCriteriaWidget(),
+              ),
+            ),
+            Semantics(
+              child: Text(
+                key: const Key('Class Found'),
+                '${_classes.length} classes found.',
+              ),
+            ),
             mediumHeaderRow(),
             Expanded(child: mediumRowBuilder(_classes)),
           ],
@@ -583,7 +823,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return Column(
           children: [
-            Text('${(_savedData + _classes).length} classes found.'),
+            Text('${_classes.length} classes found.'),
             mediumHeaderRow(),
             Expanded(child: mediumRowBuilder(_savedData)),
           ],
@@ -738,8 +978,19 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return Column(
           children: [
-            searchCriteriaWidget(),
-            Text('${(_savedData + _classes).length} classes found.'),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Color(0xFFa8ac9c)),
+                child: searchCriteriaWidget(),
+              ),
+            ),
+            Semantics(
+              child: Text(
+                key: const Key('Class Found'),
+                '${_classes.length} classes found.',
+              ),
+            ),
             smallHeaderRow(),
             Expanded(child: smallRowBuilder(_classes)),
           ],
@@ -747,7 +998,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return Column(
           children: [
-            Text('${(_savedData + _classes).length} classes found.'),
+            Text('${_classes.length} classes found.'),
             smallHeaderRow(),
             Expanded(child: smallRowBuilder(_savedData)),
           ],
@@ -770,7 +1021,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if ((constraints.maxWidth >= 1780) &&
+          if ((constraints.maxWidth >= 1835) &&
               (constraints.maxHeight > 355.0)) {
             return wideView();
           } else if ((constraints.maxWidth >= 970) &&

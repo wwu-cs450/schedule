@@ -4,6 +4,7 @@ import 'package:gui/data_handler.dart';
 import 'package:gui/term.dart';
 import 'package:gui/instructor.dart';
 import 'package:gui/meeting_time.dart';
+import 'package:gui/hourminute.dart';
 
 class Class implements Comparable {
   Class(
@@ -136,7 +137,7 @@ class Class implements Comparable {
           currTerm,
           int.parse(listing[18]), // Max enrollment
           MeetingTime.fromString(listing[21]), // schedule
-          listing[22], // Classroom
+          listing[22].replaceAll('/', '\n'), // Classroom
           currInstructors,
           currCampus,
           classNumber, // Class Number
@@ -176,6 +177,99 @@ class Class implements Comparable {
 
   String getCoN() {
     return course.number.toString();
+  }
+
+  double getCredits() {
+    return course.creditsMax;
+  }
+
+  // Below are filter functions, used in the query class to filter the results.
+
+  bool includesStartTime(HourMinute? startTime) {
+    if (startTime == null) {
+      return true;
+    }
+    return schedule.startsAt(time: startTime);
+  }
+
+  bool includesEndTime(HourMinute? endTime) {
+    if (endTime == null) {
+      return true;
+    }
+    return schedule.endsAt(time: endTime);
+  }
+
+  bool includesDays(List<String> sList) {
+    final List<String> scheduleValues = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    final List<int> dayValues = [];
+    final List<int> dayIndices = [1, 2, 3, 4, 5, 6, 7];
+    for (final day in sList) {
+      dayValues.add(scheduleValues.indexWhere((item) => item == day) + 1);
+    }
+    for (final index in dayValues) {
+      if (!schedule.isAt(day: index)) {
+        // if the listing does not include the day
+        return false;
+      }
+      for (final mainIndex in dayIndices) {
+        // Checking if the listing includes a day that is not in the search
+        if (!dayValues.contains(mainIndex) && schedule.isAt(day: mainIndex)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  bool includesInstructor(String instructor) {
+    if (instructor == '') {
+      return true;
+    } else {
+      return instructors.any((each) => each.name.startsWith(instructor));
+    }
+  }
+
+  bool includesGS(bool gs) {
+    return !gs || course.isGeneralStudies;
+  }
+
+  bool includesOpen(bool status) {
+    return !status || isOpenForEnrollment;
+  }
+
+  bool includesLevel(String level) {
+    if (level == '' || level == 'Any') {
+      return true;
+    }
+    return course.level == level;
+  }
+
+  bool includesCredits(String creditString) {
+    final credits = getCredits();
+    switch (creditString) {
+      case '0':
+        return credits == 0;
+      case '1':
+        return credits == 1;
+      case '2':
+        return credits == 2;
+      case '3':
+        return credits == 3;
+      case '4':
+        return credits == 4;
+      case '>4':
+        return credits > 4;
+      default:
+        return true;
+    }
   }
 
   @override
