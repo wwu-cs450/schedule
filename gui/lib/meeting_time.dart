@@ -302,6 +302,16 @@ class MeetingTime {
     }
   }
 
+  // check if meeting starts at given time
+  bool startsAt({HourMinute? time}) {
+    return _meetingTimes.any((e) => e.start == time);
+  }
+
+  // check if meeting ends at given time
+  bool endsAt({HourMinute? time}) {
+    return _meetingTimes.any((e) => e.end == time);
+  }
+
   // check if there is a time conflict between this and other.
   // doesConflict is true if there is a conflict.
   // conflicts contains set of days and times when conflicts first occur
