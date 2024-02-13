@@ -71,7 +71,7 @@ class Course implements Comparable {
   static void getAllCourses() {
     final scheduleData = DataHandler.data;
     for (final classData in scheduleData) {
-      final String courseNumberOnly;
+      final int courseNumberOnly;
       // Class number is not specified in one spot, it is specified based on the quarter, Summer, Fall, Winter, Spring, or Summer2
       var courseNumber = '';
       if (classData[8] != '') {
@@ -89,8 +89,17 @@ class Course implements Comparable {
       }
 
       courseNumber = courseNumber.replaceAll(' ', '');
-      courseNumberOnly = courseNumber.replaceAll(RegExp('[^0-9]'), '');
-      final level = int.parse(courseNumberOnly) > 300 ? 'upper' : 'lower';
+      courseNumberOnly =
+          int.parse(courseNumber.replaceAll(RegExp('[^0-9]'), ''));
+      late String level;
+      if (courseNumberOnly < 300) {
+        level = 'Lower';
+      } else if (courseNumberOnly > 499) {
+        level = 'Grad';
+      } else {
+        level = 'Upper';
+      }
+
       final department = Department.departmentwithCode(classData[3]);
       final subject = Subject.subjectWithCode(classData[7]);
       _instances.add(
