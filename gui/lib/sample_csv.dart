@@ -1,5 +1,6 @@
 String getSampleCSV() {
-  return '''1,CP,2024,ACDM,Acadeum,1140,GS,ACDM,250,,,,,,Acadeum Courses,1-18,Closed,0,0,,,,TBA,,,P,,NULL,N,
+  return '''
+1,CP,2024,ACDM,Acadeum,1140,GS,ACDM,250,,,,,,Acadeum Courses,1-18,Closed,0,0,,,,TBA,,,P,,NULL,N,
 1,CP,2024,ACDM,Acadeum,1881,GS,ACDM,,,,250,,,Acadeum Courses,1-18,Closed,0,0,,,,TBA,,,P,,NULL,N,
 1,CP,2024,ACDM,Acadeum,1883,GS,ACDM,,350,,,,,Acadeum Courses,1-18,Closed,7,0,,,,TBA,,,P,,NULL,N,
 1,CP,2024,ART,Art,1518,GS,ART,,160,,,,,Materials and Methods,3,Closed,16,16,,81,MWR 11:00 - 11:50A,FAC203,Joel Libby,,P,,NULL,N,

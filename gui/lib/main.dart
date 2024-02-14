@@ -1,16 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:gui/campus.dart';
+import 'package:gui/class.dart';
 import 'package:gui/data_handler.dart';
+import 'package:gui/department.dart';
 import 'package:gui/hourminute.dart';
 import 'package:gui/query.dart';
-import 'package:gui/class.dart';
-import 'package:gui/campus.dart';
-import 'package:gui/department.dart';
 import 'package:gui/subject.dart';
 import 'package:gui/term.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/semantics.dart';
 import 'package:multiselect/multiselect.dart';
 
 void main() async {

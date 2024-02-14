@@ -12,7 +12,8 @@ extension InitializeCampus on Campus {
   }
 
   static String csv() {
-    return '''ACA,Adventist Colleges Abroad
+    return '''
+ACA,Adventist Colleges Abroad
 ACDM,Acadeum
 BI,Billings
 CP,College Place

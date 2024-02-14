@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:http/http.dart' as http;
+
 import 'package:gui/sample_html.dart';
+import 'package:http/http.dart' as http;
 import 'package:universal_html/parsing.dart';
 
 class HTMLHandler {

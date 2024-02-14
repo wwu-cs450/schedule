@@ -1,10 +1,10 @@
 import 'package:gui/campus.dart';
 import 'package:gui/course.dart';
 import 'package:gui/data_handler.dart';
-import 'package:gui/term.dart';
+import 'package:gui/hourminute.dart';
 import 'package:gui/instructor.dart';
 import 'package:gui/meeting_time.dart';
-import 'package:gui/hourminute.dart';
+import 'package:gui/term.dart';
 
 class Class implements Comparable {
   Class(

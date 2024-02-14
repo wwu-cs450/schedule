@@ -1,5 +1,5 @@
-import 'package:gui/subjects_list.dart';
 import 'package:gui/course.dart';
+import 'package:gui/subjects_list.dart';
 
 class Subject implements Comparable {
   Subject(this.code, this.name);

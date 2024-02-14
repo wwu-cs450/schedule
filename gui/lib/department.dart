@@ -1,5 +1,5 @@
-import 'package:gui/departments_list.dart';
 import 'package:gui/course.dart';
+import 'package:gui/departments_list.dart';
 
 class Department implements Comparable {
   Department(this.code, this.name);
