@@ -661,6 +661,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(child: wideRowBuilder(_savedData)),
           ],
         );
+      case 2:
+        return const Column(
+          children: [
+            Placeholder(),
+          ],
+        );
       default:
         return const Column(children: [Placeholder()]);
     }
@@ -826,6 +832,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Text('${_classes.length} classes found.'),
             mediumHeaderRow(),
             Expanded(child: mediumRowBuilder(_savedData)),
+          ],
+        );
+      case 2:
+        return const Column(
+          children: [
+            Placeholder(),
           ],
         );
       default:
@@ -1003,6 +1015,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(child: smallRowBuilder(_savedData)),
           ],
         );
+      case 2:
+        return const Column(
+          children: [
+            Placeholder(),
+          ],
+        );
       default:
         return const Column(children: [Placeholder()]);
     }
@@ -1050,6 +1068,10 @@ class _MyHomePageState extends State<MyHomePage> {
           NavigationDestination(
             icon: Icon(Icons.event_available),
             label: 'Saved',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.schedule),
+            label: 'Schedule',
           ),
         ],
       ),
