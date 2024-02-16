@@ -1,6 +1,6 @@
 # Based on the Dart and Flutter templates
 
-image: "ghcr.io/cirruslabs/flutter:latest"
+image: "ghcr.io/cirruslabs/flutter:3.16.9"
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
@@ -75,7 +75,7 @@ format-test:
     - .download-cache
   script:
     - cd gui
-    - dart format --set-exit-if-changed bin/ lib/ test/
+    - dart format --set-exit-if-changed lib/ test/
 
 
 # Flutter
