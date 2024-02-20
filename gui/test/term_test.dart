@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:gui/term.dart';
+import 'package:gui/domain/term.dart';
 
 void main() {
   test('constructor and accessors', () {

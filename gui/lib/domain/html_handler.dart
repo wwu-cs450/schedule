@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:gui/sample_html.dart';
+import 'package:gui/domain/sample_html.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_html/parsing.dart';
 

@@ -1,4 +1,4 @@
-import 'package:gui/subject.dart';
+import 'package:gui/domain/subject.dart';
 
 extension InitializeSubject on Subject {
   static Set<Subject> initialList() {

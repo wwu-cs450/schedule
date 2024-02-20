@@ -1,6 +1,6 @@
-import 'package:gui/data_handler.dart';
-import 'package:gui/department.dart';
-import 'package:gui/subject.dart';
+import 'package:gui/domain/data_handler.dart';
+import 'package:gui/domain/department.dart';
+import 'package:gui/domain/subject.dart';
 
 class Course implements Comparable {
   Course(

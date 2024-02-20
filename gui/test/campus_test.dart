@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gui/campus.dart';
+import 'package:gui/domain/campus.dart';
 
 void main() {
   test('constructor and accessors', () {

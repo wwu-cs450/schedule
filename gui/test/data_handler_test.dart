@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gui/csv_handler.dart';
-import 'package:gui/data_handler.dart';
-import 'package:gui/html_handler.dart';
+import 'package:gui/domain/csv_handler.dart';
+import 'package:gui/domain/data_handler.dart';
+import 'package:gui/domain/html_handler.dart';
 
 void main() {
   setUp(() {

@@ -8,7 +8,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:gui/hourminute.dart';
+import 'package:gui/domain/hourminute.dart';
 
 void main() {
   test('constructor and accessors', () {
