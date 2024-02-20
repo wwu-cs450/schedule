@@ -1,4 +1,4 @@
-import 'package:gui/class.dart';
+import 'package:gui/domain/class.dart';
 
 class Term implements Comparable {
   Term(this.code, this.name);

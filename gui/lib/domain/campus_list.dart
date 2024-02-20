@@ -1,4 +1,4 @@
-import 'package:gui/campus.dart';
+import 'package:gui/domain/campus.dart';
 
 extension InitializeCampus on Campus {
   static Set<Campus> initialList() {

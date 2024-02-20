@@ -6,8 +6,8 @@
    
 */
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gui/hourminute.dart';
-import 'package:gui/meeting_time.dart';
+import 'package:gui/domain/hourminute.dart';
+import 'package:gui/domain/meeting_time.dart';
 
 void main() {
   test('adding, getting, and removing times', () {

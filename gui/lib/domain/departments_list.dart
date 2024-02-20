@@ -1,4 +1,4 @@
-import 'package:gui/department.dart';
+import 'package:gui/domain/department.dart';
 
 extension InitializeDepartment on Department {
   static Set<Department> initialList() {

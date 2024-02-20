@@ -1,10 +1,12 @@
-import 'package:gui/campus.dart';
-import 'package:gui/course.dart';
-import 'package:gui/data_handler.dart';
-import 'package:gui/hourminute.dart';
-import 'package:gui/instructor.dart';
-import 'package:gui/meeting_time.dart';
-import 'package:gui/term.dart';
+import 'dart:math';
+
+import 'package:gui/domain/campus.dart';
+import 'package:gui/domain/course.dart';
+import 'package:gui/domain/data_handler.dart';
+import 'package:gui/domain/hourminute.dart';
+import 'package:gui/domain/instructor.dart';
+import 'package:gui/domain/meeting_time.dart';
+import 'package:gui/domain/term.dart';
 
 class Class implements Comparable {
   Class(
@@ -270,6 +272,31 @@ class Class implements Comparable {
       default:
         return true;
     }
+  }
+
+  String getWList() {
+    return waitlist.toString();
+  }
+
+  String getFee() {
+    return fee.toString();
+  }
+
+  String getTitle() {
+    return course.title;
+  }
+
+  int getLineHeight() {
+    return max(
+      max(
+        schedule.toString().split('\n').length,
+        classroom.split('\n').length,
+      ),
+      max(
+        getInstructors().split('\n').length,
+        1,
+      ),
+    );
   }
 
   @override

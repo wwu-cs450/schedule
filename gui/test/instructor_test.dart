@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gui/data_handler.dart';
-import 'package:gui/instructor.dart';
+import 'package:gui/domain/data_handler.dart';
+import 'package:gui/domain/instructor.dart';
 
 void main() {
   setUp(() async {

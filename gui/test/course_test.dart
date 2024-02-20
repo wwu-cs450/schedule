@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gui/course.dart';
-import 'package:gui/data_handler.dart';
-import 'package:gui/department.dart';
-import 'package:gui/subject.dart';
+import 'package:gui/domain/course.dart';
+import 'package:gui/domain/data_handler.dart';
+import 'package:gui/domain/department.dart';
+import 'package:gui/domain/subject.dart';
 
 void main() {
   setUp(() async {
