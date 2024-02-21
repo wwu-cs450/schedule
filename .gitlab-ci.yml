@@ -1,111 +1,77 @@
-# Based on the Dart and Flutter templates
-
 image: "ghcr.io/cirruslabs/flutter:3.16.9"
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
+  PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
 
-.use-pub-cache-bin:
-  # Define commands that need to be executed before each job.
-  before_script:
-    # Set PUB_CACHE either here or in the CI/CD Settings if you have multiple jobs that use dart commands.
-    # PUB_CACHE is used by the `dart pub` command, it needs to be set so package dependencies are stored at the project-level for CI/CD operations.
-    - export PUB_CACHE=".pub-cache"
-    - export PATH="$PATH:$HOME/$PUB_CACHE/bin"
-
-# Cache generated files and plugins between builds.
-.upload-cache:
-  cache:
-    when: 'on_success'
-    paths:
-      - .pub-cache/bin/
-      - .pub-cache/global_packages/
-      - .pub-cache/hosted/
-      - .dart_tool/
-      - .packages
-
-# Cache downloaded dependencies and plugins between builds.
-# To keep cache across branches add 'key: "$CI_JOB_NAME"'
-.download-cache:
-  cache:
-    paths:
-      - .dart_tool/
-      - .packages
-    policy: pull
+cache:
+  paths:
+    - .pub-cache/
 
 install-dependencies:
   stage: .pre
-  extends:
-    - .use-pub-cache-bin
-    - .upload-cache
   script:
-    - cd gui
+    - cd schedule_client
     - flutter pub get --no-precompile
 
-build:
+build_client:
   stage: build
-  needs:
-    - install-dependencies
-  extends:
-    - .use-pub-cache-bin
-    - .upload-cache
   script:
-    - cd gui
+    - set -e
+    - cd schedule_client
+    - flutter --version
+    - flutter config --enable-web
     - flutter pub get --precompile
+    - flutter build web --release
+  artifacts:
+    paths:
+      - schedule_client/build/web/
 
-lint-test:
-  stage: test
-  needs:
-    - install-dependencies
-  extends:
-    - .use-pub-cache-bin
-    - .download-cache
+build_server:
+  stage: build
   script:
-    - cd gui
+    - set -e
+    - cd schedule_server
+    - dart pub get
+    - dart compile exe -o schedule_server --target-os linux bin/schedule_server.dart
+  artifacts:
+    paths:
+      - schedule_server/schedule_server
+
+lint_client:
+  stage: test
+  script:
+    - cd schedule_client
     - flutter clean
     - flutter pub get
     - dart analyze --fatal-infos
 
-format-test:
+lint_server:
   stage: test
-  needs:
-    - install-dependencies
-  extends:
-    - .use-pub-cache-bin
-    - .download-cache
   script:
-    - cd gui
+    - cd schedule_server
+    - flutter clean
+    - flutter pub get
+    - dart analyze --fatal-infos
+
+format_client:
+  stage: test
+  script:
+    - cd schedule_client
     - dart format --set-exit-if-changed lib/ test/
 
-
-# Flutter
-
-code_quality:
+format_server:
   stage: test
-  before_script:
-    - flutter pub global activate dart_code_metrics
-    - export PATH="$PATH:$HOME/.pub-cache/bin"
   script:
-    - cd gui
-    - metrics lib -r codeclimate  > gl-code-quality-report.json
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
+    - cd schedule_server
+    - dart format --set-exit-if-changed lib/ test/
 
-test:
+test_client:
   stage: test
-  needs:
-    - build
-  extends:
-    - .use-pub-cache-bin
-    - .download-cache
-  before_script:
-    - flutter pub global activate junitreport
-    - export PATH="$PATH:$HOME/.pub-cache/bin"
   script:
-    - cd gui
+    - cd schedule_client
     - flutter --version
-    - flutter test  $PUB_VARS --machine --coverage | tojunit -o report.xml
+    - flutter test  $PUB_VARS --machine --coverage
     - lcov --summary coverage/lcov.info
     - genhtml coverage/lcov.info --output=coverage
   coverage: '/lines\.*: \d+\.\d+\%/'
@@ -116,15 +82,27 @@ test:
     reports:
       junit: report.xml
 
+test_server:
+  stage: test
+  script:
+    - cd schedule_server
+    - dart test $PUB_VARS
+  artifacts:
+    name: coverage
+    paths:
+      - $CI_PROJECT_DIR/coverage
+    reports:
+      junit: report.xml
+
 deploy:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
   stage: deploy
-  script: 
-    - cd gui
-    - flutter build web
-    - chmod 600 id_ed25519
-    - ssh -o StrictHostKeyChecking=no -i id_ed25519 ubuntu@schedule.cs.wallawalla.edu "rm -rf /var/www/html/*"
-    - scp -rp -i id_ed25519 build/web/* ubuntu@schedule.cs.wallawalla.edu:/var/www/html/
-  environment: production
+  tags:
+    - schedule
+  script:
+    - sudo /bin/systemctl stop schedule.service
+    - rsync -av --delete schedule_client/build/web/ /var/www/html/
+    - cp schedule_server/schedule_server /opt/schedule/
+    - sudo /bin/systemctl restart schedule.service
+  only:
+    - main
+  when: manual
