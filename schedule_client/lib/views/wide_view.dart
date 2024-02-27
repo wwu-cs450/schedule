@@ -3,7 +3,7 @@ import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/views/main_view.dart';
 
 class WideView extends MainView {
-  WideView(super.startYear, super.results, super._saveBox);
+  WideView(super.startYear, super.results);
 
   Row wideHeaderRow() {
     return Row(

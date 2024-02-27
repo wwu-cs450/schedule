@@ -8,10 +8,7 @@ import 'package:schedule_client/domain/query.dart';
 import 'package:schedule_client/domain/subject.dart';
 import 'package:schedule_client/domain/term.dart';
 
-class SearchCriteria {
-  SearchCriteria(this.update);
-  final Function update;
-
+class SearchCriteria extends ChangeNotifier {
   Campus _campus = Campus.allCampuses();
   Department _department = Department.allDepartments();
   Subject _subject = Subject.allSubjects();
@@ -29,31 +26,49 @@ class SearchCriteria {
 
   late Row sizingRow;
   final startYear = 2023;
+  int _selectedIndex = 0; // Page Index
   final List<String> keys = [];
 
   final List<Class> savedData = <Class>[];
   List<Class> classes = <Class>[];
 
-  void doSearch(SearchCriteria criteria) {
-    update(
-      'Search Classes',
-      criteria,
-      Query(
-        department: _department,
-        subject: _subject,
-        term: _term,
-        campus: _campus,
-        classNumber: _classNumber,
-        level: _levelString,
-        credits: _creditString,
-        gs: _gsFlag,
-        status: _statusFlag,
-        instructor: _instructorString,
-        scheduledDays: _scheduleList,
-        startTime: _startTime,
-        endTime: _endTime,
-      ).results().toList(),
-    );
+  int get selectedIndex => _selectedIndex;
+  set selectedIndex(int index) {
+    _selectedIndex = index;
+    notifyListeners();
+  }
+
+  void saveClass(
+    Class aClass,
+    bool shouldSave,
+  ) {
+    aClass.saved = shouldSave;
+    if (shouldSave) {
+      savedData.add(aClass);
+    } else {
+      savedData.remove(aClass);
+    }
+    notifyListeners();
+  }
+
+  void doSearch() {
+    classes = Query(
+      department: _department,
+      subject: _subject,
+      term: _term,
+      campus: _campus,
+      classNumber: _classNumber,
+      level: _levelString,
+      credits: _creditString,
+      gs: _gsFlag,
+      status: _statusFlag,
+      instructor: _instructorString,
+      scheduledDays: _scheduleList,
+      startTime: _startTime,
+      endTime: _endTime,
+    ).results().toList();
+    classes.sort();
+    notifyListeners();
   }
 
   // We will need to adjust this in the future, but for now it isn't used.
@@ -176,7 +191,7 @@ class SearchCriteria {
                 _scheduleList = values;
                 break;
             }
-            doSearch(this);
+            doSearch();
           },
           options: multiDropdownValues(keyString),
           selectedValues: inputList,
@@ -225,7 +240,7 @@ class SearchCriteria {
               case 'End Time':
                 _endTime = value;
             }
-            doSearch(this);
+            doSearch();
           },
         ),
       ),
@@ -243,7 +258,7 @@ class SearchCriteria {
           value: _gsFlag,
           onChanged: (bool? value) {
             _gsFlag = value!;
-            doSearch(this);
+            doSearch();
           },
         ),
       ),
@@ -263,7 +278,7 @@ class SearchCriteria {
           value: _statusFlag,
           onChanged: (bool? value) {
             _statusFlag = value!;
-            doSearch(this);
+            doSearch();
           },
         ),
       ),
@@ -293,7 +308,7 @@ class SearchCriteria {
               } else if (value.isEmpty) {
                 _instructorString = '';
               }
-              doSearch(this);
+              doSearch();
             },
           ),
         ),
@@ -326,7 +341,7 @@ class SearchCriteria {
               } else if (value.isEmpty) {
                 _classNumber = 0;
               }
-              doSearch(this);
+              doSearch();
             },
           ),
         ),

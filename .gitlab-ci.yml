@@ -71,7 +71,7 @@ test_client:
   script:
     - cd schedule_client
     - flutter --version
-    - flutter test  $PUB_VARS --machine --coverage
+    - flutter test  $PUB_VARS --machine --coverage --concurrency=1
     - lcov --summary coverage/lcov.info
     - genhtml coverage/lcov.info --output=coverage
   coverage: '/lines\.*: \d+\.\d+\%/'

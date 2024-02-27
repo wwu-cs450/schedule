@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:schedule_client/domain/data_handler.dart';
 
 import 'package:schedule_client/main.dart';
+import 'package:schedule_client/views/search_criteria.dart';
 
 void main() {
   setUp(() async {
@@ -19,7 +20,10 @@ void main() {
   testWidgets('Dropdown Button Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     expect(find.byKey(const Key('Department Dropdown')), findsOneWidget);
@@ -35,14 +39,20 @@ void main() {
   testWidgets('Search Criteria does not Overlap with Results',
       (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
     expect(find.byKey(const Key('Search Criteria Widget')), findsOneWidget);
   });
 
   testWidgets('Header Button Test', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     expect(find.byKey(const Key('Class# Header Card')), findsOneWidget);
@@ -66,7 +76,10 @@ void main() {
 
   testWidgets('Search by Department', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final departmentDropdown = find.byKey(const Key('Department Dropdown'));
@@ -104,7 +117,10 @@ void main() {
 
   testWidgets('Search by Subject', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 3000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final subjectDropdown = find.byKey(const Key('Subject Dropdown'));
@@ -136,7 +152,10 @@ void main() {
 
   testWidgets('Search by Campus', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 800));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final campusDropdown = find.byKey(const Key('Campus Dropdown'));
@@ -165,7 +184,10 @@ void main() {
 
   testWidgets('Search by Level', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final levelDropdown = find.byKey(const Key('Level Dropdown'));
@@ -209,7 +231,10 @@ void main() {
 
   testWidgets('Search by Term', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final termDropdown = find.byKey(const Key('Term Dropdown'));
@@ -234,7 +259,10 @@ void main() {
 
   testWidgets('Search by Credits', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final creditDropdown = find.byKey(const Key('Credits Dropdown'));
@@ -280,7 +308,10 @@ void main() {
 
   testWidgets('Search by Start Time', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final timeDropdown = find.byKey(const Key('Start Time Dropdown'));
@@ -318,7 +349,10 @@ void main() {
 
   testWidgets('Search by End Time', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final timeDropdown = find.byKey(const Key('End Time Dropdown'));
@@ -356,7 +390,10 @@ void main() {
 
   testWidgets('Search by Class Number', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
     final one122 = find.text('1122');
     final one414 = find.text('1414');
@@ -390,7 +427,10 @@ void main() {
 
   testWidgets('Search by Instructor', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
     final schaffner = find.text('Brian Schaffner');
     final wong = find.text('Brian Wong');
@@ -419,7 +459,10 @@ void main() {
 
   testWidgets('Search by Only Open', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
     final onlyOpenCheckBox = find.byKey(const Key('Status Checkbox'));
 
@@ -440,7 +483,10 @@ void main() {
   testWidgets('Search by Only GS', (WidgetTester tester) async {
     // Testing data has all classes listed as General Studies...
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     final generalStudiesCheckBox = find.byKey(const Key('GS Checkbox'));
@@ -480,7 +526,10 @@ void main() {
 
     // launch app
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria();
+    });
     await tester.pumpWidget(const MyApp());
 
     // select 'Computer Science'

@@ -3,7 +3,7 @@ import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/views/search_criteria.dart';
 
 abstract class MainView {
-  MainView(this.startYear, this.results, this._saveBox) {
+  MainView(this.startYear, this.results) {
     qtrs = [
       'Sum $startYear',
       'Aut $startYear',
@@ -15,7 +15,6 @@ abstract class MainView {
   SearchCriteria results;
   int startYear;
   late final List<String> qtrs;
-  final Function _saveBox;
 
   Map<String, int> palette = {
     'green': 0xFF656950,
@@ -33,17 +32,6 @@ abstract class MainView {
     Function searchCriteriaWidget,
   );
 
-  void saveClass(
-    Class aClass,
-    bool shouldSave,
-  ) {
-    if (shouldSave) {
-      results.savedData.add(aClass);
-    } else {
-      results.savedData.remove(aClass);
-    }
-  }
-
   Widget savedBox(Class aClass) {
     return Semantics(
       label: 'Class saving checkbox.',
@@ -54,8 +42,7 @@ abstract class MainView {
         child: Checkbox(
           value: aClass.saved,
           onChanged: (bool? value) {
-            _saveBox('Saved Box', aClass, value);
-            saveClass(aClass, aClass.saved);
+            results.saveClass(aClass, value!);
           },
         ),
       ),

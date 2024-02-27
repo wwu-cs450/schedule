@@ -3,7 +3,7 @@ import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/views/main_view.dart';
 
 class MediumView extends MainView {
-  MediumView(super.startYear, super.results, super._saveBox);
+  MediumView(super.startYear, super.results);
 
   Row mediumHeaderRow() {
     return Row(
