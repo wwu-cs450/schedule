@@ -3,7 +3,7 @@ import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/views/main_view.dart';
 
 class SmallView extends MainView {
-  SmallView(super.startYear, super.results, super._saveBox);
+  SmallView(super.startYear, super.results);
 
   Row smallHeaderRow() {
     return Row(
