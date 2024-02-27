@@ -27,7 +27,7 @@ class DataHandler {
       _usingTest = test;
       if (useCsv) {
         //fetching new data from csv
-        _data = CSVHandler.listFromCsv(test: test);
+        _data = await CSVHandler.listFromCsv(test: test);
       } else {
         //fetching new data from html
         _data = await HTMLHandler.fetchListFromHtml(test: test);

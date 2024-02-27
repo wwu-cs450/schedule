@@ -15,7 +15,7 @@ class CSVHandler {
   }
 
   // returns the csv from schedule.dart as a list of list of strings
-  static List<List<String>> listFromCsv({bool test = false}) {
+  static Future<List<List<String>>> listFromCsv({bool test = false}) async {
     if (_data.isNotEmpty && _usingTest == test) {
       return _data;
     }
@@ -27,7 +27,8 @@ class CSVHandler {
       csvFile = getSampleCSV();
     } else {
       // remove header line
-      csvFile = getSchedule().replaceFirst(RegExp(r'^.*(\r\n|\r|\n)'), '');
+      csvFile =
+          (await getSchedule()).replaceFirst(RegExp(r'^.*(\r\n|\r|\n)'), '');
     }
 
     _data = const CsvToListConverter().convert<String>(
