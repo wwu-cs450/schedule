@@ -27,6 +27,7 @@ void main() {
     final response = await http.get(
       Uri.parse(host),
     );
+    //print('receivered response');
     expect(response.statusCode, 200);
     expect(response.body.isNotEmpty, true);
   });
