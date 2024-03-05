@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import 'package:universal_html/html.dart' as html;
 
 void main() {
-  final port = '8080';
+  final port = '8081';
   //final host = 'http://0.0.0.0:$port';
   late Process p;
 
@@ -21,14 +21,15 @@ void main() {
   tearDown(() => p.kill());
   test('data return', () async {
     late String host;
+    final reason = 'Did not receive a 200 code';
+    final reason2 = 'Body is empty';
     host = '${html.window.location.protocol}//'
-        '${html.window.location.hostname}:8080';
+        '${html.window.location.hostname}:8081';
 
     final response = await http.get(
       Uri.parse(host),
     );
-    //print('receivered response');
-    expect(response.statusCode, 200);
-    expect(response.body.isNotEmpty, true);
+    expect(response.statusCode, 200, reason: reason);
+    expect(response.body.isNotEmpty, true, reason: reason2);
   });
 }

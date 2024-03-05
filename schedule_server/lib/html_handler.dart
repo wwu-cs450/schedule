@@ -21,7 +21,7 @@ class HTMLHandler {
   //Call this in main.dart or before any multiple tests involving live HTML
   // returns data from html getting/parsing as a list of list of strings
   static List<List<String>> fetchListFromHtml() {
-    _data =  _listFromHtml(true);
+    _data = _listFromHtml(true);
     return _data;
   }
 
@@ -46,7 +46,8 @@ class HTMLHandler {
   //Test var is strictly for unit testing
   // html parsing
   static List<List<String>> _listFromHtml(bool test) {
-    List<List<String>> data = List.empty();
+    print('made it to listfromhtml');
+    //List<List<String>> data = List.empty();
     var document = '';
     document = fetchTestHtml();
     print('Fetched TestHTML');
@@ -63,7 +64,7 @@ class HTMLHandler {
     final oddRows = classTable.getElementsByClassName('oddrow');
     final allRows = evenRows + oddRows;
 
-    data = List.generate(
+    final List<List<String>> data = List.generate(
       allRows.length,
       (i) => List<String>.filled(30, '', growable: false),
       growable: false,

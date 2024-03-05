@@ -5,7 +5,7 @@ import 'package:universal_html/html.dart' as html;
 Future<String> getSchedule() async {
   late String host;
   host = '${html.window.location.protocol}//'
-      '${html.window.location.hostname}:8080';
+      '${html.window.location.hostname}:8081';
 
   final response = await http.get(
     Uri.parse(host),

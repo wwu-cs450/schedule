@@ -1,11 +1,11 @@
 import 'package:schedule_server/html_handler.dart';
 
 String getSchedule() {
-/*  print('Got to getschedule');
+  print('Got to getschedule');
   List<List<String>> data = List.empty();
   data = HTMLHandler.fetchListFromHtml();
-
-  return data; */
+  
+  return data.join();  /*
   return '''
 CRSE_OFFER_NBR,CAMPUS,ACAD_YEAR,ACAD_ORG,WWU_ACAD_ORG_DESCR,CLASS_NBR,WWU_GS,SUBJECT,WWU_SUM1,WWU_AUT,WWU_WTR,WWU_SPR,WWU_SUM2,CLASS_SECTION,DESCR,WWU_UNITS,ENRL_STAT,ENRL_TOT,ENRL_CAP,WAIT_TOT,FEE_AMT,WWU_MTG_PAT_COMB,WWU_ROOM,WWU_INSTR_NAME,DESCRLONG,INSTRUCTION_MODE,SCHEDULE_PRINT,VIDEO_LINK,CONSENT,CONSENT_DESCR
 1,CP,2024,BIOL,Biology,1536,GS,BIOL,,, 105L,,,A,Contemporary Biology Lab,0,O,5,20,0,162 ,T 08:00 - 10:50A, ,Reserved Staff, ,P,Y,NULL,N,
@@ -2451,5 +2451,5 @@ CRSE_OFFER_NBR,CAMPUS,ACAD_YEAR,ACAD_ORG,WWU_ACAD_ORG_DESCR,CLASS_NBR,WWU_GS,SUB
 1,CP,2024,NDEP,Non-Departmental,1171, ,CDEV,,101,,,,A,Experiential Learning,0-3,C,0,0,0, ,ARR, ,David Lindstrom,Contact Career Center for Approval,P,Y,NULL,N,
 1,CP,2024,NDEP,Non-Departmental,1299, ,CDEV,,,101,,, ,Experiential Learning,0-3,C,0,0,0, ,ARR, ,David Lindstrom,Contact Career Center for Approval,P,Y,NULL,N,
 1,CP,2024,NDEP,Non-Departmental,1513, ,CDEV,,,,101,, ,Experiential Learning,0-3,C,0,0,0, ,ARR, ,David Lindstrom,Contact Career Center for Approval,P,Y,NULL,N,
-1,PD,2024,NRSG,Nursing,1153, ,NRSG,490,,,,,A,Internship,0-4,C,0,0,0, ,ARR, ,Karen Tetz, ,P,Y,NULL,N,''';
+1,PD,2024,NRSG,Nursing,1153, ,NRSG,490,,,,,A,Internship,0-4,C,0,0,0, ,ARR, ,Karen Tetz, ,P,Y,NULL,N,'''; */
 }
