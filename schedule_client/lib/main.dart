@@ -9,10 +9,6 @@ import 'package:schedule_client/views/search_criteria.dart';
 import 'package:schedule_client/views/small_view.dart';
 import 'package:schedule_client/views/wide_view.dart';
 
-// Note for later: We need to make tests for testing:
-// - Class Number
-// - Day
-
 void main() async {
   await DataHandler.fetchData();
   Class.instances;
@@ -20,7 +16,7 @@ void main() async {
   SemanticsBinding.instance.ensureSemantics();
 }
 
-SearchCriteria results = SearchCriteria();
+late SearchCriteria results;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,6 +24,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    results = SearchCriteria(context);
     return ChangeNotifierProvider<SearchCriteria>.value(
       value: results,
       child: MaterialApp(
