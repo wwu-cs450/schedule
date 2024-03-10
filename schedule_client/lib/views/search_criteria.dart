@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:multiselect/multiselect.dart';
 import 'package:schedule_client/domain/campus.dart';
 import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/domain/department.dart';
@@ -7,8 +6,11 @@ import 'package:schedule_client/domain/hourminute.dart';
 import 'package:schedule_client/domain/query.dart';
 import 'package:schedule_client/domain/subject.dart';
 import 'package:schedule_client/domain/term.dart';
+import 'package:schedule_client/views/multi_dropdown.dart';
 
 class SearchCriteria extends ChangeNotifier {
+  SearchCriteria(this.context);
+  BuildContext context;
   Campus _campus = Campus.allCampuses();
   Department _department = Department.allDepartments();
   Subject _subject = Subject.allSubjects();
@@ -20,7 +22,8 @@ class SearchCriteria extends ChangeNotifier {
   bool _statusFlag = false;
   String _instructorString = '';
 
-  List<String> _scheduleList = [];
+  final List<String> _scheduleList = [];
+
   HourMinute? _startTime;
   HourMinute? _endTime;
 
@@ -31,6 +34,15 @@ class SearchCriteria extends ChangeNotifier {
 
   final List<Class> savedData = <Class>[];
   List<Class> classes = <Class>[];
+
+  final inputList = {
+    'Sunday': false,
+    'Monday': false,
+    'Tuesday': false,
+    'Wednesday': false,
+    'Thursday': false,
+    'Friday': false,
+  };
 
   int get selectedIndex => _selectedIndex;
   set selectedIndex(int index) {
@@ -87,22 +99,6 @@ class SearchCriteria extends ChangeNotifier {
   //     }
   //   }
   // }
-
-  List<String> multiDropdownValues(String keyString) {
-    final List<String> values = [];
-    if (keyString == 'Schedule') {
-      return [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-      ];
-    }
-    return values;
-  }
 
   List<DropdownMenuEntry> dropdownEntries(String key) {
     final entries = <DropdownMenuEntry>[];
@@ -177,25 +173,24 @@ class SearchCriteria extends ChangeNotifier {
     return entries;
   }
 
-  Widget multiDropdown(String keyString, List<String> inputList) {
+  Widget selectWeekdays() {
     return Semantics(
-      label: '$keyString multi-select dropdown Menu',
-      hint: 'Select one or more of the objects from the dropdown menu.',
-      child: SizedBox(
-        width: 200,
-        height: 50,
-        child: DropDownMultiSelect(
-          onChanged: (List<String> values) {
-            switch (keyString) {
-              case 'Schedule':
-                _scheduleList = values;
-                break;
-            }
-            doSearch();
-          },
-          options: multiDropdownValues(keyString),
-          selectedValues: inputList,
-          whenEmpty: 'Any Day',
+      label: 'Used to filter classes by days of the week.',
+      hint: 'Select the days of the week to filter classes.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          key: const Key('Schedule Dropdown'),
+          height: 50,
+          child: MultiSelectDropdown(
+            context: context,
+            allItems: inputList.keys.toList(),
+            selectedItems: _scheduleList,
+            label: 'Weekdays',
+            onChanged: () {
+              doSearch();
+            },
+          ).build(),
         ),
       ),
     );
@@ -363,7 +358,7 @@ class SearchCriteria extends ChangeNotifier {
         instructorTextField(),
         dropdownEntry('Term'),
         dropdownEntry('Credits'),
-        multiDropdown('Schedule', _scheduleList),
+        selectWeekdays(),
         dropdownEntry('Start Time'),
         dropdownEntry('End Time'),
         ...statusSelector(),

@@ -20,11 +20,13 @@ void main() {
   testWidgets('Dropdown Button Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     expect(find.byKey(const Key('Department Dropdown')), findsOneWidget);
     expect(find.byKey(const Key('Subject Dropdown')), findsOneWidget);
@@ -39,21 +41,25 @@ void main() {
   testWidgets('Search Criteria does not Overlap with Results',
       (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late final BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
     expect(find.byKey(const Key('Search Criteria Widget')), findsOneWidget);
   });
 
   testWidgets('Header Button Test', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     expect(find.byKey(const Key('Class# Header Card')), findsOneWidget);
     expect(find.byKey(const Key('Subject Header Card')), findsOneWidget);
@@ -76,11 +82,13 @@ void main() {
 
   testWidgets('Search by Department', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final departmentDropdown = find.byKey(const Key('Department Dropdown'));
     final csDepartment = find.text('CPTR Computer Science');
@@ -117,11 +125,13 @@ void main() {
 
   testWidgets('Search by Subject', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 3000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final subjectDropdown = find.byKey(const Key('Subject Dropdown'));
     final hlthSubject = find.text('HLTH Health');
@@ -152,11 +162,13 @@ void main() {
 
   testWidgets('Search by Campus', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 800));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final campusDropdown = find.byKey(const Key('Campus Dropdown'));
     final cpCampus = find.text('CP College Place');
@@ -184,11 +196,13 @@ void main() {
 
   testWidgets('Search by Level', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final levelDropdown = find.byKey(const Key('Level Dropdown'));
     final any = find.text('Any');
@@ -231,11 +245,13 @@ void main() {
 
   testWidgets('Search by Term', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final termDropdown = find.byKey(const Key('Term Dropdown'));
     final spring = find.textContaining('Spring');
@@ -259,11 +275,13 @@ void main() {
 
   testWidgets('Search by Credits', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final creditDropdown = find.byKey(const Key('Credits Dropdown'));
     final any = find.text('Any');
@@ -306,13 +324,72 @@ void main() {
     );
   });
 
-  testWidgets('Search by Start Time', (WidgetTester tester) async {
+  testWidgets('Search by Day', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
+
+    final dayDropdown = find.byKey(const Key('Schedule Dropdown'));
+    final sun = find.text('Sunday');
+    final mon = find.text('Monday');
+    final tue = find.text('Tuesday');
+    final wed = find.text('Wednesday');
+    final thu = find.text('Thursday');
+    final fri = find.text('Friday');
+
+    expect(dayDropdown.hitTestable(), findsOneWidget);
+    expect(sun.hitTestable(), findsNothing);
+    expect(mon.hitTestable(), findsNothing);
+    expect(tue.hitTestable(), findsNothing);
+    expect(wed.hitTestable(), findsNothing);
+    expect(thu.hitTestable(), findsNothing);
+    expect(fri.hitTestable(), findsNothing);
+
+    await tester.tap(dayDropdown);
+    await tester.pumpAndSettle();
+    expect(sun.hitTestable(), findsOneWidget);
+    expect(mon.hitTestable(), findsOneWidget);
+    expect(tue.hitTestable(), findsOneWidget);
+    expect(wed.hitTestable(), findsOneWidget);
+    expect(thu.hitTestable(), findsOneWidget);
+    expect(fri.hitTestable(), findsOneWidget);
+
+    // Check both monday and tuesday
+    await tester.tap(mon.hitTestable());
+    await tester.pumpAndSettle();
+    await tester.tap(tue.hitTestable());
+    await tester.pumpAndSettle();
+    final finder = find.byKey(const Key('Schedule Cell'));
+    expect(
+      find.descendant(of: finder, matching: find.textContaining('MT')),
+      findsAtLeast(1),
+    );
+
+    // Check both monday and wednesday
+    await tester.tap(tue.hitTestable());
+    await tester.pumpAndSettle();
+    await tester.tap(wed.hitTestable());
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(of: finder, matching: find.textContaining('MW')),
+      findsAtLeast(1),
+    );
+  });
+
+  testWidgets('Search by Start Time', (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
+    addTearDown(() {
+      tester.binding.setSurfaceSize(null);
+      results = SearchCriteria(context);
+    });
+    await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final timeDropdown = find.byKey(const Key('Start Time Dropdown'));
     final any = find.text('Any Time');
@@ -349,11 +426,13 @@ void main() {
 
   testWidgets('Search by End Time', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final timeDropdown = find.byKey(const Key('End Time Dropdown'));
     final any = find.text('Any Time');
@@ -390,11 +469,14 @@ void main() {
 
   testWidgets('Search by Class Number', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
+
     final one122 = find.text('1122');
     final one414 = find.text('1414');
     final one321 = find.text('1321');
@@ -427,11 +509,14 @@ void main() {
 
   testWidgets('Search by Instructor', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
+
     final schaffner = find.text('Brian Schaffner');
     final wong = find.text('Brian Wong');
 
@@ -459,11 +544,14 @@ void main() {
 
   testWidgets('Search by Only Open', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
+
     final onlyOpenCheckBox = find.byKey(const Key('Status Checkbox'));
 
     // Check if the checkbox is tappable.
@@ -483,11 +571,13 @@ void main() {
   testWidgets('Search by Only GS', (WidgetTester tester) async {
     // Testing data has all classes listed as General Studies...
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     final generalStudiesCheckBox = find.byKey(const Key('GS Checkbox'));
 
@@ -526,11 +616,13 @@ void main() {
 
     // launch app
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    late BuildContext context;
     addTearDown(() {
       tester.binding.setSurfaceSize(null);
-      results = SearchCriteria();
+      results = SearchCriteria(context);
     });
     await tester.pumpWidget(const MyApp());
+    context = tester.element(find.byType(MyApp));
 
     // select 'Computer Science'
     final departmentDropdown = find.byKey(const Key('Department Dropdown'));

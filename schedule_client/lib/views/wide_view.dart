@@ -144,10 +144,8 @@ class WideView extends MainView {
         );
       case 2:
         // Schedule Page
-        return const Column(
-          children: [
-            Placeholder(),
-          ],
+        return SingleChildScrollView(
+          child: buildScheduleTable(),
         );
       default:
         return const Column(children: [Placeholder()]);
