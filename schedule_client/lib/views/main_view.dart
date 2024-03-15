@@ -228,8 +228,6 @@ abstract class MainView {
 
   Widget headerCell(String input, double width) {
     return Semantics(
-      // As with the Semantics,
-      // the word on the cell will come after the semantic label.
       label: 'Below shows the: ',
       child: Container(
         width: width,
