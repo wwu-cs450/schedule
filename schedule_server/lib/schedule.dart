@@ -1,19 +1,14 @@
 import 'package:schedule_server/html_handler.dart';
 
 String getSchedule() {
-  print('Got to getschedule');
   List<List<String>> data = List.empty();
   data = HTMLHandler.fetchListFromHtml();
   final toReturn = List<String>.filled(data.length, '');
-  print('Made it through parsing');
-  print(data.length);
-  print(data[1].join());
+  //Iterates through the columns of the 2D array to join the entries into a string
+  //with the alternate delimiter
   for (int i = 0; i < data.length; i++) {
     toReturn[i] = data[i].join('<');
   }
-  print('join loop success');
-  //var test = data.join();
-  print(toReturn.join());
 
   return toReturn
       .join(); /*

@@ -150,6 +150,7 @@ class HTMLHandler {
       }
       //CONSENT_DESCR
       data[x][29] = nodes[42].text?.trim() ?? '';
+      //Newline
       data[x][30] = '\n';
     }
     return data;
