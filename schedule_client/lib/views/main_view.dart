@@ -26,6 +26,139 @@ abstract class MainView {
     'brick-red': 0xFF961400,
   };
 
+  TableCell tableCell(String input) {
+    return TableCell(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 1.0,
+          ),
+        ),
+        child: Text(input),
+      ),
+    );
+  }
+
+  List<TableCell> tableCells(String input) {
+    return [
+      tableCell('\n$input\n'),
+      tableCell('\n' '\n'),
+      tableCell('\n' '\n'),
+      tableCell('\n' '\n'),
+      tableCell('\n' '\n'),
+      tableCell('\n' '\n'),
+      tableCell('\n' '\n'),
+    ];
+  }
+
+  Widget buildScheduleTable() {
+    return Table(
+      columnWidths: const {
+        0: FlexColumnWidth(1),
+        1: FlexColumnWidth(1),
+        2: FlexColumnWidth(1),
+        3: FlexColumnWidth(1),
+        4: FlexColumnWidth(1),
+        5: FlexColumnWidth(1),
+        6: FlexColumnWidth(1),
+      },
+      children: [
+        TableRow(
+          children: [
+            tableCell(' '),
+            tableCell('Sunday'),
+            tableCell('Monday'),
+            tableCell('Tuesday'),
+            tableCell('Wednesday'),
+            tableCell('Thursday'),
+            tableCell('Friday'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('7:00AM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('8:00AM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('9:00AM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('10:00AM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('11:00AM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('12:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('1:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('2:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('3:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('4:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('5:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('6:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('7:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('8:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('9:00PM'),
+          ],
+        ),
+        TableRow(
+          children: [
+            ...tableCells('10:00PM'),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget view(
     int index,
     BuildContext context,
@@ -95,8 +228,6 @@ abstract class MainView {
 
   Widget headerCell(String input, double width) {
     return Semantics(
-      // As with the Semantics,
-      // the word on the cell will come after the semantic label.
       label: 'Below shows the: ',
       child: Container(
         width: width,
