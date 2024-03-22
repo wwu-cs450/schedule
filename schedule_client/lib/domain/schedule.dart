@@ -5,10 +5,13 @@ import 'package:universal_html/html.dart' as html;
 Future<String> getSchedule() async {
   late String host;
   host = '${html.window.location.protocol}//'
-      '${html.window.location.hostname}:8081';
+      '${html.window.location.hostname}:8080';
 
   final response = await http.get(
     Uri.parse(host),
   );
-  return response.body;
+  String returnable = response.body.replaceAll('[', '');
+  returnable = returnable.replaceAll(']', '');
+  //print(returnable);
+  return returnable;
 }

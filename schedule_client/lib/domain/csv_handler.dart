@@ -30,10 +30,10 @@ class CSVHandler {
       csvFile =
           (await getSchedule()).replaceFirst(RegExp(r'^.*(\r\n|\r|\n)'), '');
     }
-
     _data = const CsvToListConverter().convert<String>(
       csvFile,
-      fieldDelimiter: ',',
+      fieldDelimiter: '<',
+      //textDelimiter: ' ',
       eol: '\n',
       convertEmptyTo: '',
       shouldParseNumbers: false,

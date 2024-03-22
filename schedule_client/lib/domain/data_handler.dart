@@ -33,6 +33,7 @@ class DataHandler {
         _data = await HTMLHandler.fetchListFromHtml(test: test);
       }
     }
+
     return _data;
   }
 }

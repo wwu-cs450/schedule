@@ -6,7 +6,7 @@ import 'package:universal_html/parsing.dart';
 class HTMLHandler {
   // cache containing fetched data using fetchListFromHtml
   static List<List<String>> _data = List.empty();
-  static bool _usingTest = false;
+  //static bool _usingTest = false;
 
   // ignore_for_file: type_annotate_public_apis
   //note print has limits. If you want to see the whole csv use IO to write out to a file.
@@ -63,10 +63,9 @@ class HTMLHandler {
     final evenRows = classTable.getElementsByClassName('evenrow');
     final oddRows = classTable.getElementsByClassName('oddrow');
     final allRows = evenRows + oddRows;
-
-    final List<List<String>> data = List.generate(
+    final data = List.generate(
       allRows.length,
-      (i) => List<String>.filled(30, '', growable: false),
+      (i) => List<String>.filled(31, '', growable: false),
       growable: false,
     );
     for (int x = 0; x < allRows.length; x++) {
@@ -151,6 +150,7 @@ class HTMLHandler {
       }
       //CONSENT_DESCR
       data[x][29] = nodes[42].text?.trim() ?? '';
+      data[x][30] = '\n';
     }
     return data;
   }
