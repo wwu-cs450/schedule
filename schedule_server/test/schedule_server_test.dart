@@ -24,7 +24,7 @@ void main() {
     final reason = 'Did not receive a 200 code';
     final reason2 = 'Body is empty';
     host = '${html.window.location.protocol}//'
-        '${html.window.location.hostname}:8081';
+        '${html.window.location.hostname}:8080';
 
     final response = await http.get(
       Uri.parse(host),
