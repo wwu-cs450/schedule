@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/views/main_view.dart';
+import 'package:schedule_client/views/schedule_view.dart';
 
 class SmallView extends MainView {
   SmallView(super.startYear, super.results);
@@ -65,7 +66,7 @@ class SmallView extends MainView {
     final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
     final room = addLinesTo(aClass.classroom, h);
-    final schedule = addLinesTo(aClass.schedule.toString(), h);
+    final schedule = addLinesTo(aClass.schedule.toString(is24hr: false), h);
     final profs = addLinesTo(aClass.getInstructors(), h);
     final credits = addLinesTo(
       aClass.course.creditsMax == aClass.course.creditsMin
@@ -180,10 +181,8 @@ class SmallView extends MainView {
         );
       case 2:
         // Schedule Page
-        return const Column(
-          children: [
-            Placeholder(),
-          ],
+        return SingleChildScrollView(
+          child: ScheduleView().build(),
         );
       default:
         return const Column(children: [Placeholder()]);
