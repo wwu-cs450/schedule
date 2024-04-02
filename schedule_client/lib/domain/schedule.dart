@@ -12,6 +12,5 @@ Future<String> getSchedule() async {
   );
   String returnable = response.body.replaceAll('[', '');
   returnable = returnable.replaceAll(']', '');
-  //print(returnable);
   return returnable;
 }

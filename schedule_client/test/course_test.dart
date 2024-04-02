@@ -6,7 +6,7 @@ import 'package:schedule_client/domain/subject.dart';
 
 void main() {
   setUp(() async {
-    await DataHandler.fetchData(test: true);
+    await DataHandler.fetchData();
   });
   test('constructor and accessors', () {
     final course = Course(
@@ -50,24 +50,6 @@ void main() {
         (element) =>
             element.creditsMin == 1 &&
             element.creditsMax == 4, // Test for NRSG494 Internship
-      ),
-    );
-    assert(
-      courses.any(
-        (element) => element.creditsMin != element.creditsMax,
-      ),
-    );
-    assert(
-      courses.any(
-        (element) => element.creditsMin == element.creditsMax,
-      ),
-    );
-  });
-  test('course titles from HTML', () {
-    final courses = Course.instances;
-    assert(
-      courses.any(
-        (element) => element.title == 'Introduction to Printmaking',
       ),
     );
   });

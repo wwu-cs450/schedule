@@ -4,16 +4,15 @@ import 'package:schedule_client/domain/instructor.dart';
 
 void main() {
   setUp(() async {
-    await DataHandler.fetchData(test: true);
+    await DataHandler.fetchData();
   });
   test('constructor and accessors', () {
     final instructor = Instructor('James Foster');
     assert(instructor.name == 'James Foster');
   });
-
+  //FIX: Potentially problematic if list of instructors is dynamic
   test('instances', () {
     final instructors = Instructor.instances;
-    expect(instructors.length, 225);
     expect(
       instructors.any(
         (element) => element.name == 'James Foster',
@@ -21,6 +20,7 @@ void main() {
       true,
     );
   });
+  //Same potential issue as 'instances' test
   test(
       'instructorWithName for James Foster and the stateError for a notFound name',
       () {
@@ -34,6 +34,7 @@ void main() {
     }
     expect(ex.runtimeType, StateError);
   });
+  //See above comments
   test('double instructors', () {
     expect(
       Instructor.instances.any((e) => e.name == 'Deisy Haid, Anali Pesqueira'),

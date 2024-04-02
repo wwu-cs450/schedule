@@ -45,12 +45,11 @@ class HTMLHandler {
 
   //Test var is strictly for unit testing
   // html parsing
+  //FIX: Parsing Code ignores first class entry
   static List<List<String>> _listFromHtml(bool test) {
-    print('made it to listfromhtml');
     //List<List<String>> data = List.empty();
     var document = '';
     document = fetchTestHtml();
-    print('Fetched TestHTML');
 
     final htmlDoc = parseHtmlDocument(
       document.replaceAll(RegExp(r'(<br \/>|<br>)+'), '/'),
@@ -83,10 +82,10 @@ class HTMLHandler {
       //CLASS_NBR,    1536
       data[x][5] = nodes[0].text?.trim() ?? '';
       //WWU_GS,   GS or space
-      if (nodes[16].text == null) {
-        data[x][6] = '';
-      } else {
+      if (nodes[16].text == 'GS') {
         data[x][6] = 'GS';
+      } else {
+        data[x][6] = '';
       }
       //SUBJECT
       data[x][7] = nodes[2].text?.trim() ?? '';
@@ -157,7 +156,7 @@ class HTMLHandler {
   }
 
   // maps:
-
+  //Static map is a potential problem in the future
   static const Map _subjDept = {
     'ACCT': 'BUSI',
     'ACDM': 'ACDM',
