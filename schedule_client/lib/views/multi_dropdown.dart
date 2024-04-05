@@ -67,11 +67,22 @@ class MultiSelectDropdown {
     );
 
     return DropdownMenu(
+      textStyle: const TextStyle(fontSize: 12),
       key: key,
       label: Text(
         selectedItems.isEmpty
             ? label ?? 'Select items...'
             : selectedItems.join(', '),
+      ),
+      inputDecorationTheme: const InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.black,
+            width: 1,
+          ),
+        ),
+        filled: true,
+        fillColor: Color.fromARGB(255, 247, 246, 246),
       ),
       dropdownMenuEntries: entries,
       onSelected: null,
