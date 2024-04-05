@@ -1,10 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/domain/hourminute.dart';
+import 'package:schedule_client/domain/term.dart';
 import 'package:schedule_client/main.dart';
 
 class ScheduleView {
-  DecoratedBox cellBox(
+  ScheduleView() {
+    _terms = _termEntries();
+    _terms.removeAt(0);
+  }
+  BuildContext context = results.context;
+  late List<DropdownMenuEntry> _terms;
+  late final Term term = _terms[1].value;
+
+  List<DropdownMenuEntry> _termEntries() {
+    final entries = <DropdownMenuEntry>[];
+    final Map<String, dynamic> map = {
+      for (final e in Term.instances) e.name: e,
+    };
+    for (final key in map.keys) {
+      entries.add(DropdownMenuEntry(value: map[key], label: key));
+    }
+
+    return entries;
+  }
+
+  Widget _termDropdown() {
+    return Semantics(
+      label: 'Schedule View Term Dropdown Menu',
+      hint: 'Select a term from the dropdown menu.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DropdownMenu(
+          key: const Key('Schedule View Term Dropdown'),
+          label: const Text(
+            'Term',
+            style: TextStyle(fontSize: 12),
+          ),
+          dropdownMenuEntries: _terms,
+          initialSelection: term,
+          onSelected: (value) {
+            results.updateSchedule(value);
+          },
+        ),
+      ),
+    );
+  }
+
+  DecoratedBox _cellBox(
     String timeDayTitle,
     double fontSize,
   ) {
@@ -33,11 +76,11 @@ class ScheduleView {
   TableCell tableCell(String input, double fontSz, TextAlign alignOpt) {
     return TableCell(
       verticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
-      child: cellBox(input, fontSz),
+      child: _cellBox(input, fontSz),
     );
   }
 
-  TableRow scheduleHeader() {
+  TableRow _scheduleHeader() {
     const alignOpt = TextAlign.center;
     return TableRow(
       children: [
@@ -52,7 +95,7 @@ class ScheduleView {
     );
   }
 
-  TableRow scheduleRow(String time, List<String> classNames) {
+  TableRow _scheduleRow(String time, List<String> classNames) {
     const alignOpt = TextAlign.left;
 
     return TableRow(
@@ -68,7 +111,7 @@ class ScheduleView {
     );
   }
 
-  List<TableRow> scheduleRows(List<Class> classes) {
+  List<TableRow> _scheduleRows(List<Class> classes) {
     final rows = <TableRow>[];
 
     for (HourMinute time = HourMinute(hour: 7, minute: 0);
@@ -93,26 +136,37 @@ class ScheduleView {
         cNames[i] = cNames[i].trim();
       }
 
-      rows.add(scheduleRow(time.toString(is24hr: false), cNames));
+      rows.add(_scheduleRow(time.toString(is24hr: false), cNames));
     }
     return rows;
   }
 
   Widget build() {
-    return Table(
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      columnWidths: const {
-        0: FixedColumnWidth(100),
-        1: IntrinsicColumnWidth(flex: 1.0),
-        2: IntrinsicColumnWidth(flex: 1.0),
-        3: IntrinsicColumnWidth(flex: 1.0),
-        4: IntrinsicColumnWidth(flex: 1.0),
-        5: IntrinsicColumnWidth(flex: 1.0),
-        6: IntrinsicColumnWidth(flex: 1.0),
-      },
+    return Column(
       children: [
-        scheduleHeader(),
-        ...scheduleRows(results.savedData),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: DecoratedBox(
+            decoration: const BoxDecoration(color: Color(0xFFa8ac9c)),
+            child: _termDropdown(),
+          ),
+        ),
+        Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          columnWidths: const {
+            0: FixedColumnWidth(100),
+            1: IntrinsicColumnWidth(flex: 1.0),
+            2: IntrinsicColumnWidth(flex: 1.0),
+            3: IntrinsicColumnWidth(flex: 1.0),
+            4: IntrinsicColumnWidth(flex: 1.0),
+            5: IntrinsicColumnWidth(flex: 1.0),
+            6: IntrinsicColumnWidth(flex: 1.0),
+          },
+          children: [
+            _scheduleHeader(),
+            ..._scheduleRows(results.scheduleData),
+          ],
+        ),
       ],
     );
   }
