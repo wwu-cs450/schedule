@@ -33,7 +33,13 @@ class SearchCriteria extends ChangeNotifier {
   final List<String> keys = [];
 
   final List<Class> savedData = <Class>[];
+  List<Class> scheduleData = <Class>[];
   List<Class> classes = <Class>[];
+
+  void updateSchedule(Term term) {
+    scheduleData = savedData.where((element) => element.term == term).toList();
+    notifyListeners();
+  }
 
   final inputList = {
     'Sunday': false,
@@ -82,23 +88,6 @@ class SearchCriteria extends ChangeNotifier {
     classes.sort();
     notifyListeners();
   }
-
-  // We will need to adjust this in the future, but for now it isn't used.
-  // void inputQuarters() {
-  //   final List<Class> classData = Query(
-  //     department: _department,
-  //     subject: _subject,
-  //     term: _term,
-  //     campus: _campus,
-  //   ).results().toList();
-  //   startYear = int.parse(classData.first.term.code.toString().substring(1, 3));
-  //   for (final aClass in classData) {
-  //     final code = int.parse(aClass.term.code.toString().substring(1, 3));
-  //     if (code.compareTo(startYear) < 0) {
-  //       startYear = code;
-  //     }
-  //   }
-  // }
 
   List<DropdownMenuEntry> dropdownEntries(String key) {
     final entries = <DropdownMenuEntry>[];
@@ -345,6 +334,9 @@ class SearchCriteria extends ChangeNotifier {
   }
 
   Widget searchCriteriaWidget() {
+    scheduleData = savedData
+        .where((element) => element.term == Term.instances.elementAt(2))
+        .toList();
     return Wrap(
       key: const Key('Search Criteria Widget'),
       spacing: 8,
