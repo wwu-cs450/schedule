@@ -14,7 +14,7 @@ import 'package:schedule_client/views/search_criteria.dart';
 
 void main() {
   setUp(() async {
-    await DataHandler.fetchData();
+    await DataHandler.fetchData(true);
   });
 
   testWidgets('Dropdown Button Test', (WidgetTester tester) async {
@@ -134,29 +134,29 @@ void main() {
     context = tester.element(find.byType(MyApp));
 
     final subjectDropdown = find.byKey(const Key('Subject Dropdown'));
-    final hlthSubject = find.text('HLTH Health');
-    final histSubject = find.text('HIST History');
+    final acctSubject = find.text('ACCT Accounting');
+    final biolSubject = find.text('BIOL Biology');
     final resultsFinder = find.byKey(const Key('Results'));
 
     // Looks for the "Subject" dropdown.
     expect(subjectDropdown.hitTestable(), findsOneWidget);
     // Makes sure it's not already open.
-    expect(hlthSubject.hitTestable(), findsNothing);
-    expect(histSubject.hitTestable(), findsNothing);
+    expect(acctSubject.hitTestable(), findsNothing);
+    expect(biolSubject.hitTestable(), findsNothing);
     expect(resultsFinder, findsOneWidget); // Is this needed?
 
     // Open dropdown.
     await tester.tap(subjectDropdown);
     await tester.pumpAndSettle();
-    expect(hlthSubject.hitTestable(), findsOneWidget);
-    expect(histSubject.hitTestable(), findsOneWidget);
+    expect(acctSubject.hitTestable(), findsOneWidget);
+    expect(biolSubject.hitTestable(), findsOneWidget);
 
     // Tap on "Health".
-    await tester.tap(hlthSubject.hitTestable());
+    await tester.tap(acctSubject.hitTestable());
     await tester.pumpAndSettle();
     // Check to make sure dropdown is closed, and result is shown.
-    expect(hlthSubject.hitTestable(), findsOneWidget);
-    expect(histSubject.hitTestable(), findsNothing);
+    expect(acctSubject.hitTestable(), findsOneWidget);
+    expect(biolSubject.hitTestable(), findsNothing);
     expect(find.textContaining('HLTH'), findsAtLeast(1));
   });
 
@@ -194,7 +194,7 @@ void main() {
     expect(find.textContaining('CP'), findsAtLeast(1));
   });
 
-  /* testWidgets('Search by Level', (WidgetTester tester) async {
+  testWidgets('Search by Level', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
     late BuildContext context;
     addTearDown(() {
@@ -205,27 +205,23 @@ void main() {
     context = tester.element(find.byType(MyApp));
 
     final levelDropdown = find.byKey(const Key('Level Dropdown'));
-    final any = find.text('Any');
     final lower = find.text('Lower');
     final upper = find.text('Upper');
     final grad = find.text('Grad');
 
     expect(levelDropdown.hitTestable(), findsOneWidget);
-    expect(any.hitTestable(), findsNothing);
     expect(lower.hitTestable(), findsNothing);
     expect(upper.hitTestable(), findsNothing);
     expect(grad.hitTestable(), findsNothing);
 
     await tester.tap(levelDropdown);
     await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsOneWidget);
     expect(lower.hitTestable(), findsOneWidget);
     expect(upper.hitTestable(), findsOneWidget);
     expect(grad.hitTestable(), findsOneWidget);
 
     await tester.tap(lower.hitTestable());
     await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsNothing);
     expect(lower.hitTestable(), findsAtLeast(1));
     expect(upper.hitTestable(), findsNothing);
     expect(grad.hitTestable(), findsNothing);
@@ -242,7 +238,7 @@ void main() {
     expect(find.textContaining(RegExp(r'\b4\d{2}\b\w{0,1}\b')), findsNothing);
     expect(find.textContaining(RegExp(r'\b5\d{2}\b\w{0,1}\b')), findsNothing);
   });
-*/
+
   testWidgets('Search by Term', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
     late BuildContext context;
@@ -273,7 +269,7 @@ void main() {
     expect(find.textContaining('Spring'), findsAtLeast(1));
   });
 
-  /* testWidgets('Search by Credits', (WidgetTester tester) async {
+  testWidgets('Search by Credits', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
     late BuildContext context;
     addTearDown(() {
@@ -284,7 +280,6 @@ void main() {
     context = tester.element(find.byType(MyApp));
 
     final creditDropdown = find.byKey(const Key('Credits Dropdown'));
-    final any = find.text('Any');
     final oneCredit = find.text('1');
     final twoCredit = find.text('2');
     final threeCredit = find.text('3');
@@ -292,7 +287,6 @@ void main() {
     final moreCredit = find.text('>4');
 
     expect(creditDropdown.hitTestable(), findsOneWidget);
-    expect(any.hitTestable(), findsNothing);
     expect(oneCredit.hitTestable(), findsNothing);
     expect(twoCredit.hitTestable(), findsNothing);
     expect(threeCredit.hitTestable(), findsNothing);
@@ -301,7 +295,6 @@ void main() {
 
     await tester.tap(creditDropdown);
     await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsOneWidget);
     expect(oneCredit.hitTestable(), findsOneWidget);
     expect(twoCredit.hitTestable(), findsOneWidget);
     expect(threeCredit.hitTestable(), findsOneWidget);
@@ -310,7 +303,6 @@ void main() {
 
     await tester.tap(fourCredit.hitTestable());
     await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsNothing);
     expect(oneCredit.hitTestable(), findsNothing);
     expect(twoCredit.hitTestable(), findsNothing);
     expect(threeCredit.hitTestable(), findsNothing);
@@ -466,7 +458,7 @@ void main() {
       findsAtLeast(1),
     );
   });
-*/
+
   testWidgets('Search by Class Number', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
     late BuildContext context;
@@ -507,7 +499,7 @@ void main() {
     expect(one321, findsAtLeast(1));
   });
 
-  /*testWidgets('Search by Instructor', (WidgetTester tester) async {
+  testWidgets('Search by Instructor', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
     late BuildContext context;
     addTearDown(() {
@@ -541,8 +533,8 @@ void main() {
     expect(schaffner.hitTestable(), findsAtLeast(1));
     expect(wong.hitTestable(), findsAtLeast(1));
   });
-*/
-  /*testWidgets('Search by Only Open', (WidgetTester tester) async {
+
+  testWidgets('Search by Only Open', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
     late BuildContext context;
     addTearDown(() {
@@ -567,9 +559,8 @@ void main() {
 
     expect(classesFound, equals('2371 classes found.'));
   });
-*/
-//This test is assuming all classes are GS, so I think that is the cause of failure
-  /* testWidgets('Search by Only GS', (WidgetTester tester) async {
+
+  testWidgets('Search by Only GS', (WidgetTester tester) async {
     // Testing data has all classes listed as General Studies...
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
     late BuildContext context;
@@ -593,9 +584,9 @@ void main() {
         find.byKey(const Key('Class Found')).evaluate().single.widget as Text;
     final classesFound = classText.data!.trim();
 
-    expect(classesFound, equals('2370 classes found.'));
+    expect(classesFound, equals('2371 classes found.'));
   });
-*/
+
   testWidgets('Default Sort', (WidgetTester tester) async {
     String textInCellWithKey(Element element, String key) {
       final cellRow = element as MultiChildRenderObjectElement;

@@ -10,7 +10,7 @@ import 'package:schedule_client/views/small_view.dart';
 import 'package:schedule_client/views/wide_view.dart';
 
 void main() async {
-  await DataHandler.fetchData();
+  await DataHandler.fetchData(false);
   Class.instances;
   runApp(const MyApp());
   // SemanticsBinding.instance.ensureSemantics();

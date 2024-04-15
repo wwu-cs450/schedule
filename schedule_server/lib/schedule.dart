@@ -1,17 +1,11 @@
+import 'package:csv/csv.dart';
 import 'package:schedule_server/html_handler.dart';
 
 String getSchedule() {
   List<List<String>> data = List.empty();
   data = HTMLHandler.fetchListFromHtml();
-  final toReturn = List<String>.filled(data.length, '');
-  //Iterates through the columns of the 2D array to join the entries into a string
-  //with the alternate delimiter
-  for (int i = 0; i < data.length; i++) {
-    toReturn[i] = data[i].join('<');
-  }
-
-  return toReturn
-      .join(); /*
+  final csv = ListToCsvConverter().convert(data);
+  return csv; /*
   return '''
 CRSE_OFFER_NBR,CAMPUS,ACAD_YEAR,ACAD_ORG,WWU_ACAD_ORG_DESCR,CLASS_NBR,WWU_GS,SUBJECT,WWU_SUM1,WWU_AUT,WWU_WTR,WWU_SPR,WWU_SUM2,CLASS_SECTION,DESCR,WWU_UNITS,ENRL_STAT,ENRL_TOT,ENRL_CAP,WAIT_TOT,FEE_AMT,WWU_MTG_PAT_COMB,WWU_ROOM,WWU_INSTR_NAME,DESCRLONG,INSTRUCTION_MODE,SCHEDULE_PRINT,VIDEO_LINK,CONSENT,CONSENT_DESCR
 1,CP,2024,BIOL,Biology,1536,GS,BIOL,,, 105L,,,A,Contemporary Biology Lab,0,O,5,20,0,162 ,T 08:00 - 10:50A, ,Reserved Staff, ,P,Y,NULL,N,

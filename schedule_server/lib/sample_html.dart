@@ -635,6 +635,30 @@ document.getElementById("reset_button").onclick=function(){
 		<td></td>
 		<td> </td>
 		</tr>
+    <tr class="evenrow"><td>1140</td>
+		<td>ACDM</td>
+		<td class="evenrow_sum"> 250</td>
+		<td class="evenrow_aut"></td>
+		<td class="evenrow_wtr"></td>
+		<td class="evenrow_spr"></td>
+		<td class="evenrow_sum"></td>
+		<td></td>
+		<td class="center"></td>
+		<td>1-18</td>
+		<td>Acadeum Courses</td>
+		<td class="center">Closed</td>
+		<td class="center">0</td>
+		<td class="center">0</td>
+		<td class="center"></td>
+		<td class="center"> </td>
+		<td class="right"> </td>
+		<td class="center">TBA</td>
+		<td> </td>
+		<td>CP</td>
+		<td></td>
+		<td></td>
+		<td> </td>
+		</tr>
 <tr class="oddrow"><td>1882</td>
 		<td>ACDM</td>
 		<td class="oddrow_sum"></td>

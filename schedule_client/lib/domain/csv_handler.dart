@@ -1,4 +1,5 @@
 import 'package:csv/csv.dart';
+import 'package:schedule_client/domain/sample_csv.dart';
 import 'package:schedule_client/domain/schedule.dart';
 
 class CSVHandler {
@@ -12,23 +13,21 @@ class CSVHandler {
   }
 
   // returns the csv from schedule.dart as a list of list of strings
-  static Future<List<List<String>>> listFromCsv() async {
+  static Future<List<List<String>>> listFromCsv(bool test) async {
     String csvFile = '';
 
     // test bool for testing (consistency regardless of updated data)
 
     // remove header line
-    csvFile =
-        (await getSchedule()).replaceFirst(RegExp(r'^.*(\r\n|\r|\n)'), '');
-
-    _data = const CsvToListConverter().convert<String>(
+    if (test) {
+      csvFile = getSampleCSV();
+    } else {
+      csvFile =
+          (await getSchedule()).replaceFirst(RegExp(r'^.*(\r\n|\r|\n)'), '');
+    }
+    return const CsvToListConverter().convert<String>(
       csvFile,
-      fieldDelimiter: '<',
-      //textDelimiter: ' ',
-      eol: '\n',
-      convertEmptyTo: '',
       shouldParseNumbers: false,
     );
-    return _data;
   }
 }

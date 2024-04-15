@@ -4,7 +4,7 @@ import 'package:schedule_client/domain/instructor.dart';
 
 void main() {
   setUp(() async {
-    await DataHandler.fetchData();
+    await DataHandler.fetchData(true);
   });
   test('constructor and accessors', () {
     final instructor = Instructor('James Foster');

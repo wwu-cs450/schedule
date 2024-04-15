@@ -11,9 +11,9 @@ class DataHandler {
   }
 
   // use this to get data from central place (either csv for html)
-  static Future<List<List<String>>> fetchData() async {
+  static Future<List<List<String>>> fetchData(bool test) async {
     //fetching new data
-    _data = await CSVHandler.listFromCsv();
+    _data = await CSVHandler.listFromCsv(test);
     return _data;
   }
 }

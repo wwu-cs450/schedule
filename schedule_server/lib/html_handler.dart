@@ -63,11 +63,11 @@ class HTMLHandler {
     final oddRows = classTable.getElementsByClassName('oddrow');
     final allRows = evenRows + oddRows;
     final data = List.generate(
-      allRows.length,
-      (i) => List<String>.filled(31, '', growable: false),
+      allRows.length+1,
+      (i) => List<String>.filled(30, '', growable: false),
       growable: false,
     );
-    for (int x = 0; x < allRows.length; x++) {
+    for (int x = 1; x < (allRows.length+1); x++) {
       final nodes = allRows[x].childNodes;
       //CRSE_OFFER_NBR, default=1, don't know what this is for and doesn't seem to be used.
       data[x][0] = '1';
@@ -149,8 +149,6 @@ class HTMLHandler {
       }
       //CONSENT_DESCR
       data[x][29] = nodes[42].text?.trim() ?? '';
-      //Newline
-      data[x][30] = '\n';
     }
     return data;
   }

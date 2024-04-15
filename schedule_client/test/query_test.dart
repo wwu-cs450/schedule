@@ -13,11 +13,11 @@ import 'package:schedule_client/domain/term.dart';
 
 void main() {
   setUp(() async {
-    await DataHandler.fetchData();
+    await DataHandler.fetchData(true);
   });
   //Below test will fail with dynamic data. Currently set to 2370 but actually there is 2371 entries in the HTML file
   test('null query (all results)', () {
-    expect(Query().results().length, 2370);
+    expect(Query().results().length, 2371);
   });
 
   test('count query results', () {
