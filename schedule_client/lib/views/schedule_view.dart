@@ -32,6 +32,18 @@ class ScheduleView {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: DropdownMenu(
+          menuHeight: 500,
+          textStyle: const TextStyle(fontSize: 12),
+          inputDecorationTheme: const InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.black,
+                width: 1,
+              ),
+            ),
+            filled: true,
+            fillColor: Color.fromARGB(255, 247, 246, 246),
+          ),
           key: const Key('Schedule View Term Dropdown'),
           label: const Text(
             'Term',
@@ -144,13 +156,7 @@ class ScheduleView {
   Widget build() {
     return Column(
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: DecoratedBox(
-            decoration: const BoxDecoration(color: Color(0xFFa8ac9c)),
-            child: _termDropdown(),
-          ),
-        ),
+        _termDropdown(),
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           columnWidths: const {

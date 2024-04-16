@@ -13,622 +13,404 @@ import 'package:schedule_client/main.dart';
 import 'package:schedule_client/views/search_criteria.dart';
 
 void main() {
+  // For RegExp calls, look up documentation for Regex symbols.
   setUp(() async {
     await DataHandler.fetchData(test: true);
   });
 
-  testWidgets('Dropdown Button Test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  Future<void> buildTestEnvironment(WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
+    await tester.pumpWidget(const MyApp());
+    final context = tester.element(find.byType(MyApp));
+    addTearDown(() async {
+      await tester.binding.setSurfaceSize(null);
       results = SearchCriteria(context);
     });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
+  }
 
-    expect(find.byKey(const Key('Department Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('Subject Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('Campus Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('Level Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('Term Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('Credits Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('Start Time Dropdown')), findsOneWidget);
-    expect(find.byKey(const Key('End Time Dropdown')), findsOneWidget);
+  Future<void> doTap(WidgetTester tester, Finder finder) async {
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> insertText(
+    WidgetTester tester,
+    FinderBase<Element> finder,
+    String text,
+  ) async {
+    await tester.enterText(finder, text);
+    await tester.pumpAndSettle();
+  }
+
+  final Map<String, Finder> finders = {
+    'Department': find.byKey(const Key('Department Dropdown')).hitTestable(),
+    'Subject': find.byKey(const Key('Subject Dropdown')).hitTestable(),
+    'Campus': find.byKey(const Key('Campus Dropdown')).hitTestable(),
+    'Level': find.byKey(const Key('Level Dropdown')).hitTestable(),
+    'Term': find.byKey(const Key('Term Dropdown')).hitTestable(),
+    'Credits': find.byKey(const Key('Credits Dropdown')).hitTestable(),
+    'Schedule': find.byKey(const Key('Schedule Dropdown')).hitTestable(),
+    'Start Time': find.byKey(const Key('Start Time Dropdown')).hitTestable(),
+    'End Time': find.byKey(const Key('End Time Dropdown')).hitTestable(),
+    'Class Number':
+        find.byKey(const Key('Class Number Text Box')).hitTestable(),
+    'Instructors': find.byKey(const Key('Instructor Text Box')).hitTestable(),
+    'Status': find.byKey(const Key('Status Checkbox')).hitTestable(),
+    'GS': find.byKey(const Key('GS Checkbox')).hitTestable(),
+  };
+
+  String textInCellWithKey(Element element, String key) {
+    final cellRow = element as MultiChildRenderObjectElement;
+    final semanticsCell = cellRow.children.firstWhere(
+      (element) {
+        if (element.widget is Semantics) {
+          final semantics = element.widget as Semantics;
+          if (semantics.child!.key == Key(key)) {
+            return true;
+          }
+        }
+        return false;
+      },
+    ).widget as Semantics;
+    final subjectCell = semanticsCell.child as Container;
+    final text = subjectCell.child as Text;
+    return text.data!.trim();
+  }
+
+  List<dynamic> excludeIndex(List<dynamic> list, int index) {
+    return list.where((item) => list.indexOf(item) != index).toList();
+  }
+
+  void multiExpect(List<dynamic> actual, dynamic matcher, {String? except}) {
+    if (actual.runtimeType != List<Finder>) {
+      for (final each in actual) {
+        expect(find.text(each.toString()), matcher);
+      }
+    } else {
+      for (final each in actual) {
+        expect(each, matcher);
+      }
+    }
+  }
+
+  void expectInResults(List<String> keys, dynamic condition) {
+    for (final key in keys) {
+      for (final each in find
+          .byWidgetPredicate(
+            (Widget widget) =>
+                widget.key is ValueKey<String> &&
+                RegExp(r'^Class \d{0,4}')
+                    .hasMatch((widget.key as ValueKey<String>).value) &&
+                widget is Row,
+          )
+          .evaluate()) {
+        if (condition != isNot('')) {
+          if (textInCellWithKey(each, '$key Cell') != '') {
+            expect(textInCellWithKey(each, '$key Cell'), condition);
+          }
+        } else {
+          expect(textInCellWithKey(each, '$key Cell'), condition);
+        }
+      }
+    }
+  }
+
+  Future<void> dropdownTester(
+    WidgetTester tester, {
+    required String menu,
+    required List<String> options,
+    required dynamic condition,
+    required List<String> cellKeys,
+  }) async {
+    await buildTestEnvironment(tester);
+    final ddownOpts = options.map((e) => find.text(e).hitTestable()).toList();
+    multiExpect(ddownOpts, findsNothing);
+    await doTap(tester, finders[menu]!);
+    multiExpect(ddownOpts, findsOneWidget);
+    await doTap(tester, ddownOpts[2]);
+    expect(ddownOpts[2], findsOneWidget);
+    multiExpect(excludeIndex(ddownOpts, 2), findsNothing);
+    expectInResults(cellKeys, condition);
+  }
+
+  Future<void> textBoxTester(
+    WidgetTester tester, {
+    required String textField,
+    required List<String> txtOpts,
+    required List<String> cellKeys,
+  }) async {
+    await buildTestEnvironment(tester);
+    multiExpect(txtOpts, findsNothing);
+    for (final opt in txtOpts) {
+      await insertText(tester, finders[textField]!, opt);
+      expectInResults(cellKeys, equals(opt));
+      multiExpect(
+        excludeIndex(txtOpts, txtOpts.indexOf(opt)),
+        findsNothing,
+      );
+    }
+  }
+
+  testWidgets('Search Criteria Test', (WidgetTester tester) async {
+    await buildTestEnvironment(tester);
+
+    multiExpect(
+      finders.values.toList(),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Search Criteria does not Overlap with Results',
       (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late final BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
+    await buildTestEnvironment(tester);
+
     expect(find.byKey(const Key('Search Criteria Widget')), findsOneWidget);
   });
 
-  testWidgets('Header Button Test', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
+  testWidgets('Header Card Test', (WidgetTester tester) async {
+    await buildTestEnvironment(tester);
 
-    expect(find.byKey(const Key('Class# Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Subject Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Sec Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('GS Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Cr Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Course Title Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Status Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Enroll\nCount Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Enroll\nLimit Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Waitlist Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Fee Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Meeting Time Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Classroom Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Instructor(s) Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Campus Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Video Header Card')), findsOneWidget);
-    expect(find.byKey(const Key('Consent Header Card')), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (Widget widget) =>
+            widget.key is ValueKey<String> &&
+            RegExp(r'Header Card$')
+                .hasMatch((widget.key as ValueKey<String>).value),
+      ),
+      findsExactly(22),
+    );
   });
 
   testWidgets('Search by Department', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final departmentDropdown = find.byKey(const Key('Department Dropdown'));
-    final csDepartment = find.text('CPTR Computer Science');
-    final commDepartment = find.text('COMM Communication');
-    final resultsFinder = find.byKey(const Key('Results'));
-
-    // Looking for department dropdown
-    expect(departmentDropdown.hitTestable(), findsOneWidget);
-    // Making sure "Computer Science" does not exist.
-    expect(csDepartment.hitTestable(), findsNothing);
-    // Making sure "Communication" does not exist.
-    expect(commDepartment.hitTestable(), findsNothing);
-
-    // key 'Results' is only found as a key for the ListView.Builder...
-    expect(resultsFinder, findsOneWidget);
-    // Ensured headers still exist?
-
-    // Tapping department dropdown.
-    await tester.tap(departmentDropdown);
-    await tester.pumpAndSettle();
-    // find "Computer Science" and "Communication"
-    expect(csDepartment.hitTestable(), findsOneWidget);
-    expect(commDepartment.hitTestable(), findsOneWidget);
-
-    // Selecting "Computer Science".
-    await tester.tap(csDepartment.hitTestable());
-    await tester.pumpAndSettle();
-    // Verifying department dropdown is labeled "Computer Science".
-    expect(csDepartment.hitTestable(), findsOneWidget);
-    // Verifying department dropdown is not labeled "Communication".
-    expect(commDepartment.hitTestable(), findsNothing);
-    expect(find.textContaining('CPTR'), findsAtLeast(1));
+    await dropdownTester(
+      tester,
+      menu: 'Department',
+      options: ['ACDM Acadeum', 'CHEM Chemistry', 'ENGI Engineering'],
+      condition: equals('ENGR'),
+      cellKeys: ['Subject'],
+    );
   });
 
   testWidgets('Search by Subject', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 3000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final subjectDropdown = find.byKey(const Key('Subject Dropdown'));
-    final acctSubject = find.text('ACCT Accounting');
-    final biolSubject = find.text('BIOL Biology');
-    final resultsFinder = find.byKey(const Key('Results'));
-
-    // Looks for the "Subject" dropdown.
-    expect(subjectDropdown.hitTestable(), findsOneWidget);
-    // Makes sure it's not already open.
-    expect(acctSubject.hitTestable(), findsNothing);
-    expect(biolSubject.hitTestable(), findsNothing);
-    expect(resultsFinder, findsOneWidget); // Is this needed?
-
-    // Open dropdown.
-    await tester.tap(subjectDropdown);
-    await tester.pumpAndSettle();
-    expect(acctSubject.hitTestable(), findsOneWidget);
-    expect(biolSubject.hitTestable(), findsOneWidget);
-
-    // Tap on "Health".
-    await tester.tap(acctSubject.hitTestable());
-    await tester.pumpAndSettle();
-    // Check to make sure dropdown is closed, and result is shown.
-    expect(acctSubject.hitTestable(), findsOneWidget);
-    expect(biolSubject.hitTestable(), findsNothing);
-    expect(find.textContaining('HLTH'), findsAtLeast(1));
+    await dropdownTester(
+      tester,
+      menu: 'Subject',
+      options: ['ACCT Accounting', 'ART Art', 'BUAD Business Administration'],
+      condition: equals('ACCT'),
+      cellKeys: ['Subject'],
+    );
   });
 
   testWidgets('Search by Campus', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(800, 800));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final campusDropdown = find.byKey(const Key('Campus Dropdown'));
-    final cpCampus = find.text('CP College Place');
-    final rosarioCampus = find.text('RO Rosario');
-
-    // Check if campus dropdown is tappable, assuming it exists.
-    expect(campusDropdown.hitTestable(), findsOneWidget);
-    expect(cpCampus.hitTestable(), findsNothing);
-    expect(rosarioCampus.hitTestable(), findsNothing);
-
-    // Open dropdown menu.
-    await tester.tap(campusDropdown);
-    await tester.pumpAndSettle();
-    expect(cpCampus.hitTestable(), findsOneWidget);
-    expect(rosarioCampus.hitTestable(), findsOneWidget);
-
-    // Checks to see if any results are generated that have a campus of College Place
-    // Note: This is the small version, so only 1 should be visible without scrolling.
-    await tester.tap(cpCampus.hitTestable());
-    await tester.pumpAndSettle();
-    expect(cpCampus.hitTestable(), findsAtLeast(1));
-    expect(rosarioCampus.hitTestable(), findsNothing);
-    expect(find.textContaining('CP'), findsAtLeast(1));
+    await dropdownTester(
+      tester,
+      menu: 'Campus',
+      options: ['BI Billings', 'CP College Place', 'RO Rosario'],
+      condition: equals('RO'),
+      cellKeys: ['Campus'],
+    );
   });
 
   testWidgets('Search by Level', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final levelDropdown = find.byKey(const Key('Level Dropdown'));
-    final lower = find.text('Lower');
-    final upper = find.text('Upper');
-    final grad = find.text('Grad');
-
-    expect(levelDropdown.hitTestable(), findsOneWidget);
-    expect(lower.hitTestable(), findsNothing);
-    expect(upper.hitTestable(), findsNothing);
-    expect(grad.hitTestable(), findsNothing);
-
-    await tester.tap(levelDropdown);
-    await tester.pumpAndSettle();
-    expect(lower.hitTestable(), findsOneWidget);
-    expect(upper.hitTestable(), findsOneWidget);
-    expect(grad.hitTestable(), findsOneWidget);
-
-    await tester.tap(lower.hitTestable());
-    await tester.pumpAndSettle();
-    expect(lower.hitTestable(), findsAtLeast(1));
-    expect(upper.hitTestable(), findsNothing);
-    expect(grad.hitTestable(), findsNothing);
-
-    // Explained RegExp string:
-    // \b - word boundary
-    // 2\d{2} - 2 followed by any 2 digits
-    // \w{0,1} - 0 or 1 of any character
-    expect(
-      find.textContaining(RegExp(r'\b2\d{2}\b\w{0,1}\b')),
-      findsAtLeast(1),
+    await dropdownTester(
+      tester,
+      menu: 'Level',
+      options: ['Lower', 'Upper', 'Grad'],
+      condition: contains(RegExp(r'\b5\d{2}\b\w{0,1}\b')),
+      cellKeys: ['Summer1', 'Fall', 'Winter', 'Spring', 'Summer2'],
     );
-    expect(find.textContaining(RegExp(r'\b3\d{2}\b\w{0,1}\b')), findsNothing);
-    expect(find.textContaining(RegExp(r'\b4\d{2}\b\w{0,1}\b')), findsNothing);
-    expect(find.textContaining(RegExp(r'\b5\d{2}\b\w{0,1}\b')), findsNothing);
   });
 
   testWidgets('Search by Term', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final termDropdown = find.byKey(const Key('Term Dropdown'));
-    final spring = find.textContaining('Spring');
-    final winter = find.textContaining('Winter');
-
-    expect(termDropdown.hitTestable(), findsOneWidget);
-    expect(spring.hitTestable(), findsNothing);
-    expect(winter.hitTestable(), findsNothing);
-
-    await tester.tap(termDropdown);
-    await tester.pumpAndSettle();
-    expect(spring.hitTestable(), findsOneWidget);
-    expect(winter.hitTestable(), findsOneWidget);
-
-    await tester.tap(spring.hitTestable());
-    await tester.pumpAndSettle();
-    expect(spring.hitTestable(), findsAtLeast(1));
-    expect(winter.hitTestable(), findsNothing);
-    expect(find.textContaining('Spring'), findsAtLeast(1));
+    await dropdownTester(
+      tester,
+      menu: 'Term',
+      options: ['Fall 2023', 'Winter 2024', 'Spring 2024'],
+      condition: isNot(''),
+      cellKeys: ['Spring'],
+    );
   });
 
   testWidgets('Search by Credits', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final creditDropdown = find.byKey(const Key('Credits Dropdown'));
-    final oneCredit = find.text('1');
-    final twoCredit = find.text('2');
-    final threeCredit = find.text('3');
-    final fourCredit = find.text('4');
-    final moreCredit = find.text('>4');
-
-    expect(creditDropdown.hitTestable(), findsOneWidget);
-    expect(oneCredit.hitTestable(), findsNothing);
-    expect(twoCredit.hitTestable(), findsNothing);
-    expect(threeCredit.hitTestable(), findsNothing);
-    expect(fourCredit.hitTestable(), findsNothing);
-    expect(moreCredit.hitTestable(), findsNothing);
-
-    await tester.tap(creditDropdown);
-    await tester.pumpAndSettle();
-    expect(oneCredit.hitTestable(), findsOneWidget);
-    expect(twoCredit.hitTestable(), findsOneWidget);
-    expect(threeCredit.hitTestable(), findsOneWidget);
-    expect(fourCredit.hitTestable(), findsOneWidget);
-    expect(moreCredit.hitTestable(), findsOneWidget);
-
-    await tester.tap(fourCredit.hitTestable());
-    await tester.pumpAndSettle();
-    expect(oneCredit.hitTestable(), findsNothing);
-    expect(twoCredit.hitTestable(), findsNothing);
-    expect(threeCredit.hitTestable(), findsNothing);
-    expect(fourCredit.hitTestable(), findsAtLeast(1));
-    expect(moreCredit.hitTestable(), findsNothing);
-    final finder = find.byKey(const Key('Cr Cell'));
-    expect(finder, findsWidgets);
-    expect(
-      find.descendant(of: finder, matching: find.textContaining('4')),
-      findsAtLeast(1),
+    await dropdownTester(
+      tester,
+      menu: 'Credits',
+      options: ['1', '2', '3', '4', '>4'],
+      condition: equals('3.0'),
+      cellKeys: ['Cr'],
     );
   });
 
   testWidgets('Search by Day', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
+    // As this is a custom widget, the default format doesn't work.
+    await buildTestEnvironment(tester);
 
-    final dayDropdown = find.byKey(const Key('Schedule Dropdown'));
-    final sun = find.text('Sunday');
-    final mon = find.text('Monday');
-    final tue = find.text('Tuesday');
-    final wed = find.text('Wednesday');
-    final thu = find.text('Thursday');
-    final fri = find.text('Friday');
+    final ddownOpts = [
+      find.text('Monday').hitTestable(),
+      find.text('Tuesday').hitTestable(),
+      find.text('Wednesday').hitTestable(),
+    ];
 
-    expect(dayDropdown.hitTestable(), findsOneWidget);
-    expect(sun.hitTestable(), findsNothing);
-    expect(mon.hitTestable(), findsNothing);
-    expect(tue.hitTestable(), findsNothing);
-    expect(wed.hitTestable(), findsNothing);
-    expect(thu.hitTestable(), findsNothing);
-    expect(fri.hitTestable(), findsNothing);
+    multiExpect(ddownOpts, findsNothing);
 
-    await tester.tap(dayDropdown);
-    await tester.pumpAndSettle();
-    expect(sun.hitTestable(), findsOneWidget);
-    expect(mon.hitTestable(), findsOneWidget);
-    expect(tue.hitTestable(), findsOneWidget);
-    expect(wed.hitTestable(), findsOneWidget);
-    expect(thu.hitTestable(), findsOneWidget);
-    expect(fri.hitTestable(), findsOneWidget);
+    await doTap(tester, finders['Schedule']!);
+    multiExpect(ddownOpts, findsOneWidget);
 
     // Check both monday and tuesday
-    await tester.tap(mon.hitTestable());
-    await tester.pumpAndSettle();
-    await tester.tap(tue.hitTestable());
-    await tester.pumpAndSettle();
-    final finder = find.byKey(const Key('Schedule Cell'));
-    expect(
-      find.descendant(of: finder, matching: find.textContaining('MT')),
-      findsAtLeast(1),
-    );
+    await tester.tap(ddownOpts[0]);
+    await tester.tap(ddownOpts[1]);
+    expectInResults(['Schedule'], contains('MT'));
 
     // Check both monday and wednesday
-    await tester.tap(tue.hitTestable());
-    await tester.pumpAndSettle();
-    await tester.tap(wed.hitTestable());
-    await tester.pumpAndSettle();
-    expect(
-      find.descendant(of: finder, matching: find.textContaining('MW')),
-      findsAtLeast(1),
-    );
+    await tester.tap(ddownOpts[1]);
+    await tester.tap(ddownOpts[2]);
+    expectInResults(['Schedule'], contains('MW'));
   });
 
   testWidgets('Search by Start Time', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final timeDropdown = find.byKey(const Key('Start Time Dropdown'));
-    final any = find.text('Any Time');
-    final eightAM = find.text('8:00AM');
-    final nineAM = find.text('9:00AM');
-    final tenAM = find.text('10:00AM');
-
-    expect(timeDropdown.hitTestable(), findsOneWidget);
-    expect(any.hitTestable(), findsAtLeast(2));
-    expect(eightAM.hitTestable(), findsNothing);
-    expect(nineAM.hitTestable(), findsNothing);
-    expect(tenAM.hitTestable(), findsNothing);
-
-    await tester.tap(timeDropdown);
-    await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsAtLeast(2));
-    expect(eightAM.hitTestable(), findsOneWidget);
-    expect(nineAM.hitTestable(), findsOneWidget);
-    expect(tenAM.hitTestable(), findsOneWidget);
-
-    await tester.tap(tenAM.hitTestable());
-    await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsAtLeast(1));
-    expect(eightAM.hitTestable(), findsNothing);
-    expect(nineAM.hitTestable(), findsNothing);
-    expect(tenAM.hitTestable(), findsAtLeast(1));
-    final finder = find.byKey(const Key('Schedule Cell'));
-    expect(finder, findsWidgets);
-    expect(
-      find.descendant(of: finder, matching: find.textContaining('10:00')),
-      findsAtLeast(1),
+    await dropdownTester(
+      tester,
+      menu: 'Start Time',
+      options: ['8:00AM', '9:00AM', '10:00AM'],
+      condition: contains('10:00AM'),
+      cellKeys: ['Schedule'],
     );
   });
 
   testWidgets('Search by End Time', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final timeDropdown = find.byKey(const Key('End Time Dropdown'));
-    final any = find.text('Any Time');
-    final eightAM = find.text('8:50AM');
-    final nineAM = find.text('9:50AM');
-    final tenAM = find.text('10:50AM');
-
-    expect(timeDropdown.hitTestable(), findsOneWidget);
-    expect(any.hitTestable(), findsAtLeast(2));
-    expect(eightAM.hitTestable(), findsNothing);
-    expect(nineAM.hitTestable(), findsNothing);
-    expect(tenAM.hitTestable(), findsNothing);
-
-    await tester.tap(timeDropdown);
-    await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsAtLeast(2));
-    expect(eightAM.hitTestable(), findsOneWidget);
-    expect(nineAM.hitTestable(), findsOneWidget);
-    expect(tenAM.hitTestable(), findsOneWidget);
-
-    await tester.tap(tenAM.hitTestable());
-    await tester.pumpAndSettle();
-    expect(any.hitTestable(), findsAtLeast(1));
-    expect(eightAM.hitTestable(), findsNothing);
-    expect(nineAM.hitTestable(), findsNothing);
-    expect(tenAM.hitTestable(), findsAtLeast(1));
-    final finder = find.byKey(const Key('Schedule Cell'));
-    expect(finder, findsWidgets);
-    expect(
-      find.descendant(of: finder, matching: find.textContaining('10:50')),
-      findsAtLeast(1),
+    await dropdownTester(
+      tester,
+      menu: 'End Time',
+      options: ['8:50AM', '9:50AM', '10:50AM'],
+      condition: contains('10:50AM'),
+      cellKeys: ['Schedule'],
     );
   });
 
   testWidgets('Search by Class Number', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final one122 = find.text('1122');
-    final one414 = find.text('1414');
-    final one321 = find.text('1321');
-
-    final classNumberTextBox = find.byKey(const Key('Class Number Text Box'));
-
-    expect(classNumberTextBox.hitTestable(), findsOneWidget);
-    expect(one122, findsNothing);
-    expect(one414, findsNothing);
-    expect(one321, findsNothing);
-
-    await tester.enterText(classNumberTextBox, '1122');
-    await tester.pumpAndSettle();
-    expect(one122, findsAtLeast(1));
-    expect(one414, findsNothing);
-    expect(one321, findsNothing);
-
-    await tester.enterText(classNumberTextBox, '1414');
-    await tester.pumpAndSettle();
-    expect(one122, findsNothing);
-    expect(one414, findsAtLeast(1));
-    expect(one321, findsNothing);
-
-    await tester.enterText(classNumberTextBox, '1321');
-    await tester.pumpAndSettle();
-    expect(one122, findsNothing);
-    expect(one414, findsNothing);
-    expect(one321, findsAtLeast(1));
+    await textBoxTester(
+      tester,
+      textField: 'Class Number',
+      txtOpts: ['1122', '1222', '1322'],
+      cellKeys: ['Class Number'],
+    );
   });
 
   testWidgets('Search by Instructor', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final schaffner = find.text('Brian Schaffner');
-    final wong = find.text('Brian Wong');
-
-    final instructorTextBox = find.byKey(const Key('Instructor Text Box'));
-
-    expect(instructorTextBox.hitTestable(), findsOneWidget);
-    expect(schaffner.hitTestable(), findsNothing);
-    expect(wong.hitTestable(), findsNothing);
-
-    await tester.enterText(instructorTextBox, 'Brian Schaffner');
-    await tester.pumpAndSettle();
-    expect(schaffner.hitTestable(), findsAtLeast(1));
-    expect(wong.hitTestable(), findsNothing);
-
-    await tester.enterText(instructorTextBox, 'Brian Wong');
-    await tester.pumpAndSettle();
-    expect(schaffner.hitTestable(), findsNothing);
-    expect(wong.hitTestable(), findsAtLeast(1));
-
-    await tester.enterText(instructorTextBox, 'Brian');
-    await tester.pumpAndSettle();
-    expect(schaffner.hitTestable(), findsAtLeast(1));
-    expect(wong.hitTestable(), findsAtLeast(1));
+    final textOpts = ['Brian Schaffner', 'Brian Wong', 'Brian Harris'];
+    await textBoxTester(
+      tester,
+      textField: 'Instructors',
+      txtOpts: textOpts,
+      cellKeys: ['Instructors'],
+    );
+    await insertText(tester, finders['Instructors']!, 'Brian');
+    multiExpect(textOpts, findsAtLeast(1));
   });
 
   testWidgets('Search by Only Open', (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    final onlyOpenCheckBox = find.byKey(const Key('Status Checkbox'));
-
-    // Check if the checkbox is tappable.
-    expect(onlyOpenCheckBox.hitTestable(), findsOneWidget);
-
-    // Tap the checkbox.
-    await tester.tap(onlyOpenCheckBox);
-    await tester.pumpAndSettle();
-
-    final classText =
-        find.byKey(const Key('Class Found')).evaluate().single.widget as Text;
-    final classesFound = classText.data!.trim();
-
-    expect(classesFound, equals('2371 classes found.'));
+    await buildTestEnvironment(tester);
+    await doTap(tester, finders['Status']!);
+    expectInResults(['Status'], equals('Open'));
   });
 
   testWidgets('Search by Only GS', (WidgetTester tester) async {
-    // Testing data has all classes listed as General Studies...
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
+    await buildTestEnvironment(tester);
+    await doTap(tester, finders['GS']!);
+    expectInResults(['GS'], equals('GS'));
+  });
 
-    final generalStudiesCheckBox = find.byKey(const Key('GS Checkbox'));
+  testWidgets('Schedule View Test', (WidgetTester tester) async {
+    await buildTestEnvironment(tester);
+    final options = {
+      '9:00AM': find.text('9:00AM').hitTestable(),
+      'Biology': find.text('BIOL Biology').hitTestable(),
+      'Schedule Page': find.byKey(const Key('Schedule Page')).hitTestable(),
+      'Main Page': find.byKey(const Key('Main Page')).hitTestable(),
+    };
+    final termOptions = [
+      find.text('Fall 2023').hitTestable(),
+      find.text('Winter 2024').hitTestable(),
+      find.text('Spring 2024').hitTestable(),
+    ];
 
-    // Check if the checkbox is tappable.
-    expect(generalStudiesCheckBox.hitTestable(), findsOneWidget);
+    await doTap(tester, finders['Department']!);
+    await doTap(tester, options['Biology']!);
 
-    // Tap the checkbox.
-    await tester.tap(generalStudiesCheckBox);
-    await tester.pumpAndSettle();
+    await doTap(tester, finders['Start Time']!);
+    await doTap(tester, options['9:00AM']!);
 
-    final classText =
-        find.byKey(const Key('Class Found')).evaluate().single.widget as Text;
-    final classesFound = classText.data!.trim();
+    int fall2023 = 0, winter2024 = 0, spring2024 = 0;
+    final rows = find
+        .byWidgetPredicate(
+          (Widget widget) =>
+              widget.key is ValueKey<String> &&
+              RegExp(r'^Class \d{0,4}')
+                  .hasMatch((widget.key as ValueKey<String>).value) &&
+              widget is Row,
+        )
+        .evaluate();
 
-    expect(classesFound, equals('2371 classes found.'));
+    // Qualifies as Save Box test.
+    for (final row in rows) {
+      final saveBox =
+          find.byKey(Key('Class ${rows.toList().indexOf(row)} save box'));
+      final fallContent = textInCellWithKey(row, 'Fall Cell');
+      final wtrContent = textInCellWithKey(row, 'Winter Cell');
+      final sprContent = textInCellWithKey(row, 'Spring Cell');
+      if ((fall2023 < 1) && (fallContent != '')) {
+        await doTap(tester, saveBox);
+        fall2023++;
+      } else if ((winter2024 < 2) && (wtrContent != '')) {
+        await doTap(tester, saveBox);
+        winter2024++;
+      } else if ((spring2024 < 3) && (sprContent != '')) {
+        await doTap(tester, saveBox);
+        spring2024++;
+      }
+    }
+
+    // Qualifies as Nav-Bar test.
+    expect(options['Schedule Page'], findsOneWidget);
+    await doTap(tester, options['Schedule Page']!);
+    expect(finders['Department']!, findsNothing);
+
+    // Qualifies as Schedule View test.
+    final redBox = find.byWidgetPredicate(
+      (Widget widget) =>
+          widget is DecoratedBox &&
+          widget.decoration is BoxDecoration &&
+          (widget.decoration as BoxDecoration).color ==
+              const Color.fromARGB(255, 255, 130, 121),
+    );
+    final termDropdown = find.byKey(const Key('Schedule View Term Dropdown'));
+
+    expect(termDropdown.hitTestable(), findsOneWidget);
+    expect(redBox, findsNothing);
+
+    await doTap(tester, termDropdown);
+    expect(termOptions[0], findsAtLeast(1));
+    multiExpect(excludeIndex(termOptions, 0), findsOneWidget);
+
+    await doTap(tester, termOptions[1]);
+    expect(redBox, findsAtLeast(1));
+
+    await doTap(tester, termDropdown);
+    await doTap(tester, termOptions[2]);
+    expect(redBox, findsAtLeast(1));
   });
 
   testWidgets('Default Sort', (WidgetTester tester) async {
-    String textInCellWithKey(Element element, String key) {
-      final cellRow = element as MultiChildRenderObjectElement;
-      final semanticsCell = cellRow.children.firstWhere(
-        (element) {
-          if (element.widget is Semantics) {
-            final semantics = element.widget as Semantics;
-            if (semantics.child!.key == Key(key)) {
-              return true;
-            }
-          }
-          return false;
-        },
-      ).widget as Semantics;
-      final subjectCell = semanticsCell.child as Container;
-      final text = subjectCell.child as Text;
-      return text.data!.trim();
-    }
+    await buildTestEnvironment(tester);
 
-    // launch app
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    late BuildContext context;
-    addTearDown(() {
-      tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-    await tester.pumpWidget(const MyApp());
-    context = tester.element(find.byType(MyApp));
-
-    // select 'Computer Science'
-    final departmentDropdown = find.byKey(const Key('Department Dropdown'));
-    await tester.tap(departmentDropdown);
-    await tester.pumpAndSettle();
-    final csDepartment = find.text('CPTR Computer Science');
-    await tester.tap(csDepartment.hitTestable());
-    await tester.pumpAndSettle();
+    // Open department dropdown
+    await doTap(tester, finders['Department']!);
+    await doTap(tester, find.text('CPTR Computer Science').hitTestable());
 
     // verify sort order of subject number
     String prior = '';
     String next = '';
-    final itemFinder = find.byKey(const Key('Class'));
-    for (final each in itemFinder.evaluate()) {
+    for (final each in find.byKey(const Key('Class')).evaluate()) {
       final subject = textInCellWithKey(each, 'Subject Cell');
       final summer1 = textInCellWithKey(each, 'Summer1 Cell');
       final fall = textInCellWithKey(each, 'Fall Cell');

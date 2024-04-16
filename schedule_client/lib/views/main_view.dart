@@ -32,7 +32,7 @@ abstract class MainView {
     Function searchCriteriaWidget,
   );
 
-  Widget savedBox(Class aClass) {
+  Widget savedBox(Class aClass, int index) {
     return Semantics(
       label: 'Class saving checkbox.',
       hint: 'Click on this to save a class for later.',
@@ -40,6 +40,7 @@ abstract class MainView {
         height: 10,
         width: 30,
         child: Checkbox(
+          key: Key('Class $index save box'),
           value: aClass.saved,
           onChanged: (bool? value) {
             results.saveClass(aClass, value!);
