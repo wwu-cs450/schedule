@@ -27,11 +27,9 @@ class SearchCriteria extends ChangeNotifier {
     'End Time': null,
   };
 
-  final List<String> _scheduleList = [];
-
   late Row sizingRow;
   final startYear = 2023;
-  int _selectedIndex = 0; // Page Index
+  int _selectedIndex = 0;
   final List<String> keys = [];
 
   final List<Class> savedData = <Class>[];
@@ -53,6 +51,7 @@ class SearchCriteria extends ChangeNotifier {
   };
 
   int get selectedIndex => _selectedIndex;
+
   set selectedIndex(int index) {
     _selectedIndex = index;
     notifyListeners();
@@ -176,7 +175,7 @@ class SearchCriteria extends ChangeNotifier {
           child: MultiSelectDropdown(
             context: context,
             allItems: inputList.keys.toList(),
-            selectedItems: _scheduleList,
+            selectedItems: _searchCriteria['Schedule'],
             label: 'Weekdays',
             onChanged: () {
               doSearch();
