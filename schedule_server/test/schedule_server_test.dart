@@ -35,6 +35,7 @@ void main() {
   });
   test('ClassOpen Reachable', () async {
     final String response = await getHtml();
-    expect(response.isNotEmpty, true, reason: 'Did not receive anything from ClassOpen');
-});
+    expect(response.isNotEmpty, true,
+        reason: 'Did not receive anything from ClassOpen');
+  });
 }
