@@ -45,7 +45,6 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({required this.title, super.key});
   final String title;
-
   final startYear = 2023;
 
   @override
@@ -96,6 +95,7 @@ class HomePage extends StatelessWidget {
             },
             destinations: const <Widget>[
               NavigationDestination(
+                key: Key('Main Page'),
                 icon: Icon(Icons.list),
                 label: 'All Classes',
               ),
@@ -104,6 +104,7 @@ class HomePage extends StatelessWidget {
                 label: 'Saved',
               ),
               NavigationDestination(
+                key: Key('Schedule Page'),
                 icon: Icon(Icons.schedule),
                 label: 'Schedule',
               ),

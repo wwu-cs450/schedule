@@ -78,10 +78,10 @@ class MediumView extends MainView {
     ];
 
     return Row(
-      key: const Key('Class'),
+      key: Key('Class $index'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        savedBox(aClass), // create a checkbox for the row
+        savedBox(aClass, index), // create a checkbox for the row
         DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(width: 3, color: Colors.black),
