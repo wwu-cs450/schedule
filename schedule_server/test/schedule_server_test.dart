@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:schedule_server/get_html.dart';
 import 'package:test/test.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -32,4 +33,8 @@ void main() {
     expect(response.statusCode, 200, reason: reason);
     expect(response.body.isNotEmpty, true, reason: reason2);
   });
+  test('ClassOpen Reachable', () async {
+    final String response = await getHtml();
+    expect(response.isNotEmpty, true, reason: 'Did not receive anything from ClassOpen');
+});
 }
