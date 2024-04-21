@@ -61,10 +61,10 @@ class WideView extends MainView {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      key: const Key('Class'),
+      key: Key('Class $index'),
       children: [
-        savedBox(aClass),
-        cell('ClassNumber', aClass.getClN(), 55, color[0], h),
+        savedBox(aClass, index),
+        cell('Class Number', aClass.getClN(), 55, color[0], h),
         cell('Subject', aClass.getCode(), 45.0, color[0], h),
         cell('Summer1', getTerm(aClass, qtrs[0]), 50.0, color[1], h),
         cell('Fall', getTerm(aClass, qtrs[1]), 50.0, color[2], h),
