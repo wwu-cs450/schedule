@@ -7,7 +7,6 @@ import 'package:schedule_client/domain/subject.dart';
 void main() {
   setUp(() async {
     await DataHandler.fetchData(test: true);
-    final courses = Course.instances;
   });
   test('constructor and accessors', () {
     final course = Course(
