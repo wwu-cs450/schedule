@@ -20,10 +20,6 @@ class HTMLHandler {
   //Need to call this to instantiate getHtml() data!
   //Call this in main.dart or before any multiple tests involving live HTML
   // returns data from html getting/parsing as a list of list of strings
-  static List<List<String>> fetchListFromHtml() {
-    _data = _listFromHtml(true);
-    return _data;
-  }
 
   //Purpose: To grab the raw HTML document from
   //"flutter pub add http" if you are missing the package from your environment.
@@ -46,11 +42,10 @@ class HTMLHandler {
   //Test var is strictly for unit testing
   // html parsing
   //FIX: Parsing Code ignores first class entry
-  static List<List<String>> _listFromHtml(bool test) {
+  static Future<List<List<String>>> listFromHtml() async {
     List<List<String>> data = List.empty();
     var document = '';
-    document = fetchTestHtml();
-
+    document = await fetchHtml();
     final htmlDoc = parseHtmlDocument(
       document.replaceAll(RegExp(r'(<br \/>|<br>)+'), '/'),
     );
@@ -67,7 +62,6 @@ class HTMLHandler {
       (i) => List<String>.filled(30, '', growable: false),
       growable: false,
     );
-    print(allRows.length);
     for (int x = 0; x < allRows.length; x++) {
       final nodes = allRows[x].childNodes;
       //CRSE_OFFER_NBR, default=1, don't know what this is for and doesn't seem to be used.

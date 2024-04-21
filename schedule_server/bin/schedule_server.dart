@@ -5,13 +5,14 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+String data = '';
 // Configure routes.
 final _router = Router()
   ..get('/', _rootHandler)
   ..get('/echo/<message>', _echoHandler);
 
 Future<Response> _rootHandler(Request req) async {
-  return Response.ok(await getSchedule());
+  return Response.ok(data);
 }
 
 Response _echoHandler(Request request) {
@@ -30,9 +31,10 @@ void main(List<String> args) async {
         corsHeaders(headers: {'Access-Control-Allow-Headers': '*'}),
       )
       .addHandler(_router.call);
-
+  data = await getSchedule();
   // For running in containers, we respect the PORT environment variable.
   final port = 8080;
   final server = await serve(handler, ip, port);
   print('Server listening on port ${server.port}');
+  //while (true) {}
 }
