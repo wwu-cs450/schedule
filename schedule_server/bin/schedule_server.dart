@@ -10,8 +10,8 @@ final _router = Router()
   ..get('/', _rootHandler)
   ..get('/echo/<message>', _echoHandler);
 
-Response _rootHandler(Request req) {
-  return Response.ok(getSchedule());
+Future<Response> _rootHandler(Request req) async {
+  return Response.ok(await getSchedule());
 }
 
 Response _echoHandler(Request request) {

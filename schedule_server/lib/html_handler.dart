@@ -47,7 +47,7 @@ class HTMLHandler {
   // html parsing
   //FIX: Parsing Code ignores first class entry
   static List<List<String>> _listFromHtml(bool test) {
-    //List<List<String>> data = List.empty();
+    List<List<String>> data = List.empty();
     var document = '';
     document = fetchTestHtml();
 
@@ -62,12 +62,13 @@ class HTMLHandler {
     final evenRows = classTable.getElementsByClassName('evenrow');
     final oddRows = classTable.getElementsByClassName('oddrow');
     final allRows = evenRows + oddRows;
-    final data = List.generate(
-      allRows.length+1,
+    data = List.generate(
+      allRows.length,
       (i) => List<String>.filled(30, '', growable: false),
       growable: false,
     );
-    for (int x = 1; x < (allRows.length+1); x++) {
+    print(allRows.length);
+    for (int x = 0; x < allRows.length; x++) {
       final nodes = allRows[x].childNodes;
       //CRSE_OFFER_NBR, default=1, don't know what this is for and doesn't seem to be used.
       data[x][0] = '1';

@@ -14,7 +14,7 @@ import 'package:schedule_client/views/search_criteria.dart';
 
 void main() {
   setUp(() async {
-    await DataHandler.fetchData(true);
+    await DataHandler.fetchData(test: true);
   });
 
   testWidgets('Dropdown Button Test', (WidgetTester tester) async {

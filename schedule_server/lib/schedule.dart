@@ -1,9 +1,8 @@
 import 'package:csv/csv.dart';
 import 'package:schedule_server/html_handler.dart';
 
-String getSchedule() {
-  List<List<String>> data = List.empty();
-  data = HTMLHandler.fetchListFromHtml();
+Future<String> getSchedule() async {
+  final List<List<String>> data = HTMLHandler.fetchListFromHtml();
   final csv = ListToCsvConverter().convert(data);
   return csv; /*
   return '''

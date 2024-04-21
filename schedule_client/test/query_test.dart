@@ -13,9 +13,8 @@ import 'package:schedule_client/domain/term.dart';
 
 void main() {
   setUp(() async {
-    await DataHandler.fetchData(true);
+    await DataHandler.fetchData(test: true);
   });
-  //Below test will fail with dynamic data. Currently set to 2370 but actually there is 2371 entries in the HTML file
   test('null query (all results)', () {
     expect(Query().results().length, 2371);
   });
@@ -63,7 +62,6 @@ void main() {
       isTrue,
     );
   });
-  //This test should be okay unless department names change
   test('query finds CPTR', () {
     final department =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
@@ -109,7 +107,7 @@ void main() {
       isFalse,
     );
   });
-//Similar problem to the first test for the remaining tests
+
   test('query finds Summer 2023', () {
     final term = Term.instances.firstWhere((each) => each.code == 2236);
     final list = Query(term: term).results();
@@ -127,7 +125,7 @@ void main() {
     final list = Query(campus: campus).results();
     expect(list.every((element) => element.campus.code == 'CP'), isTrue);
   });
-  //This one is probably okay
+
   test('Query times', () {
     final int allLength = Query().results().length;
     final Set<Class> noSpecial = Query(includeSpecialTimes: false).results();

@@ -16,8 +16,8 @@ class Subject implements Comparable {
   }
 
   static Subject subjectWithCode(String code) {
-    final subject = Subject.instances
-        .firstWhere((instance) => instance.code == code.trim());
+    final subject =
+        Subject.instances.firstWhere((instance) => instance.code == code);
 
     return subject;
   }

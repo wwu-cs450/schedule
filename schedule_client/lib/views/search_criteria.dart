@@ -11,21 +11,23 @@ import 'package:schedule_client/views/multi_dropdown.dart';
 class SearchCriteria extends ChangeNotifier {
   SearchCriteria(this.context);
   BuildContext context;
-  Campus _campus = Campus.allCampuses();
-  Department _department = Department.allDepartments();
-  Subject _subject = Subject.allSubjects();
-  Term _term = Term.allTerms();
-  int _classNumber = 0;
-  String _levelString = '';
-  String _creditString = '';
-  bool _gsFlag = false;
-  bool _statusFlag = false;
-  String _instructorString = '';
+  final Map<String, dynamic> _searchCriteria = {
+    'Campus': Campus.allCampuses(),
+    'Department': Department.allDepartments(),
+    'Subject': Subject.allSubjects(),
+    'Term': Term.allTerms(),
+    'Class Number': 0,
+    'Level': 'Any',
+    'Credits': 'Any',
+    'GS': false,
+    'Status': false,
+    'Instructor': '',
+    'Schedule': <String>[],
+    'Start Time': null,
+    'End Time': null,
+  };
 
   final List<String> _scheduleList = [];
-
-  HourMinute? _startTime;
-  HourMinute? _endTime;
 
   late Row sizingRow;
   final startYear = 2023;
@@ -33,7 +35,13 @@ class SearchCriteria extends ChangeNotifier {
   final List<String> keys = [];
 
   final List<Class> savedData = <Class>[];
+  List<Class> scheduleData = <Class>[];
   List<Class> classes = <Class>[];
+
+  void updateSchedule(Term term) {
+    scheduleData = savedData.where((element) => element.term == term).toList();
+    notifyListeners();
+  }
 
   final inputList = {
     'Sunday': false,
@@ -65,40 +73,23 @@ class SearchCriteria extends ChangeNotifier {
 
   void doSearch() {
     classes = Query(
-      department: _department,
-      subject: _subject,
-      term: _term,
-      campus: _campus,
-      classNumber: _classNumber,
-      level: _levelString,
-      credits: _creditString,
-      gs: _gsFlag,
-      status: _statusFlag,
-      instructor: _instructorString,
-      scheduledDays: _scheduleList,
-      startTime: _startTime,
-      endTime: _endTime,
+      department: _searchCriteria['Department'],
+      subject: _searchCriteria['Subject'],
+      term: _searchCriteria['Term'],
+      campus: _searchCriteria['Campus'],
+      classNumber: _searchCriteria['Class Number'],
+      level: _searchCriteria['Level'],
+      credits: _searchCriteria['Credits'],
+      gs: _searchCriteria['GS'],
+      status: _searchCriteria['Status'],
+      instructor: _searchCriteria['Instructor'],
+      scheduledDays: _searchCriteria['Schedule'],
+      startTime: _searchCriteria['Start Time'],
+      endTime: _searchCriteria['End Time'],
     ).results().toList();
     classes.sort();
     notifyListeners();
   }
-
-  // We will need to adjust this in the future, but for now it isn't used.
-  // void inputQuarters() {
-  //   final List<Class> classData = Query(
-  //     department: _department,
-  //     subject: _subject,
-  //     term: _term,
-  //     campus: _campus,
-  //   ).results().toList();
-  //   startYear = int.parse(classData.first.term.code.toString().substring(1, 3));
-  //   for (final aClass in classData) {
-  //     final code = int.parse(aClass.term.code.toString().substring(1, 3));
-  //     if (code.compareTo(startYear) < 0) {
-  //       startYear = code;
-  //     }
-  //   }
-  // }
 
   List<DropdownMenuEntry> dropdownEntries(String key) {
     final entries = <DropdownMenuEntry>[];
@@ -115,7 +106,7 @@ class SearchCriteria extends ChangeNotifier {
         map = {for (final e in Subject.instances) '${e.code} ${e.name}': e};
         break;
       case 'Term':
-        map = {for (final e in Term.instances) '${e.code} ${e.name}': e};
+        map = {for (final e in Term.instances) e.name: e};
         break;
       case 'Level':
         map = {
@@ -203,38 +194,27 @@ class SearchCriteria extends ChangeNotifier {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: DropdownMenu(
+          menuHeight: 500,
+          textStyle: const TextStyle(fontSize: 12),
+          inputDecorationTheme: const InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.black,
+                width: 1,
+              ),
+            ),
+            filled: true,
+            fillColor: Color.fromARGB(255, 247, 246, 246),
+          ),
           key: Key('$keyString Dropdown'),
           label: Text(
             keyString,
             style: const TextStyle(fontSize: 12),
           ),
           dropdownMenuEntries: dropdownEntries(keyString),
+          initialSelection: _searchCriteria[keyString],
           onSelected: (value) {
-            switch (keyString) {
-              case 'Campus':
-                _campus = value;
-                break;
-              case 'Department':
-                _department = value;
-                break;
-              case 'Subject':
-                _subject = value;
-                break;
-              case 'Term':
-                _term = value;
-                break;
-              case 'Level':
-                _levelString = value;
-                break;
-              case 'Credits':
-                _creditString = value;
-                break;
-              case 'Start Time':
-                _startTime = value;
-                break;
-              case 'End Time':
-                _endTime = value;
-            }
+            _searchCriteria[keyString] = value;
             doSearch();
           },
         ),
@@ -250,9 +230,9 @@ class SearchCriteria extends ChangeNotifier {
         hint: 'Check this box to filter classes by General Studies.',
         child: Checkbox(
           key: const Key('GS Checkbox'),
-          value: _gsFlag,
+          value: _searchCriteria['GS'],
           onChanged: (bool? value) {
-            _gsFlag = value!;
+            _searchCriteria['GS'] = value!;
             doSearch();
           },
         ),
@@ -270,9 +250,9 @@ class SearchCriteria extends ChangeNotifier {
         hint: 'Check this box to filter classes by Open status.',
         child: Checkbox(
           key: const Key('Status Checkbox'),
-          value: _statusFlag,
+          value: _searchCriteria['Status'],
           onChanged: (bool? value) {
-            _statusFlag = value!;
+            _searchCriteria['Status'] = value!;
             doSearch();
           },
         ),
@@ -292,16 +272,25 @@ class SearchCriteria extends ChangeNotifier {
           key: const Key('Instructor Text Box'),
           width: 100,
           height: 50,
-          child: TextField(
+          child: TextFormField(
             decoration: const InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black,
+                  width: 1,
+                ),
+              ),
+              filled: true,
+              fillColor: Color.fromARGB(255, 247, 246, 246),
               labelText: 'Instructor',
               labelStyle: TextStyle(fontSize: 12),
             ),
+            initialValue: _searchCriteria['Instructor'],
             onChanged: (value) {
               if (value.isNotEmpty) {
-                _instructorString = value;
+                _searchCriteria['Instructor'] = value;
               } else if (value.isEmpty) {
-                _instructorString = '';
+                _searchCriteria['Instructor'] = '';
               }
               doSearch();
             },
@@ -321,20 +310,31 @@ class SearchCriteria extends ChangeNotifier {
           key: const Key('Class Number Text Box'),
           width: 100,
           height: 50,
-          child: TextField(
+          child: TextFormField(
             decoration: const InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black,
+                  width: 1,
+                ),
+              ),
+              filled: true,
+              fillColor: Color.fromARGB(255, 247, 246, 246),
               labelText: 'Class Number',
               labelStyle: TextStyle(fontSize: 12),
             ),
+            initialValue: _searchCriteria['Class Number'] == 0
+                ? ''
+                : _searchCriteria['Class Number'].toString(),
             onChanged: (value) {
               if (value.length == 4) {
                 try {
-                  _classNumber = int.parse(value);
+                  _searchCriteria['Class Number'] = int.parse(value);
                 } on FormatException {
-                  _classNumber = 0;
+                  _searchCriteria['Class Number'] = 0;
                 }
               } else if (value.isEmpty) {
-                _classNumber = 0;
+                _searchCriteria['Class Number'] = 0;
               }
               doSearch();
             },
@@ -345,7 +345,11 @@ class SearchCriteria extends ChangeNotifier {
   }
 
   Widget searchCriteriaWidget() {
+    scheduleData = savedData
+        .where((element) => element.term == Term.instances.elementAt(2))
+        .toList();
     return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
       key: const Key('Search Criteria Widget'),
       spacing: 8,
       runSpacing: 8,

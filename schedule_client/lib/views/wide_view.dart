@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/views/main_view.dart';
+import 'package:schedule_client/views/schedule_view.dart';
 
 class WideView extends MainView {
   WideView(super.startYear, super.results);
@@ -26,7 +27,7 @@ class WideView extends MainView {
         headerCell('Enroll\nLimit', 60.0),
         headerCell('Waitlist\n', 60.0),
         headerCell('Fee\n', 70.0),
-        headerCell('Meeting Time\n', 145.0),
+        headerCell('Meeting Time\n', 160.0),
         headerCell('Classroom\n', 80.0),
         headerCell('Instructor(s)\n'.toString(), 200.0),
         headerCell('Campus\n', 60.0),
@@ -45,7 +46,7 @@ class WideView extends MainView {
     final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
     final room = addLinesTo(aClass.classroom, h);
-    final schedule = addLinesTo(aClass.schedule.toString(), h);
+    final schedule = addLinesTo(aClass.schedule.toString(is24hr: false), h);
     final profs = addLinesTo(aClass.getInstructors(), h);
     final credits = addLinesTo(
       aClass.course.creditsMax == aClass.course.creditsMin
@@ -79,7 +80,7 @@ class WideView extends MainView {
         cell('EnrollmentLimit', enroll[1], 60.0, color[0], h),
         cell('WaitlistSize', aClass.getWList(), 60.0, color[0], h),
         cell('Fee', aClass.getFee(), 70.0, color[0], h),
-        cell('Schedule', schedule, 145.0, color[0], h),
+        cell('Schedule', schedule, 160.0, color[0], h),
         cell('Classroom', room, 80.0, color[0], h),
         cell('Instructors', profs, 200.0, color[0], h),
         cell('Campus', aClass.getCampus(), 60.0, color[0], h),
@@ -145,7 +146,7 @@ class WideView extends MainView {
       case 2:
         // Schedule Page
         return SingleChildScrollView(
-          child: buildScheduleTable(),
+          child: ScheduleView().build(),
         );
       default:
         return const Column(children: [Placeholder()]);

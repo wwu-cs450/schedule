@@ -10,7 +10,5 @@ Future<String> getSchedule() async {
   final response = await http.get(
     Uri.parse(host),
   );
-  String returnable = response.body.replaceAll('[', '');
-  returnable = returnable.replaceAll(']', '');
-  return returnable;
+  return response.body;
 }
