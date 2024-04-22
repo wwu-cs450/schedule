@@ -100,10 +100,6 @@ class HomePage extends StatelessWidget {
                 label: 'All Classes',
               ),
               NavigationDestination(
-                icon: Icon(Icons.event_available),
-                label: 'Saved',
-              ),
-              NavigationDestination(
                 key: Key('Schedule Page'),
                 icon: Icon(Icons.schedule),
                 label: 'Schedule',

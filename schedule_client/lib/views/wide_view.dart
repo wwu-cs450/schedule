@@ -134,19 +134,13 @@ class WideView extends MainView {
           ],
         );
       case 1:
-        // Saved Classes Page
+        // Schedule Page
         return Column(
           children: [
+            ScheduleView().build(),
             wideHeaderRow(),
-            Expanded(
-              child: wideRowBuilder(results.savedData),
-            ),
+            Expanded(child: wideRowBuilder(results.savedData)),
           ],
-        );
-      case 2:
-        // Schedule Page
-        return SingleChildScrollView(
-          child: ScheduleView().build(),
         );
       default:
         return const Column(children: [Placeholder()]);
