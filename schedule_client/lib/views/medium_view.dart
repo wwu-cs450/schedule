@@ -81,7 +81,7 @@ class MediumView extends MainView {
       key: Key('Class $index'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        savedBox(aClass, index), // create a checkbox for the row
+        savedBox(aClass, index),
         DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(width: 3, color: Colors.black),
@@ -166,17 +166,13 @@ class MediumView extends MainView {
           ],
         );
       case 1:
-        // Saved Classes Page
+        // Schedule Page
         return Column(
           children: [
+            ScheduleView().build(),
             mediumHeaderRow(),
             Expanded(child: mediumRowBuilder(results.savedData)),
           ],
-        );
-      case 2:
-        // Schedule Page
-        return SingleChildScrollView(
-          child: ScheduleView().build(),
         );
       default:
         return const Column(children: [Placeholder()]);

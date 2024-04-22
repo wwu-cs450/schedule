@@ -66,6 +66,7 @@ class SearchCriteria extends ChangeNotifier {
       savedData.add(aClass);
     } else {
       savedData.remove(aClass);
+      scheduleData.remove(aClass);
     }
     notifyListeners();
   }
