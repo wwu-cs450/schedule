@@ -21,13 +21,15 @@ void main() {
   tearDown(() => p.kill());
   test('data return', () async {
     late String host;
+    final reason = 'Did not receive a 200 code';
+    final reason2 = 'Body is empty';
     host = '${html.window.location.protocol}//'
         '${html.window.location.hostname}:8080';
 
     final response = await http.get(
       Uri.parse(host),
     );
-    expect(response.statusCode, 200);
-    expect(response.body.isNotEmpty, true);
+    expect(response.statusCode, 200, reason: reason);
+    expect(response.body.isNotEmpty, true, reason: reason2);
   });
 }
