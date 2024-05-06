@@ -127,10 +127,7 @@ class HTMLHandler {
       //SCHEDULE_PRINT we don't use it, so for yeah I will leave it blank.
       data[x][26] = '';
       //VIDEO_LINK
-      data[x][27] = nodes[40].text?.trim() ?? '';
-      if (data[x][27] == '') {
-        data[x][27] = 'NULL';
-      }
+      data[x][27] = '';
       //CONSENT,  I=Instructor consent required, D=Department consent required, N=No consent needed
       if (nodes[42].text == null || nodes[42].text == '') {
         data[x][28] = 'N';
