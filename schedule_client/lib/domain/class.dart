@@ -22,7 +22,7 @@ class Class implements Comparable {
     this.video = '',
     this.consent = '',
     this.specialNotes = '',
-    this.fee = 0,
+    this.fee = '0',
     this.currEnrollment = 0,
     this.waitlist = 0,
     this.isOpenForEnrollment = true,
@@ -36,7 +36,7 @@ class Class implements Comparable {
   int currEnrollment;
   bool isOpenForEnrollment;
   int waitlist;
-  int fee;
+  String fee;
   MeetingTime schedule;
   String classroom;
   Set<Instructor> instructors;
@@ -110,6 +110,7 @@ class Class implements Comparable {
           (int.parse(listing[2]) % 2000).toString();
       var termMonth = '';
       var termFound = '';
+      final bool isOpen = listing[16] == 'Open';
       for (int i = 8; i <= 12; i++) {
         termFound = listing[i].toString();
         if (termFound != '') {
@@ -129,6 +130,30 @@ class Class implements Comparable {
         }
       }
       final String section = listing[13];
+      final String currFee;
+      if (listing[20].isNotEmpty) {
+        currFee = listing[20];
+      } else {
+        currFee = '0';
+      }
+      final String currNotes;
+      if (listing[24].isNotEmpty) {
+        currNotes = listing[24];
+      } else {
+        currNotes = '';
+      }
+      final String currConsent;
+      if (listing[29].isNotEmpty) {
+        currConsent = listing[29].trim();
+      } else {
+        currConsent = '';
+      }
+      final int currWait;
+      if (listing[19].isNotEmpty) {
+        currWait = int.parse(listing[19]);
+      } else {
+        currWait = 0;
+      }
       final termCode = int.parse(termYear + termMonth);
       final int classNumber = int.parse(listing[5]);
       final Term currTerm =
@@ -144,6 +169,14 @@ class Class implements Comparable {
           currCampus,
           classNumber, // Class Number
           section,
+          listing[27], //video
+          currConsent, //consent
+          currNotes, //specialnotes
+          '\$$currFee', //fee
+          //int.parse(listing[17]),
+          0, //enroll Count breaks credit test???
+          currWait, //waitlist
+          isOpen, //sstatus
         ),
       );
     }
@@ -279,7 +312,7 @@ class Class implements Comparable {
   }
 
   String getFee() {
-    return fee.toString();
+    return fee;
   }
 
   String getTitle() {

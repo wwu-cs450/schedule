@@ -14,6 +14,7 @@ class Term implements Comparable {
     return _instances;
   }
 
+  //These will need to change with time
   static Set<Term> _initialize() {
     final Set<Term> instances = {};
     instances
