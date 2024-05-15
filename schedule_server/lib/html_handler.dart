@@ -24,8 +24,17 @@ class HTMLHandler {
   //"flutter pub add http" if you are missing the package from your environment.
   //Note ios and android need permissions if developing for that.
   static Future<String> fetchHtml() async {
+    final currentTime = DateTime.now();
+    final String year;
+    if (currentTime.month > 0 && currentTime.month < 9) {
+      year = currentTime.year.toString();
+    } else {
+      year = (currentTime.year + 1).toString();
+    }
+
+    final String quarter = 'f$year';
     final Map<String, String> queryParams = <String, String>{
-      'strm': 'f2024',
+      'strm': quarter,
       'submit': 'Search',
     };
     final response = await http.get(
