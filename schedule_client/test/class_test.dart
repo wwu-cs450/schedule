@@ -114,5 +114,13 @@ void main() {
       (element) => element.getClN() == '1712' && element.term.code == 2243,
     );
     expect(hasVideo.video, 'Video');
+    final Class noStudents = allClasses.firstWhere(
+      (element) => element.getClN() == '1881' && element.term.code == 2243,
+    );
+    expect(noStudents.currEnrollment, 0);
+    final Class hasStudents = allClasses.firstWhere(
+      (element) => element.getClN() == '1523' && element.term.code == 2239,
+    );
+    expect(hasStudents.currEnrollment, 62);
   });
 }

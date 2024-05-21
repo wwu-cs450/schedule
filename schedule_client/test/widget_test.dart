@@ -235,7 +235,7 @@ void main() {
     await dropdownTester(
       tester,
       menu: 'Credits',
-      options: ['1', '2', '3', '4', '>4'],
+      options: ['1 Cr', '2 Cr', '3 Cr', '4 Cr', '>4 Cr'],
       condition: equals('3.0'),
       cellKeys: ['Cr'],
     );
