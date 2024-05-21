@@ -119,12 +119,12 @@ class SearchCriteria extends ChangeNotifier {
       case 'Credits':
         map = {
           'Any': 'Any',
-          '0': '0',
-          '1': '1',
-          '2': '2',
-          '3': '3',
-          '4': '4',
-          '>4': '>4',
+          '0 Cr': '0',
+          '1 Cr': '1',
+          '2 Cr': '2',
+          '3 Cr': '3',
+          '4 Cr': '4',
+          '>4 Cr': '>4',
         };
         break;
       case 'Start Time':

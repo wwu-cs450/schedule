@@ -154,6 +154,12 @@ class Class implements Comparable {
       } else {
         currWait = 0;
       }
+      final int currEnrollment;
+      if (listing[17].isNotEmpty) {
+        currEnrollment = int.parse(listing[17]);
+      } else {
+        currEnrollment = 0;
+      }
       final termCode = int.parse(termYear + termMonth);
       final int classNumber = int.parse(listing[5]);
       final Term currTerm =
@@ -174,7 +180,7 @@ class Class implements Comparable {
           currNotes, //specialnotes
           '\$$currFee', //fee
           //int.parse(listing[17]),
-          0, //enroll Count breaks credit test???
+          currEnrollment, //enroll Count breaks credit test???
           currWait, //waitlist
           isOpen, //sstatus
         ),
