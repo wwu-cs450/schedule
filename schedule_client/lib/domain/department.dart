@@ -37,7 +37,7 @@ class Department implements Comparable {
 }
 
 class AllDepartments extends Department {
-  AllDepartments() : super('', 'ALL');
+  AllDepartments() : super('', 'All Departments');
 
   @override
   bool includesCourse(Course course) {

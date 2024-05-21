@@ -6,86 +6,96 @@ import 'package:schedule_client/views/schedule_view.dart';
 class WideView extends MainView {
   WideView(super.startYear, super.results);
 
-  Row wideHeaderRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Opacity(opacity: 0, child: invisibleBox()),
-        headerCell('Class#\n', 55),
-        headerCell('Subject\n', 45.0),
-        headerCell('Sum ${startYear % 1000}\n', 50.0),
-        headerCell('Aut ${startYear % 1000}\n', 50.0),
-        headerCell('Wtr ${(startYear + 1) % 1000}\n', 50.0),
-        headerCell('Spr ${(startYear + 1) % 1000}\n', 50.0),
-        headerCell('Sum ${(startYear + 1) % 1000}\n', 50.0),
-        headerCell('Sec\n', 40.0),
-        headerCell('GS\n', 25.0),
-        headerCell('Cr\n', 30.0),
-        headerCell('Course Title\n', 300.0),
-        headerCell('Status\n', 65.0),
-        headerCell('Enroll\nCount', 60.0),
-        headerCell('Enroll\nLimit', 60.0),
-        headerCell('Waitlist\n', 60.0),
-        headerCell('Fee\n', 70.0),
-        headerCell('Meeting Time\n', 160.0),
-        headerCell('Classroom\n', 80.0),
-        headerCell('Instructor(s)\n'.toString(), 200.0),
-        headerCell('Campus\n', 60.0),
-        headerCell('Video\n', 60.0),
-        headerCell('Consent\n', 200.0),
-      ],
+  Widget wideHeaderRow() {
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          invisibleBox(),
+          headerCell('Class#', 55),
+          headerCell('Subject', 45.0),
+          headerCell('Sum ${startYear % 1000}', 50.0),
+          headerCell('Aut ${startYear % 1000}', 50.0),
+          headerCell('Wtr ${(startYear + 1) % 1000}', 50.0),
+          headerCell('Spr ${(startYear + 1) % 1000}', 50.0),
+          headerCell('Sum ${(startYear + 1) % 1000}', 50.0),
+          headerCell('Sec', 40.0),
+          headerCell('GS', 25.0),
+          headerCell('Cr', 30.0),
+          headerCell('Course Title', 300.0),
+          headerCell('Status', 65.0),
+          headerCell('Count', 60.0),
+          headerCell('Limit', 60.0),
+          headerCell('Waitlist', 60.0),
+          headerCell('Fee   ', 70.0),
+          headerCell('Meeting Time', 160.0),
+          headerCell('Classroom', 80.0),
+          headerCell('Instructor(s)', 200.0),
+          headerCell('Campus', 60.0),
+          headerCell('Video', 60.0),
+          headerCell('Consent', 200.0),
+        ],
+      ),
     );
   }
 
-  Row wideClassRow(
+  Widget wideClassRow(
     Class aClass,
     int index,
   ) {
-    final h = aClass.getLineHeight();
     final color = getColor(index);
     final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
-    final room = addLinesTo(aClass.classroom, h);
-    final schedule = addLinesTo(aClass.schedule.toString(is24hr: false), h);
-    final profs = addLinesTo(aClass.getInstructors(), h);
-    final credits = addLinesTo(
-      aClass.course.creditsMax == aClass.course.creditsMin
-          ? '${aClass.course.creditsMax}'
-          : '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
-      h,
-    );
+    final room = aClass.classroom;
+    final schedule = aClass.schedule.toString(is24hr: false);
+    final profs = aClass.getInstructors();
+    final credits = aClass.course.creditsMax == aClass.course.creditsMin
+        ? '${aClass.course.creditsMax}'
+        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     final enroll = [
-      addLinesTo(aClass.currEnrollment.toString(), h),
-      addLinesTo(aClass.maxEnrollment.toString(), h),
+      aClass.currEnrollment.toString(),
+      aClass.maxEnrollment.toString(),
     ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      key: Key('Class $index'),
       children: [
-        savedBox(aClass, index),
-        cell('Class Number', aClass.getClN(), 55, color[0], h),
-        cell('Subject', aClass.getCode(), 45.0, color[0], h),
-        cell('Summer1', getTerm(aClass, qtrs[0]), 50.0, color[1], h),
-        cell('Fall', getTerm(aClass, qtrs[1]), 50.0, color[2], h),
-        cell('Winter', getTerm(aClass, qtrs[2]), 50.0, color[3], h),
-        cell('Spring', getTerm(aClass, qtrs[3]), 50.0, color[4], h),
-        cell('Summer2', getTerm(aClass, qtrs[4]), 50.0, color[1], h),
-        cell('Section', aClass.section, 40.0, color[0], h),
-        cell('GS', gs, 25.0, color[0], h),
-        cell('Cr', credits, 30.0, color[0], h),
-        cell('Title', aClass.getTitle(), 300.0, color[0], h),
-        cell('Status', status, 65.0, color[0], h),
-        cell('Enrollment', enroll[0], 60.0, color[0], h),
-        cell('EnrollmentLimit', enroll[1], 60.0, color[0], h),
-        cell('WaitlistSize', aClass.getWList(), 60.0, color[0], h),
-        cell('Fee', aClass.getFee(), 70.0, color[0], h),
-        cell('Schedule', schedule, 160.0, color[0], h),
-        cell('Classroom', room, 80.0, color[0], h),
-        cell('Instructors', profs, 200.0, color[0], h),
-        cell('Campus', aClass.getCampus(), 60.0, color[0], h),
-        cell('Video', aClass.video, 60.0, color[0], h),
-        cell('Consent', aClass.consent, 200.0, color[0], h),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(color[0]),
+          ),
+          child: IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              key: Key('Class $index'),
+              children: [
+                savedBox(aClass, index, bkgndColor: color[0]),
+                cell('Class Number', aClass.getClN(), 55, color[0]),
+                cell('Subject', aClass.getCode(), 45.0, color[0]),
+                cell('Summer1', getTerm(aClass, qtrs[0]), 50.0, color[1]),
+                cell('Fall', getTerm(aClass, qtrs[1]), 50.0, color[2]),
+                cell('Winter', getTerm(aClass, qtrs[2]), 50.0, color[3]),
+                cell('Spring', getTerm(aClass, qtrs[3]), 50.0, color[4]),
+                cell('Summer2', getTerm(aClass, qtrs[4]), 50.0, color[1]),
+                cell('Section', aClass.section, 40.0, color[0], 'c'),
+                cell('GS', gs, 25.0, color[0]),
+                cell('Cr', credits, 30.0, color[0]),
+                cell('Title', aClass.getTitle(), 300.0, color[0]),
+                cell('Status', status, 65.0, color[0]),
+                cell('Enrollment', enroll[0], 60.0, color[0], 'r'),
+                cell('EnrollmentLimit', enroll[1], 60.0, color[0], 'r'),
+                cell('WaitlistSize', aClass.getWList(), 60.0, color[0], 'r'),
+                cell('Fee', '${aClass.getFee()}   ', 70.0, color[0], 'r'),
+                cell('Schedule', schedule, 160.0, color[0]),
+                cell('Classroom', room, 80.0, color[0]),
+                cell('Instructors', profs, 200.0, color[0]),
+                cell('Campus', aClass.getCampus(), 60.0, color[0]),
+                cell('Video', aClass.video, 60.0, color[0]),
+                cell('Consent', aClass.consent, 200.0, color[0]),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -107,20 +117,12 @@ class WideView extends MainView {
   Widget view(
     int index,
     BuildContext context,
-    Function searchCriteriaWidget,
   ) {
     switch (index) {
       case 0:
         // Main Page
         return Column(
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: DecoratedBox(
-                decoration: const BoxDecoration(color: Color(0xFFa8ac9c)),
-                child: searchCriteriaWidget(),
-              ),
-            ),
             Semantics(
               child: Text(
                 key: const Key('Class Found'),
@@ -138,6 +140,7 @@ class WideView extends MainView {
         return Column(
           children: [
             ScheduleView().build(),
+            const SizedBox(height: 10),
             wideHeaderRow(),
             Expanded(child: wideRowBuilder(results.savedData)),
           ],

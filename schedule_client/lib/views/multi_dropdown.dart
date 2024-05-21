@@ -5,6 +5,7 @@ class MultiSelectDropdown {
     required this.context,
     required this.allItems,
     required this.selectedItems,
+    this.width,
     this.label,
     this.onChanged,
     this.key,
@@ -17,6 +18,7 @@ class MultiSelectDropdown {
   // Function is called when selectedItems changes.
   // - In order to allow the client to update the state
   final void Function()? onChanged;
+  final double? width;
   final Key? key;
   final String? label;
 
@@ -67,6 +69,7 @@ class MultiSelectDropdown {
     );
 
     return DropdownMenu(
+      width: width,
       textStyle: const TextStyle(fontSize: 12),
       key: key,
       label: Text(

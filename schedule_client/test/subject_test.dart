@@ -11,7 +11,7 @@ void main() {
 
   test('instances', () {
     final subjects = Subject.instances;
-    assert(Subject.allSubjects().name == 'ALL');
+    assert(Subject.allSubjects().name == 'All Subjects');
     assert(subjects.length == 96);
     assert(
       subjects.any(

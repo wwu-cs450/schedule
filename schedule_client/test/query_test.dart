@@ -32,13 +32,13 @@ void main() {
     final allSubjects = Subject.allSubjects();
     final allTerms = Term.allTerms();
     expect(allDepartments.code, '');
-    expect(allDepartments.name, 'ALL');
+    expect(allDepartments.name, 'All Departments');
     expect(allSubjects.code, '');
-    expect(allSubjects.name, 'ALL');
+    expect(allSubjects.name, 'All Subjects');
     expect(allTerms.code, 0);
-    expect(allTerms.name, 'ALL');
+    expect(allTerms.name, 'All Terms');
     expect(allCampuses.code, '');
-    expect(allCampuses.name, 'ALL');
+    expect(allCampuses.name, 'All Campuses');
     final all = Query().results().length;
     final dCount = Query(department: csDepartment).results().length;
     final sCount = Query(subject: csSubject).results().length;

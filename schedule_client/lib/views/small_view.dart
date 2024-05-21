@@ -1,130 +1,295 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_client/domain/class.dart';
+import 'package:schedule_client/main.dart';
 import 'package:schedule_client/views/main_view.dart';
 import 'package:schedule_client/views/schedule_view.dart';
 
 class SmallView extends MainView {
   SmallView(super.startYear, super.results);
 
-  Row smallHeaderRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Opacity(opacity: 0, child: invisibleBox()),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(width: 3, color: Colors.black),
-          ),
-          position: DecorationPosition.foreground,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  headerCell('Class\nNumber', 120),
-                  headerCell('Subject\n', 80.0),
-                  headerCell('Sum\n$startYear', 55.0),
-                  headerCell('Aut\n$startYear', 55.0),
-                  headerCell('Wtr\n${startYear + 1}', 55.0),
-                  headerCell('Spr\n${startYear + 1}', 55.0),
-                  headerCell('Sum\n${startYear + 1}', 55.0),
-                  headerCell('Sec\n', 40.0),
-                  headerCell('Credits\n', 70.0),
-                ],
-              ),
-              Row(
-                children: [
-                  headerCell('Course Title', 310.0),
-                  headerCell('GS', 40.0),
-                  headerCell('Enroll Count', 85.0),
-                  headerCell('Enroll Limit', 85.0),
-                  headerCell('Waitlist', 65.0),
-                ],
-              ),
-              Row(
-                children: [
-                  headerCell('Meeting Time', 155.0),
-                  headerCell('Classroom', 80.0),
-                  headerCell('Instructor(s)'.toString(), 150.0),
-                  headerCell('Campus', 60.0),
-                  headerCell('Fee', 70.0),
-                  headerCell('Status', 70.0),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  Row smallClassRow(Class aClass, int index, BuildContext context) {
+    String getFee() {
+      if (aClass.getFee() == '0') {
+        return 'No fee';
+      } else {
+        return '\$ ${aClass.getFee()} fee';
+      }
+    }
 
-  Row smallClassRow(
-    Class aClass,
-    int index,
-  ) {
-    final h = aClass.getLineHeight();
-    final color = getColor(index);
-    final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
-    final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
-    final room = addLinesTo(aClass.classroom, h);
-    final schedule = addLinesTo(aClass.schedule.toString(is24hr: false), h);
-    final profs = addLinesTo(aClass.getInstructors(), h);
-    final credits = addLinesTo(
-      aClass.course.creditsMax == aClass.course.creditsMin
-          ? '${aClass.course.creditsMax}'
-          : '${aClass.course.creditsMin}-${aClass.course.creditsMax}',
-      h,
-    );
-    final enroll = [
-      addLinesTo(aClass.currEnrollment.toString(), h),
-      addLinesTo(aClass.maxEnrollment.toString(), h),
-    ];
+    String gsCheck() {
+      if (aClass.course.isGeneralStudies) {
+        return 'GS';
+      } else {
+        return 'Not GS';
+      }
+    }
 
+    final cNum = aClass.course.number;
+    final room = aClass.classroom;
+    final schedule = aClass.schedule.toString(is24hr: false);
+    final profs = aClass.getInstructors();
+    final credits = aClass.course.creditsMax == aClass.course.creditsMin
+        ? '${aClass.course.creditsMax}'
+        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     return Row(
-      key: Key('Class $index'),
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         savedBox(aClass, index),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(width: 3, color: Colors.black),
-          ),
-          position: DecorationPosition.foreground,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  cell('ClassNumber', aClass.getClN(), 120, color[0], h),
-                  cell('Subject', aClass.getCode(), 80.0, color[0], h),
-                  cell('Summer1', getTerm(aClass, qtrs[0]), 55.0, color[1], h),
-                  cell('Fall', getTerm(aClass, qtrs[1]), 55.0, color[2], h),
-                  cell('Winter', getTerm(aClass, qtrs[2]), 55.0, color[3], h),
-                  cell('Spring', getTerm(aClass, qtrs[3]), 55.0, color[4], h),
-                  cell('Summer2', getTerm(aClass, qtrs[4]), 55.0, color[1], h),
-                  cell('Section', aClass.section, 40.0, color[0], h),
-                  cell('Credits', credits, 70.0, color[0], h),
-                ],
+        Stack(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 1.1,
+              child: Card(
+                shape: StadiumBorder(
+                  side: BorderSide(
+                    width: 1,
+                    color: aClass.saved ? Colors.blue : Colors.black,
+                  ),
+                ),
+                margin: const EdgeInsets.all(10.0),
+                key: Key('Class $index card'),
+                elevation: 5,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            right: BorderSide(width: 1, color: Colors.black),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              Text('${aClass.getCode()} $cNum'),
+                              Text(gsCheck()),
+                              Text(getFee()),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              '${aClass.getTitle()}\n',
+                            ),
+                            ElevatedButton(
+                              onPressed: () => {
+                                results.updateInfo(index),
+                              },
+                              child: const Text('Tap for more details.'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    SizedBox(
+                      width: 125,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(width: 1, color: Colors.black),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              Text(aClass.term.name),
+                              Text('Credits: ${credits.trim()}'),
+                              Text(aClass.getCampus()),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Row(
-                children: [
-                  cell('Title', aClass.getTitle(), 310.0, color[0], h),
-                  cell('GS', gs, 40.0, color[0], h),
-                  cell('Enrollment', enroll[0], 85.0, color[0], h),
-                  cell('EnrollmentLimit', enroll[1], 85.0, color[0], h),
-                  cell('WaitlistSize', aClass.getWList(), 65.0, color[0], h),
-                ],
-              ),
-              Row(
-                children: [
-                  cell('Schedule', schedule, 155.0, color[0], h),
-                  cell('Classroom', room, 80.0, color[0], h),
-                  cell('Instructors', profs, 150.0, color[0], h),
-                  cell('Campus', aClass.getCampus(), 60.0, color[0], h),
-                  cell('Fee', aClass.getFee(), 70.0, color[0], h),
-                  cell('Status', status, 70.0, color[0], h),
-                ],
-              ),
-            ],
-          ),
+            ),
+            results.smallRowInfo[index]
+                ? Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.black),
+                      borderRadius: BorderRadius.circular(5),
+                      color: const Color.fromARGB(255, 240, 236, 220),
+                    ),
+                    margin: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      child: Column(
+                        children: [
+                          DecoratedBox(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  width: 1,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: 90,
+                                  child: DecoratedBox(
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        right: BorderSide(
+                                          width: 1,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Column(
+                                        children: [
+                                          const Text('Room(s)'),
+                                          Text(room),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 185,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                      bottom: 15.0,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        const Text('Schedule'),
+                                        Text(schedule),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 140,
+                                  child: DecoratedBox(
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        left: BorderSide(
+                                          width: 1,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Column(
+                                        children: [
+                                          const Text('Instructor(s)'),
+                                          Text(profs),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: SizedBox(
+                                    width: 30,
+                                    child: TextButton(
+                                      onPressed: () => {
+                                        results.updateInfo(index),
+                                      },
+                                      style: ButtonStyle(
+                                        textStyle: MaterialStateProperty
+                                            .resolveWith<TextStyle?>(
+                                          (states) =>
+                                              const TextStyle(fontSize: 15),
+                                        ),
+                                        fixedSize: MaterialStateProperty.all(
+                                          const Size.fromWidth(10),
+                                        ),
+                                      ),
+                                      child: const Text('X'),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 90,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      right: BorderSide(
+                                        width: 1,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      'Video',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 185,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 15.0,
+                                    bottom: 15.0,
+                                  ),
+                                  child: Text(
+                                    textAlign: TextAlign.center,
+                                    aClass.consent,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: DecoratedBox(
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(
+                                        width: 1,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      aClass.isOpenForEnrollment
+                                          ? 'Open'
+                                          : 'Closed',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 30),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
+          ],
         ),
       ],
     );
@@ -138,6 +303,7 @@ class SmallView extends MainView {
         return smallClassRow(
           data[index],
           index,
+          context,
         );
       },
     );
@@ -147,27 +313,20 @@ class SmallView extends MainView {
   Widget view(
     int index,
     BuildContext context,
-    Function searchCriteriaWidget,
+    // Function searchCriteriaWidget,
   ) {
     switch (index) {
       case 0:
         // Main Page
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: DecoratedBox(
-                decoration: const BoxDecoration(color: Color(0xFFa8ac9c)),
-                child: searchCriteriaWidget(),
-              ),
-            ),
             Semantics(
               child: Text(
                 key: const Key('Class Found'),
                 '${results.classes.length} classes found.',
               ),
             ),
-            smallHeaderRow(),
             Expanded(child: smallRowBuilder(results.classes)),
           ],
         );
@@ -176,8 +335,8 @@ class SmallView extends MainView {
         return Column(
           children: [
             ScheduleView().build(),
-            smallHeaderRow(),
-            Expanded(child: smallRowBuilder(results.savedData)),
+            const SizedBox(height: 10),
+            Expanded(child: smallRowBuilder(results.scheduleData)),
           ],
         );
       default:

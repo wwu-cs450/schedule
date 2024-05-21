@@ -11,6 +11,7 @@ import 'package:schedule_client/views/multi_dropdown.dart';
 class SearchCriteria extends ChangeNotifier {
   SearchCriteria(this.context);
   BuildContext context;
+  late List<Widget> criteria;
   final Map<String, dynamic> _searchCriteria = {
     'Campus': Campus.allCampuses(),
     'Department': Department.allDepartments(),
@@ -27,7 +28,26 @@ class SearchCriteria extends ChangeNotifier {
     'End Time': null,
   };
 
+  Term scheduleTerm = Term.instances.elementAt(2);
+
+  final startTimes = {
+    'Any Start Time': null,
+    for (HourMinute time = HourMinute(hour: 7, minute: 0);
+        time <= HourMinute(hour: 20, minute: 0);
+        time = time.add(const Duration(hours: 1)))
+      time.toString(is24hr: false): time,
+  };
+
+  final endTimes = {
+    'Any End Time': null,
+    for (HourMinute time = HourMinute(hour: 7, minute: 50);
+        time <= HourMinute(hour: 20, minute: 50);
+        time = time.add(const Duration(hours: 1)))
+      time.toString(is24hr: false): time,
+  };
+
   late Row sizingRow;
+  late List<bool> smallRowInfo;
   final startYear = 2023;
   int _selectedIndex = 0;
   final List<String> keys = [];
@@ -36,8 +56,86 @@ class SearchCriteria extends ChangeNotifier {
   List<Class> scheduleData = <Class>[];
   List<Class> classes = <Class>[];
 
+  Widget? sidebar;
+
+  void createDrawer() {
+    criteria = getCriteria();
+    sidebar = SizedBox(
+      width: 216,
+      child: Drawer(
+        key: const Key('Search Criteria Drawer'),
+        backgroundColor: const Color(0xFFa8ac9c),
+        child: ListView(children: criteria),
+      ),
+    );
+    notifyListeners();
+  }
+
+  void updateInfo(int index) {
+    smallRowInfo[index] = !smallRowInfo[index];
+    notifyListeners();
+  }
+
+  List<Widget> getCriteria() {
+    return [
+      textForm(key: 'Class Number', width: 100),
+      menu(
+        key: 'Department',
+        items: {
+          for (final e in Department.instances) '${e.code} ${e.name}': e,
+        },
+        width: 200,
+      ),
+      menu(
+        key: 'Subject',
+        items: {for (final e in Subject.instances) '${e.code} ${e.name}': e},
+        width: 200,
+      ),
+      menu(
+        key: 'Campus',
+        items: {for (final e in Campus.instances) '${e.code} ${e.name}': e},
+        width: 200,
+      ),
+      menu(
+        key: 'Level',
+        items: {
+          'Any Level': 'Any',
+          'Lower': 'Lower',
+          'Upper': 'Upper',
+          'Grad': 'Grad',
+        },
+        width: 200,
+      ),
+      textForm(key: 'Instructor', width: 100),
+      menu(
+        key: 'Term',
+        items: {for (final e in Term.instances) e.name: e},
+        width: 200,
+      ),
+      menu(
+        key: 'Credits',
+        items: {
+          'Any Credit': 'Any',
+          '0 Cr': '0',
+          '1 Cr': '1',
+          '2 Cr': '2',
+          '3 Cr': '3',
+          '4 Cr': '4',
+          '>4 Cr': '>4',
+        },
+        width: 200,
+      ),
+      selectWeekdays(),
+      menu(key: 'Start Time', items: startTimes, width: 200),
+      menu(key: 'End Time', items: endTimes, width: 200),
+      selector(key: 'GS'),
+      selector(key: 'Status'),
+    ];
+  }
+
   void updateSchedule(Term term) {
     scheduleData = savedData.where((element) => element.term == term).toList();
+    scheduleTerm = term;
     notifyListeners();
   }
 
@@ -64,10 +162,13 @@ class SearchCriteria extends ChangeNotifier {
     aClass.saved = shouldSave;
     if (shouldSave) {
       savedData.add(aClass);
+      scheduleData.add(aClass);
     } else {
       savedData.remove(aClass);
       scheduleData.remove(aClass);
     }
+    scheduleData =
+        savedData.where((element) => element.term == scheduleTerm).toList();
     notifyListeners();
   }
 
@@ -88,80 +189,8 @@ class SearchCriteria extends ChangeNotifier {
       endTime: _searchCriteria['End Time'],
     ).results().toList();
     classes.sort();
-    notifyListeners();
-  }
-
-  List<DropdownMenuEntry> dropdownEntries(String key) {
-    final entries = <DropdownMenuEntry>[];
-    Map<String, dynamic> map = {};
-
-    switch (key) {
-      case 'Campus':
-        map = {for (final e in Campus.instances) '${e.code} ${e.name}': e};
-        break;
-      case 'Department':
-        map = {for (final e in Department.instances) '${e.code} ${e.name}': e};
-        break;
-      case 'Subject':
-        map = {for (final e in Subject.instances) '${e.code} ${e.name}': e};
-        break;
-      case 'Term':
-        map = {for (final e in Term.instances) e.name: e};
-        break;
-      case 'Level':
-        map = {
-          'Any': 'Any',
-          'Lower': 'Lower',
-          'Upper': 'Upper',
-          'Grad': 'Grad',
-        };
-        break;
-      case 'Credits':
-        map = {
-          'Any': 'Any',
-          '0 Cr': '0',
-          '1 Cr': '1',
-          '2 Cr': '2',
-          '3 Cr': '3',
-          '4 Cr': '4',
-          '>4 Cr': '>4',
-        };
-        break;
-      case 'Start Time':
-        entries.add(const DropdownMenuEntry(value: null, label: 'Any Time'));
-        for (HourMinute time = HourMinute(hour: 7, minute: 0);
-            time <= HourMinute(hour: 20, minute: 0);
-            time = time.add(const Duration(hours: 1))) {
-          entries.add(
-            DropdownMenuEntry(
-              value: time,
-              label: time.toString(is24hr: false),
-            ),
-          );
-        }
-        break;
-      case 'End Time':
-        entries.add(const DropdownMenuEntry(value: null, label: 'Any Time'));
-        for (HourMinute time = HourMinute(hour: 7, minute: 50);
-            time <= HourMinute(hour: 20, minute: 50);
-            time = time.add(const Duration(hours: 1))) {
-          entries.add(
-            DropdownMenuEntry(
-              value: time,
-              label: time.toString(is24hr: false),
-            ),
-          );
-        }
-        break;
-      default:
-        assert(false);
-    }
-    if (map.isNotEmpty) {
-      for (final key in map.keys) {
-        entries.add(DropdownMenuEntry(value: map[key], label: key));
-      }
-    }
-    return entries;
+    smallRowInfo = List.generate(classes.length, (index) => false);
+    createDrawer();
   }
 
   Widget selectWeekdays() {
@@ -175,6 +204,7 @@ class SearchCriteria extends ChangeNotifier {
           height: 50,
           child: MultiSelectDropdown(
             context: context,
+            width: 200,
             allItems: inputList.keys.toList(),
             selectedItems: _searchCriteria['Schedule'],
             label: 'Weekdays',
@@ -187,187 +217,125 @@ class SearchCriteria extends ChangeNotifier {
     );
   }
 
-  Widget dropdownEntry(String keyString) {
+  Widget selector({required String key}) {
+    return SizedBox(
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Semantics(
+            label: 'Used to filter classes by General Studies.',
+            hint: 'Check this box to filter classes by General Studies.',
+            child: Checkbox(
+              key: Key('$key Checkbox'),
+              value: _searchCriteria[key],
+              onChanged: (bool? value) {
+                _searchCriteria[key] = value!;
+                doSearch();
+              },
+            ),
+          ),
+          Text('Only ${key == 'Status' ? 'Open' : key}'),
+        ],
+      ),
+    );
+  }
+
+  Widget textForm({required String key, required double width}) {
     return Semantics(
-      label: '$keyString Dropdown Menu',
-      hint: 'Select a $keyString from the dropdown menu.',
+      label: 'Used to search for a class by the $key.',
+      hint: 'Enter text here to search.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          key: Key('$key Text Box'),
+          width: width,
+          height: 50,
+          child: TextFormField(
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              filled: true,
+              fillColor: const Color.fromARGB(255, 247, 246, 246),
+              labelText: key,
+              labelStyle: const TextStyle(fontSize: 12),
+            ),
+            initialValue: key == 'Class Number'
+                ? _searchCriteria[key] == 0
+                    ? ''
+                    : _searchCriteria[key].toString()
+                : _searchCriteria[key],
+            onChanged: (value) {
+              if (key == 'Class Number') {
+                if (value.length == 4) {
+                  try {
+                    _searchCriteria[key] = int.parse(value);
+                  } on FormatException {
+                    _searchCriteria[key] = 0;
+                  }
+                  doSearch();
+                } else if (value.isEmpty) {
+                  _searchCriteria[key] = 0;
+                  doSearch();
+                }
+              } else {
+                if (value.isNotEmpty) {
+                  _searchCriteria[key] = value;
+                } else if (value.isEmpty) {
+                  _searchCriteria[key] = '';
+                }
+                doSearch();
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget menu({
+    required String key,
+    required Map<String, dynamic> items,
+    required double width,
+  }) {
+    return Semantics(
+      hint: 'Select a $key from the dropdown menu.',
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: DropdownMenu(
+          requestFocusOnTap: false,
+          width: width,
           menuHeight: 500,
-          textStyle: const TextStyle(fontSize: 12),
+          textStyle: const TextStyle(fontSize: 14),
           inputDecorationTheme: const InputDecorationTheme(
             border: OutlineInputBorder(
               borderSide: BorderSide(
                 color: Colors.black,
-                width: 1,
               ),
             ),
             filled: true,
             fillColor: Color.fromARGB(255, 247, 246, 246),
           ),
-          key: Key('$keyString Dropdown'),
+          key: Key('$key Dropdown'),
           label: Text(
-            keyString,
-            style: const TextStyle(fontSize: 12),
+            key,
+            style: const TextStyle(fontSize: 14),
           ),
-          dropdownMenuEntries: dropdownEntries(keyString),
-          initialSelection: _searchCriteria[keyString],
+          dropdownMenuEntries: [
+            for (final val in items.values)
+              DropdownMenuEntry(
+                value: val,
+                label:
+                    items.entries.firstWhere((entry) => entry.value == val).key,
+              ),
+          ],
+          initialSelection: _searchCriteria[key],
           onSelected: (value) {
-            _searchCriteria[keyString] = value;
+            _searchCriteria[key] = value;
             doSearch();
           },
         ),
       ),
-    );
-  }
-
-  List<Widget> gsSelector() {
-    final widgets = <Widget>[];
-    widgets.add(
-      Semantics(
-        label: 'Used to filter classes by General Studies.',
-        hint: 'Check this box to filter classes by General Studies.',
-        child: Checkbox(
-          key: const Key('GS Checkbox'),
-          value: _searchCriteria['GS'],
-          onChanged: (bool? value) {
-            _searchCriteria['GS'] = value!;
-            doSearch();
-          },
-        ),
-      ),
-    );
-    widgets.add(const Text('Only GS'));
-    return widgets;
-  }
-
-  List<Widget> statusSelector() {
-    final widgets = <Widget>[];
-    widgets.add(
-      Semantics(
-        label: 'Used to filter classes by Open status.',
-        hint: 'Check this box to filter classes by Open status.',
-        child: Checkbox(
-          key: const Key('Status Checkbox'),
-          value: _searchCriteria['Status'],
-          onChanged: (bool? value) {
-            _searchCriteria['Status'] = value!;
-            doSearch();
-          },
-        ),
-      ),
-    );
-    widgets.add(const Text('Only Open'));
-    return widgets;
-  }
-
-  Widget instructorTextField() {
-    return Semantics(
-      label: 'Used to search for a class by the instructor.',
-      hint: 'Enter the name of an instructor to search.',
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          key: const Key('Instructor Text Box'),
-          width: 100,
-          height: 50,
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.black,
-                  width: 1,
-                ),
-              ),
-              filled: true,
-              fillColor: Color.fromARGB(255, 247, 246, 246),
-              labelText: 'Instructor',
-              labelStyle: TextStyle(fontSize: 12),
-            ),
-            initialValue: _searchCriteria['Instructor'],
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                _searchCriteria['Instructor'] = value;
-              } else if (value.isEmpty) {
-                _searchCriteria['Instructor'] = '';
-              }
-              doSearch();
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget classNumberTextField() {
-    return Semantics(
-      label: 'Used to search for a class by the class number.',
-      hint: 'Enter a four digit number to search.',
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          key: const Key('Class Number Text Box'),
-          width: 100,
-          height: 50,
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.black,
-                  width: 1,
-                ),
-              ),
-              filled: true,
-              fillColor: Color.fromARGB(255, 247, 246, 246),
-              labelText: 'Class Number',
-              labelStyle: TextStyle(fontSize: 12),
-            ),
-            initialValue: _searchCriteria['Class Number'] == 0
-                ? ''
-                : _searchCriteria['Class Number'].toString(),
-            onChanged: (value) {
-              if (value.length == 4) {
-                try {
-                  _searchCriteria['Class Number'] = int.parse(value);
-                } on FormatException {
-                  _searchCriteria['Class Number'] = 0;
-                }
-              } else if (value.isEmpty) {
-                _searchCriteria['Class Number'] = 0;
-              }
-              doSearch();
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget searchCriteriaWidget() {
-    scheduleData = savedData
-        .where((element) => element.term == Term.instances.elementAt(2))
-        .toList();
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      key: const Key('Search Criteria Widget'),
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        classNumberTextField(),
-        dropdownEntry('Department'),
-        dropdownEntry('Subject'),
-        dropdownEntry('Campus'),
-        dropdownEntry('Level'),
-        instructorTextField(),
-        dropdownEntry('Term'),
-        dropdownEntry('Credits'),
-        selectWeekdays(),
-        dropdownEntry('Start Time'),
-        dropdownEntry('End Time'),
-        ...statusSelector(),
-        ...gsSelector(),
-      ],
     );
   }
 }
