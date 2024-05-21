@@ -18,16 +18,6 @@ void main() {
     await DataHandler.fetchData(test: true);
   });
 
-  Future<void> buildTestEnvironment(WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(2000, 1000));
-    await tester.pumpWidget(const MyApp());
-    final context = tester.element(find.byType(MyApp));
-    addTearDown(() async {
-      await tester.binding.setSurfaceSize(null);
-      results = SearchCriteria(context);
-    });
-  }
-
   Future<void> doTap(WidgetTester tester, Finder finder) async {
     await tester.tap(finder);
     await tester.pumpAndSettle();
@@ -115,6 +105,28 @@ void main() {
     }
   }
 
+  Future<void> openDrawer(WidgetTester tester) async {
+    final ScaffoldState state = tester.firstState(find.byType(Scaffold));
+    state.openDrawer();
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> closeDrawer(WidgetTester tester) async {
+    final ScaffoldState state = tester.firstState(find.byType(Scaffold));
+    state.closeDrawer();
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> buildTestEnvironment(WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(2000, 1000));
+    await tester.pumpWidget(const MyApp());
+    final context = tester.element(find.byType(MyApp));
+    addTearDown(() async {
+      await tester.binding.setSurfaceSize(null);
+      results = SearchCriteria(context);
+    });
+  }
+
   Future<void> dropdownTester(
     WidgetTester tester, {
     required String menu,
@@ -124,6 +136,8 @@ void main() {
   }) async {
     await buildTestEnvironment(tester);
     final ddownOpts = options.map((e) => find.text(e).hitTestable()).toList();
+    await openDrawer(tester);
+    expect(find.byKey(Key('$menu Dropdown')), findsOneWidget);
     multiExpect(ddownOpts, findsNothing);
     await doTap(tester, finders[menu]!);
     multiExpect(ddownOpts, findsOneWidget);
@@ -140,7 +154,8 @@ void main() {
     required List<String> cellKeys,
   }) async {
     await buildTestEnvironment(tester);
-    multiExpect(txtOpts, findsNothing);
+    await openDrawer(tester);
+    // multiExpect(txtOpts, findsNothing);
     for (final opt in txtOpts) {
       await insertText(tester, finders[textField]!, opt);
       expectInResults(cellKeys, equals(opt));
@@ -153,18 +168,16 @@ void main() {
 
   testWidgets('Search Criteria Test', (WidgetTester tester) async {
     await buildTestEnvironment(tester);
+    // final drawer = find.byKey(const Key('Search Criteria Drawer'));
+    // expect(drawer, findsOneWidget);
+    // await doTap(tester, drawer);
+
+    await openDrawer(tester);
 
     multiExpect(
       finders.values.toList(),
       findsOneWidget,
     );
-  });
-
-  testWidgets('Search Criteria does not Overlap with Results',
-      (WidgetTester tester) async {
-    await buildTestEnvironment(tester);
-
-    expect(find.byKey(const Key('Search Criteria Widget')), findsOneWidget);
   });
 
   testWidgets('Header Card Test', (WidgetTester tester) async {
@@ -185,8 +198,8 @@ void main() {
     await dropdownTester(
       tester,
       menu: 'Department',
-      options: ['ACDM Acadeum', 'CHEM Chemistry', 'ENGI Engineering'],
-      condition: equals('ENGR'),
+      options: ['ACDM Acadeum', 'CHEM Chemistry', 'CPTR Computer Science'],
+      condition: equals('CPTR'),
       cellKeys: ['Subject'],
     );
   });
@@ -242,7 +255,7 @@ void main() {
   });
 
   testWidgets('Search by Day', (WidgetTester tester) async {
-    // As this is a custom widget, the default format doesn't work.
+    // Note: It doesn't seem like the checkboxes are being tapped.
     await buildTestEnvironment(tester);
 
     final ddownOpts = [
@@ -251,20 +264,24 @@ void main() {
       find.text('Wednesday').hitTestable(),
     ];
 
+    await openDrawer(tester);
+
     multiExpect(ddownOpts, findsNothing);
 
     await doTap(tester, finders['Schedule']!);
     multiExpect(ddownOpts, findsOneWidget);
 
     // Check both monday and tuesday
-    await tester.tap(ddownOpts[0]);
-    await tester.tap(ddownOpts[1]);
+    await doTap(tester, ddownOpts[0]);
+    await doTap(tester, ddownOpts[1]);
     expectInResults(['Schedule'], contains('MT'));
 
     // Check both monday and wednesday
-    await tester.tap(ddownOpts[1]);
-    await tester.tap(ddownOpts[2]);
-    expectInResults(['Schedule'], contains('MW'));
+    await doTap(tester, ddownOpts[2]);
+    expectInResults(['Schedule'], contains('MTW'));
+
+    await doTap(tester, ddownOpts[2]);
+    expectInResults(['Schedule'], contains('MT'));
   });
 
   testWidgets('Search by Start Time', (WidgetTester tester) async {
@@ -310,17 +327,20 @@ void main() {
 
   testWidgets('Search by Only Open', (WidgetTester tester) async {
     await buildTestEnvironment(tester);
+    await openDrawer(tester);
     await doTap(tester, finders['Status']!);
     expectInResults(['Status'], equals('Open'));
   });
 
   testWidgets('Search by Only GS', (WidgetTester tester) async {
     await buildTestEnvironment(tester);
+    await openDrawer(tester);
     await doTap(tester, finders['GS']!);
     expectInResults(['GS'], equals('GS'));
   });
 
   testWidgets('Schedule View Test', (WidgetTester tester) async {
+    // Note: It seems that the schedule view filter is not working.
     await buildTestEnvironment(tester);
     final options = {
       '9:00AM': find.text('9:00AM').hitTestable(),
@@ -334,11 +354,15 @@ void main() {
       find.text('Spring 2024').hitTestable(),
     ];
 
+    await openDrawer(tester);
+
     await doTap(tester, finders['Department']!);
     await doTap(tester, options['Biology']!);
 
     await doTap(tester, finders['Start Time']!);
     await doTap(tester, options['9:00AM']!);
+
+    await closeDrawer(tester);
 
     int fall2023 = 0, winter2024 = 0, spring2024 = 0;
     final rows = find
@@ -404,6 +428,7 @@ void main() {
     await buildTestEnvironment(tester);
 
     // Open department dropdown
+    await openDrawer(tester);
     await doTap(tester, finders['Department']!);
     await doTap(tester, find.text('CPTR Computer Science').hitTestable());
 

@@ -37,7 +37,7 @@ class Subject implements Comparable {
 }
 
 class AllSubjects extends Subject {
-  AllSubjects() : super('', 'ALL');
+  AllSubjects() : super('', 'All Subjects');
 
   @override
   bool includesCourse(Course course) {

@@ -11,7 +11,6 @@ class ScheduleView {
   }
   BuildContext context = results.context;
   late List<DropdownMenuEntry> _terms;
-  late final Term term = _terms[1].value;
 
   List<DropdownMenuEntry> _termEntries() {
     final entries = <DropdownMenuEntry>[];
@@ -50,7 +49,7 @@ class ScheduleView {
             style: TextStyle(fontSize: 12),
           ),
           dropdownMenuEntries: _terms,
-          initialSelection: term,
+          initialSelection: results.scheduleTerm,
           onSelected: (value) {
             results.updateSchedule(value);
           },
@@ -97,12 +96,12 @@ class ScheduleView {
     return TableRow(
       children: [
         tableCell(' ', 16.0, alignOpt),
-        tableCell('Sunday', 16.0, alignOpt),
-        tableCell('Monday', 16.0, alignOpt),
-        tableCell('Tuesday', 16.0, alignOpt),
-        tableCell('Wednesday', 16.0, alignOpt),
-        tableCell('Thursday', 16.0, alignOpt),
-        tableCell('Friday', 16.0, alignOpt),
+        tableCell('Sun', 16.0, alignOpt),
+        tableCell('Mon', 16.0, alignOpt),
+        tableCell('Tue', 16.0, alignOpt),
+        tableCell('Wed', 16.0, alignOpt),
+        tableCell('Thu', 16.0, alignOpt),
+        tableCell('Fri', 16.0, alignOpt),
       ],
     );
   }
@@ -134,11 +133,12 @@ class ScheduleView {
       // Iterate through each class
       // Note: day = 1 is Monday, day = 7 is Sunday. (DateTime requirement)
       for (final aClass in classes) {
-        final title = aClass.getTitle();
+        final num = aClass.course.number;
+        final dept = '${aClass.getCode()} ';
         for (final i in [1, 2, 3, 4, 5, 7]) {
           // Occurs on the day AND the time
           if (aClass.schedule.isAt(day: i, time: time)) {
-            cNames[i] += '$title\n';
+            cNames[i] += '${dept + num}\n';
           }
         }
       }

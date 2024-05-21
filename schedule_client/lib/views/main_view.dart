@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_client/domain/class.dart';
 import 'package:schedule_client/views/search_criteria.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 abstract class MainView {
   MainView(this.startYear, this.results) {
@@ -29,15 +30,13 @@ abstract class MainView {
   Widget view(
     int index,
     BuildContext context,
-    Function searchCriteriaWidget,
   );
 
-  Widget savedBox(Class aClass, int index) {
+  Widget savedBox(Class aClass, int index, {int? bkgndColor}) {
     return Semantics(
       label: 'Class saving checkbox.',
       hint: 'Click on this to save a class for later.',
       child: SizedBox(
-        height: 10,
         width: 30,
         child: Checkbox(
           key: Key('Class $index save box'),
@@ -50,20 +49,13 @@ abstract class MainView {
     );
   }
 
-  SizedBox invisibleBox() {
-    return const SizedBox(
-      height: 20,
+  Widget invisibleBox() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(palette['blue']!),
+      ),
       width: 30,
     );
-  }
-
-  String addLinesTo(String aString, int lineHeight) {
-    final initialCount = aString.split('\n').length;
-    var result = aString;
-    for (var i = initialCount; i < lineHeight; i++) {
-      result += '\n';
-    }
-    return result.isNotEmpty ? result : ' ';
   }
 
   String getTerm(Class aClass, String key) {
@@ -98,20 +90,17 @@ abstract class MainView {
     return Semantics(
       label: 'Below shows the: ',
       child: Container(
+        alignment: Alignment.center,
         width: width,
         key: Key('${input.trim()} Header Card'),
         decoration: BoxDecoration(
           color: Color(palette['blue']!),
-          border: Border.all(color: Colors.black),
         ),
-        child: Align(
-          alignment: Alignment.center,
-          child: Text(
-            input,
-            style: const TextStyle(
-              color: Color(0xFFffffff),
-              fontSize: 12,
-            ),
+        child: Text(
+          input,
+          style: const TextStyle(
+            color: Color(0xFFffffff),
+            fontSize: 12,
           ),
         ),
       ),
@@ -122,21 +111,30 @@ abstract class MainView {
     String keyString,
     String input,
     double width,
-    int bkgndColor,
-    int lineHeight,
-  ) {
+    int bkgndColor, [
+    String? align,
+  ]) {
+    const Alignment right = Alignment.centerRight;
+    const Alignment left = Alignment.centerLeft;
+    const Alignment center = Alignment.center;
     return Semantics(
       label: '$keyString cell.',
       hint: 'The $keyString for this row is $input.',
       child: Container(
+        alignment: align == 'r'
+            ? right
+            : align == 'l'
+                ? left
+                : align == 'c'
+                    ? center
+                    : AlignmentDirectional.centerStart,
         key: Key('$keyString Cell'),
         width: width,
         decoration: BoxDecoration(
           color: Color(bkgndColor),
-          border: Border.all(color: Colors.white),
         ),
         child: Text(
-          addLinesTo(input, lineHeight),
+          input,
           style: const TextStyle(
             color: Color(0xFF00003e),
             fontSize: 12,
@@ -145,4 +143,77 @@ abstract class MainView {
       ),
     );
   }
+}
+
+Widget tooltipCell(
+  String keyString,
+  String input,
+  String tooltip,
+  double width,
+  int bkgndColor,
+) {
+  return Semantics(
+    label: '$keyString cell.',
+    hint: 'The $keyString for this row is $input.',
+    child: Tooltip(
+      message: tooltip,
+      child: Container(
+        alignment: AlignmentDirectional.centerStart,
+        key: Key('$keyString Cell'),
+        width: width,
+        decoration: BoxDecoration(
+          color: Color(bkgndColor),
+        ),
+        child: Text(
+          input,
+          style: const TextStyle(
+            color: Color(0xFF00003e),
+            fontSize: 12,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget videoCell(
+  String keyString,
+  String tooltip,
+  double width,
+  int bkgndColor,
+  String video,
+) {
+  return Semantics(
+    label: '$keyString cell.',
+    hint: 'The $keyString for this row is Video.',
+    child: video == ''
+        ? Container(
+            alignment: AlignmentDirectional.centerStart,
+            key: Key('$keyString Cell'),
+            width: width,
+            decoration: BoxDecoration(
+              color: Color(bkgndColor),
+            ),
+          )
+        : Container(
+            alignment: AlignmentDirectional.centerStart,
+            key: Key('$keyString Cell'),
+            width: width,
+            decoration: BoxDecoration(
+              color: Color(bkgndColor),
+            ),
+            child: InkWell(
+              onTap: () async {
+                await launchUrl(video as Uri);
+              },
+              child: const Text(
+                'Video',
+                style: TextStyle(
+                  color: Color(0xFF00003e),
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+  );
 }

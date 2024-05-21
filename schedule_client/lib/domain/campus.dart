@@ -30,7 +30,7 @@ class Campus implements Comparable {
 }
 
 class AllCampuses extends Campus {
-  AllCampuses() : super('', 'ALL');
+  AllCampuses() : super('', 'All Campuses');
 
   @override
   bool includesClass(Class classInstance) {

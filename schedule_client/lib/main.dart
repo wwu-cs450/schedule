@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/semantics.dart';
+import 'package:flutter/semantics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:schedule_client/domain/class.dart';
@@ -13,7 +13,7 @@ void main() async {
   await DataHandler.fetchData();
   Class.instances;
   runApp(const MyApp());
-  // SemanticsBinding.instance.ensureSemantics();
+  SemanticsBinding.instance.ensureSemantics();
 }
 
 late SearchCriteria results;
@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'WWU Class Schedule',
         theme: ThemeData(
+          tooltipTheme: const TooltipThemeData(preferBelow: false),
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color(0xFF656950),
             primary: const Color(0xFF656950),
@@ -49,6 +50,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    results.doSearch();
     return Consumer<SearchCriteria>(
       builder: (context, appData, child) {
         return Scaffold(
@@ -62,30 +64,23 @@ class HomePage extends StatelessWidget {
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {
-              if ((constraints.maxWidth >= 1835) &&
+              if ((constraints.maxWidth >= 1840) &&
                   (constraints.maxHeight > 355.0)) {
                 return WideView(startYear, results).view(
                   results.selectedIndex,
                   context,
-                  results.searchCriteriaWidget,
                 );
               } else if ((constraints.maxWidth >= 970) &&
                   (constraints.maxHeight > 355.0)) {
                 return MediumView(startYear, results).view(
                   results.selectedIndex,
                   context,
-                  results.searchCriteriaWidget,
                 );
-              } else if ((constraints.maxWidth >= 625) &&
-                  (constraints.maxHeight > 355.0)) {
+              } else {
                 return SmallView(startYear, results).view(
                   results.selectedIndex,
                   context,
-                  results.searchCriteriaWidget,
                 );
-              } else {
-                // tinyView
-                return const Placeholder();
               }
             },
           ),
@@ -106,6 +101,7 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
+          drawer: results.sidebar,
         );
       },
     );

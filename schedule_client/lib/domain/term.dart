@@ -47,7 +47,7 @@ class Term implements Comparable {
 }
 
 class AllTerms extends Term {
-  AllTerms() : super(0, 'ALL');
+  AllTerms() : super(0, 'All Terms');
 
   @override
   bool includesClass(Class classInstance) {
