@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
+// import 'package:flutter/semantics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:schedule_client/domain/class.dart';
@@ -13,7 +13,7 @@ void main() async {
   await DataHandler.fetchData();
   Class.instances;
   runApp(const MyApp());
-  SemanticsBinding.instance.ensureSemantics();
+  // SemanticsBinding.instance.ensureSemantics();
 }
 
 late SearchCriteria results;
