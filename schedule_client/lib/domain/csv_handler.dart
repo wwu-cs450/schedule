@@ -1,12 +1,10 @@
 import 'package:csv/csv.dart';
-import 'package:schedule_client/domain/sample_csv.dart'
-    if (kDebugMode) 'package:schedule_client/domain/schedule.dart';
+import 'package:schedule_client/domain/schedule.dart';
 
 class CSVHandler {
   // cache containing data from schedule.dart as list of list of strings
   static List<List<String>> _data = List.empty();
   static bool _usingTest = false;
-
   static List<List<String>> get data => _data;
 
   // empty data
