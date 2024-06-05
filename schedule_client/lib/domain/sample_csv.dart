@@ -1,4 +1,4 @@
-String getSampleCSV() {
+Future<String> getSchedule() async {
   return '''
 1,CP,2024,ACDM,Acadeum,1140,GS,ACDM,250,,,,,,Acadeum Courses,1-18,Closed,0,0,,,,TBA,,,P,,NULL,N,
 1,CP,2024,ACDM,Acadeum,1881,GS,ACDM,,,,250,,,Acadeum Courses,1-18,Closed,0,0,,,,TBA,,,P,,NULL,N,

@@ -1,6 +1,6 @@
 import 'package:csv/csv.dart';
-import 'package:schedule_client/domain/sample_csv.dart';
-import 'package:schedule_client/domain/schedule.dart';
+import 'package:schedule_client/domain/sample_csv.dart'
+    if (kIsWeb) 'package:schedule_client/domain/schedule.dart';
 
 class CSVHandler {
   // cache containing data from schedule.dart as list of list of strings
@@ -20,16 +20,7 @@ class CSVHandler {
       return _data;
     }
     _usingTest = test;
-    String csvFile = '';
-
-    // test bool for testing (consistency regardless of updated data)
-    if (test) {
-      csvFile = getSampleCSV();
-    } else {
-      // remove header line
-      csvFile =
-          (await getSchedule()).replaceFirst(RegExp(r'^.*(\r\n|\r|\n)'), '');
-    }
+    final String csvFile = await getSchedule();
 
     _data = const CsvToListConverter().convert<String>(
       csvFile,
