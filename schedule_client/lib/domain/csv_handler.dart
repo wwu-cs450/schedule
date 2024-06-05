@@ -1,6 +1,6 @@
 import 'package:csv/csv.dart';
 import 'package:schedule_client/domain/sample_csv.dart'
-    if (kIsWeb) 'package:schedule_client/domain/schedule.dart';
+    if (kDebugMode) 'package:schedule_client/domain/schedule.dart';
 
 class CSVHandler {
   // cache containing data from schedule.dart as list of list of strings

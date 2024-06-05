@@ -51,3 +51,4 @@ app.*.map.json
 /android/app/release
 gl-code-quality-report.json
 .vscode/settings.json
+class_data.csv
