@@ -19,7 +19,6 @@ Future<String> getSchedule() async {
 1,CP,2024,ART,Art,1493,GS,ART,,,,360,,,Advanced Visual Composition,4,Open,2,16,,54,MWRF 11:00 - 11:50A,,Reserved Staff,,P,,NULL,N,
 1,CP,2024,ART,Art,1877,GS,ART,,,,364,,A,Advanced Sculpture (Indp),2,Closed,1,0,,,ARR,,Joel Libby,,P,,NULL,N,
 1,CP,2024,ART,Art,1393,GS,ART,,,374,,,,Adv Pottery & Ceramic Sculptur,2,Open,1,6,,100,ARR,,Steven Miller,,P,,NULL,N,
-1,CP,2024,ART,Art,1878,GS,ART,,,,395,,A,Methods of Tchng Art (Indp),2,Closed,1,0,,44,ARR,,Joel Libby,,P,,NULL,N,
 1,CP,2024,BIOL,Biology,1535,GS,BIOL,,,105,,,,Contemporary Biology,4,Open,10,90,,,MWF 08:00 - 08:50A,,Reserved Staff,,P,,NULL,N,
 1,CP,2024,BIOL,Biology,1537,GS,BIOL,,,105L,,,B,Contemporary Biology Lab,0,Open,3,20,,162,T 02:00 - 04:50P,,Reserved Staff,,P,,NULL,N,
 1,CP,2024,BIOL,Biology,1523,GS,BIOL,,106,,,,,Contemporary Biology,4,Open,62,90,,,MWF 08:00 - 08:50A,RGH112,Steven Patten,,P,,NULL,N,

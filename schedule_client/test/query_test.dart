@@ -16,7 +16,7 @@ void main() {
     await DataHandler.fetchData(test: true);
   });
   test('null query (all results)', () {
-    expect(Query().results().length, 2371);
+    expect(Query().results().length, 2370);
   });
 
   test('count query results', () {
