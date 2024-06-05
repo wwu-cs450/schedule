@@ -7,7 +7,7 @@ Future<String> getSchedule() async {
   if (kDebugMode) {
     return getSample();
   } else {
-    if (html.window.location.hostname == 'schedule') {
+    if (html.window.location.hostname == 'schedule.cs.wallawalla.edu') {
       request = await html.HttpRequest.getString('class_data.csv');
     } else {
       request = await html.HttpRequest.getString('assets/class_data.csv');
