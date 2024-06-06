@@ -400,6 +400,7 @@ void main() {
     expect(finders['Department']!, findsNothing);
 
     // Qualifies as Schedule View test.
+    // Also qualifies as download button test.
     final redBox = find.byWidgetPredicate(
       (Widget widget) =>
           widget is DecoratedBox &&
@@ -408,9 +409,15 @@ void main() {
               const Color.fromARGB(255, 255, 130, 121),
     );
     final termDropdown = find.byKey(const Key('Schedule View Term Dropdown'));
+    final downloadButton = find.byKey(const Key('Download Button'));
+    final downloadVerification = find.text('Downloaded');
 
     expect(termDropdown.hitTestable(), findsOneWidget);
+    expect(downloadButton.hitTestable(), findsOneWidget);
     expect(redBox, findsNothing);
+
+    await doTap(tester, downloadButton);
+    expect(downloadVerification, findsOneWidget);
 
     await doTap(tester, termDropdown);
     expect(termOptions[0], findsAtLeast(1));

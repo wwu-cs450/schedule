@@ -12,7 +12,7 @@ class SmallView extends MainView {
       if (aClass.getFee() == '0') {
         return 'No fee';
       } else {
-        return '\$ ${aClass.getFee()} fee';
+        return '${aClass.getFee()} fee';
       }
     }
 
