@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_client/domain/class.dart';
+import 'package:schedule_client/domain/csv_builder.dart';
 import 'package:schedule_client/domain/hourminute.dart';
 import 'package:schedule_client/domain/term.dart';
 import 'package:schedule_client/main.dart';
@@ -54,6 +55,22 @@ class ScheduleView {
             results.updateSchedule(value);
           },
         ),
+      ),
+    );
+  }
+
+  Widget _saveData() {
+    return Semantics(
+      label: 'Save data button.',
+      hint: 'Click on this button to save your data.',
+      child: ElevatedButton(
+        key: const Key('Download Button'),
+        onPressed: () {
+          results.saveTextFile(createCSV(), 'Schedule.csv');
+        },
+        child: results.scheduleDownloaded
+            ? const Text('Downloaded')
+            : const Text('Download Schedule'),
       ),
     );
   }
@@ -156,7 +173,13 @@ class ScheduleView {
   Widget build() {
     return Column(
       children: [
-        _termDropdown(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _termDropdown(),
+            _saveData(),
+          ],
+        ),
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           columnWidths: const {

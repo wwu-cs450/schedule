@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:schedule_client/domain/campus.dart';
 import 'package:schedule_client/domain/class.dart';
@@ -7,6 +9,7 @@ import 'package:schedule_client/domain/query.dart';
 import 'package:schedule_client/domain/subject.dart';
 import 'package:schedule_client/domain/term.dart';
 import 'package:schedule_client/views/multi_dropdown.dart';
+import 'package:universal_html/html.dart' as a;
 
 class SearchCriteria extends ChangeNotifier {
   SearchCriteria(this.context);
@@ -28,6 +31,8 @@ class SearchCriteria extends ChangeNotifier {
     'End Time': null,
   };
 
+  bool scheduleDownloaded = false;
+
   Term scheduleTerm = Term.instances.elementAt(2);
 
   final startTimes = {
@@ -37,6 +42,18 @@ class SearchCriteria extends ChangeNotifier {
         time = time.add(const Duration(hours: 1)))
       time.toString(is24hr: false): time,
   };
+
+  void saveTextFile(String text, String filename) {
+    a.AnchorElement()
+      // ignore: unsafe_html
+      ..href =
+          '${Uri.dataFromString(text, mimeType: 'text/plain', encoding: utf8)}'
+      ..download = filename
+      ..style.display = 'none'
+      ..click();
+    scheduleDownloaded = true;
+    notifyListeners();
+  }
 
   final endTimes = {
     'Any End Time': null,
