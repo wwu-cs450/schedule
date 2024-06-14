@@ -78,6 +78,10 @@ abstract class MainView {
     }
   }
 
+  String mediumTerm(Class aClass) {
+    return aClass.term.name;
+  }
+
   List<int> getColor(int index) {
     if (index % 2 == 0) {
       return [0xFFc2c2c2, 0xFFf1f276, 0xFFf2b600, 0xFF8ca2bd, 0xFF53b573];
@@ -92,11 +96,11 @@ abstract class MainView {
       child: Container(
         alignment: Alignment.center,
         width: width,
-        key: Key('${input.trim()} Header Card'),
         decoration: BoxDecoration(
           color: Color(palette['blue']!),
         ),
         child: Text(
+          key: Key('${input.trim()} Header Card'),
           input,
           style: const TextStyle(
             color: Color(0xFFffffff),
@@ -121,6 +125,12 @@ abstract class MainView {
       label: '$keyString cell.',
       hint: 'The $keyString for this row is $input.',
       child: Container(
+        key: keyString == 'Spring' ||
+                keyString == 'Summer' ||
+                keyString == 'Fall' ||
+                keyString == 'Winter'
+            ? const Key('Term Color Cell')
+            : null,
         alignment: align == 'r'
             ? right
             : align == 'l'
@@ -128,12 +138,12 @@ abstract class MainView {
                 : align == 'c'
                     ? center
                     : AlignmentDirectional.centerStart,
-        key: Key('$keyString Cell'),
         width: width,
         decoration: BoxDecoration(
           color: Color(bkgndColor),
         ),
         child: Text(
+          key: Key('$keyString Cell'),
           input,
           style: const TextStyle(
             color: Color(0xFF00003e),
@@ -156,15 +166,16 @@ Widget tooltipCell(
     label: '$keyString cell.',
     hint: 'The $keyString for this row is $input.',
     child: Tooltip(
+      key: const Key('Hover Cell'),
       message: tooltip,
       child: Container(
         alignment: AlignmentDirectional.centerStart,
-        key: Key('$keyString Cell'),
         width: width,
         decoration: BoxDecoration(
           color: Color(bkgndColor),
         ),
         child: Text(
+          key: Key('$keyString Cell'),
           input,
           style: const TextStyle(
             color: Color(0xFF00003e),

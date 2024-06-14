@@ -24,6 +24,7 @@ class SmallView extends MainView {
       }
     }
 
+    final term = aClass.term.name.split(' ')[0];
     final cNum = aClass.course.number;
     final room = aClass.classroom;
     final schedule = aClass.schedule.toString(is24hr: false);
@@ -32,6 +33,7 @@ class SmallView extends MainView {
         ? '${aClass.course.creditsMax}'
         : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     return Row(
+      key: Key('Class $index'),
       children: [
         savedBox(aClass, index),
         Stack(
@@ -63,9 +65,12 @@ class SmallView extends MainView {
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
                             children: [
-                              Text('${aClass.getCode()} $cNum'),
-                              Text(gsCheck()),
-                              Text(getFee()),
+                              Text(
+                                key: const Key('Subject Row'),
+                                '${aClass.getCode()} $cNum',
+                              ),
+                              Text(key: const Key('GS Row'), gsCheck()),
+                              Text(key: const Key('Fee Row'), getFee()),
                             ],
                           ),
                         ),
@@ -83,6 +88,7 @@ class SmallView extends MainView {
                               '${aClass.getTitle()}\n',
                             ),
                             ElevatedButton(
+                              key: const Key('Details Button'),
                               onPressed: () => {
                                 results.updateInfo(index),
                               },
@@ -105,9 +111,18 @@ class SmallView extends MainView {
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
                             children: [
-                              Text(aClass.term.name),
-                              Text('Credits: ${credits.trim()}'),
-                              Text(aClass.getCampus()),
+                              Text(
+                                key: Key('$term Row'),
+                                aClass.term.name,
+                              ),
+                              Text(
+                                key: const Key('Cr Row'),
+                                'Credits: ${credits.trim()}',
+                              ),
+                              Text(
+                                key: const Key('Campus Row'),
+                                aClass.getCampus(),
+                              ),
                             ],
                           ),
                         ),
@@ -127,6 +142,7 @@ class SmallView extends MainView {
                     margin: const EdgeInsets.all(10.0),
                     child: SizedBox(
                       child: Column(
+                        key: Key('Detail Row $index'),
                         children: [
                           DecoratedBox(
                             decoration: const BoxDecoration(
@@ -156,7 +172,10 @@ class SmallView extends MainView {
                                       child: Column(
                                         children: [
                                           const Text('Room(s)'),
-                                          Text(room),
+                                          Text(
+                                            key: const Key('Room Row'),
+                                            room,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -172,7 +191,10 @@ class SmallView extends MainView {
                                     child: Column(
                                       children: [
                                         const Text('Schedule'),
-                                        Text(schedule),
+                                        Text(
+                                          key: const Key('Schedule Row'),
+                                          schedule,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -193,7 +215,10 @@ class SmallView extends MainView {
                                       child: Column(
                                         children: [
                                           const Text('Instructor(s)'),
-                                          Text(profs),
+                                          Text(
+                                            key: const Key('Instructor Row'),
+                                            profs,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -273,6 +298,7 @@ class SmallView extends MainView {
                                   child: Padding(
                                     padding: const EdgeInsets.all(15.0),
                                     child: Text(
+                                      key: const Key('Status Row'),
                                       textAlign: TextAlign.center,
                                       aClass.isOpenForEnrollment
                                           ? 'Open'
