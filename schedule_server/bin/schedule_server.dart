@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:schedule_server/schedule.dart';
 
@@ -25,6 +24,6 @@ void main(List<String> args) async {
   const fiveMin = Duration(minutes: 5);
   Timer.periodic(fiveMin, (timer) async {
     await dataStream();
-    dataFile = await file.writeAsString(utf8.encode(data) as String);
+    dataFile = await file.writeAsString(data);
   });
 }
