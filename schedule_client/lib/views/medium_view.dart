@@ -55,6 +55,29 @@ class MediumView extends MainView {
     );
   }
 
+  Widget mediumTermCell(Class aClass, List<int> colors) {
+    late int color;
+    String term = mediumTerm(aClass);
+    final cellKey = term.split(' ')[0];
+    if (term == 'Summer $startYear') {
+      term = 'Sum $startYear';
+      color = colors[1];
+    } else if (term == 'Fall $startYear') {
+      term = 'Aut $startYear';
+      color = colors[2];
+    } else if (term == 'Winter ${startYear + 1}') {
+      term = 'Wtr ${startYear + 1}';
+      color = colors[3];
+    } else if (term == 'Spring ${startYear + 1}') {
+      term = 'Spr ${startYear + 1}';
+      color = colors[4];
+    } else if (term == 'Summer ${startYear + 1}') {
+      term = 'Sum ${startYear + 1}';
+      color = colors[1];
+    }
+    return cell(cellKey, term, 70.0, color);
+  }
+
   Widget mediumClassRow(
     Class aClass,
     int index,
@@ -94,32 +117,7 @@ class MediumView extends MainView {
                 cell('ClassNumber', aClass.getClN(), 50, aColor[0]),
                 cell('Subject', subj, 80.0, aColor[0]),
                 cell('Section', aClass.section, 40.0, aColor[0]),
-                getTerm(aClass, qtrs[0]) == ' '
-                    ? cell('Term', 'Sum $startYear', 70.0, aColor[1])
-                    : getTerm(aClass, qtrs[1]) == ' '
-                        ? cell('Term', 'Aut $startYear', 70.0, aColor[2])
-                        : getTerm(aClass, qtrs[2]) == ' '
-                            ? cell(
-                                'Term',
-                                'Wtr ${startYear + 1}',
-                                70.0,
-                                aColor[3],
-                              )
-                            : getTerm(aClass, qtrs[3]) == ' '
-                                ? cell(
-                                    'Term',
-                                    'Spr ${startYear + 1}',
-                                    70.0,
-                                    aColor[4],
-                                  )
-                                : getTerm(aClass, qtrs[4]) == ' '
-                                    ? cell(
-                                        'Term',
-                                        'Sum ${startYear + 1}',
-                                        70.0,
-                                        aColor[1],
-                                      )
-                                    : cell('Term', ' ', 70.0, aColor[0]),
+                mediumTermCell(aClass, aColor),
                 cell('Title', aClass.getTitle(), 200.0, aColor[0]),
                 cell('Credits', credits, 30.0, aColor[0]),
                 cell('GS', gs, 30.0, aColor[0]),

@@ -17,6 +17,7 @@ void main() async {
 }
 
 late SearchCriteria results;
+const startYear = 2023;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -46,7 +47,6 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({required this.title, super.key});
   final String title;
-  final startYear = 2023;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {
-              if ((constraints.maxWidth >= 1840) &&
+              if ((constraints.maxWidth >= 1845) &&
                   (constraints.maxHeight > 355.0)) {
                 return WideView(startYear, results).view(
                   results.selectedIndex,
