@@ -233,12 +233,12 @@ class SmallView extends MainView {
                                         results.updateInfo(index),
                                       },
                                       style: ButtonStyle(
-                                        textStyle: MaterialStateProperty
+                                        textStyle: WidgetStateProperty
                                             .resolveWith<TextStyle?>(
                                           (states) =>
                                               const TextStyle(fontSize: 15),
                                         ),
-                                        fixedSize: MaterialStateProperty.all(
+                                        fixedSize: WidgetStateProperty.all(
                                           const Size.fromWidth(10),
                                         ),
                                       ),
