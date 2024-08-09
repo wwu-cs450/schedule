@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {
-              if ((constraints.maxWidth >= 1845) &&
+              if ((constraints.maxWidth >= 1850) &&
                   (constraints.maxHeight > 355.0)) {
                 return WideView(startYear, results).view(
                   results.selectedIndex,

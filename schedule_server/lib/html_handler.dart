@@ -26,7 +26,7 @@ class HTMLHandler {
   static Future<String> fetchHtml() async {
     final currentTime = DateTime.now();
     final String year;
-    if (currentTime.month > 0 && currentTime.month < 9) {
+    if (currentTime.month > 0 && currentTime.month < 7) {
       year = currentTime.year.toString();
     } else {
       year = (currentTime.year + 1).toString();
@@ -234,6 +234,7 @@ class HTMLHandler {
     'WRIT': 'ENGL',
   };
 
+  // TODO: Consider remaping this so that it is department code to department name.
   static const Map _deptFullname = {
     'ACCT': 'Business',
     'ACDM': 'Acadeum',

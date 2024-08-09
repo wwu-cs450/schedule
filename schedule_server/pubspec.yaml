@@ -1,7 +1,7 @@
 name: schedule_server
-description: A sample command-line application.
+description: Capture class open data and make it available to our client as a CSV file.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+# repository: https://gitlab.cs.wallawalla.edu/wwu/schedule
 
 environment:
   sdk: ^3.2.6
