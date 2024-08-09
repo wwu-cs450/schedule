@@ -1,0 +1,1 @@
+This file exits so that there will be an assets directory.

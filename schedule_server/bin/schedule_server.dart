@@ -8,7 +8,7 @@ Future<void> dataStream() async {
 
 String data = '';
 
-void main(List<String> args) async {
+void main() async {
   data = await getSchedule();
   //Change path based on hostname
   final host = Platform.localHostname;
