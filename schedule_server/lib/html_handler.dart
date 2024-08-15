@@ -79,7 +79,11 @@ class HTMLHandler {
       //ACAD_YEAR, =2024    2024
       data[x][2] = '2024';
       //ACAD_ORG,     BIOL
-      data[x][3] = _subjDept[nodes[2].text!]?.trim() ?? 'Err';
+      try {
+        data[x][3] = _subjDept[nodes[2].text!]?.trim();
+      } catch (e) {
+        throw Exception('Subject "${nodes[2].text!}" not found!');
+      }
       //WWU_ACAD_ORG_DESCR,   Biology
       data[x][4] = _deptFullname[data[x][3]] ?? data[x][3];
       //CLASS_NBR,    1536
@@ -166,7 +170,9 @@ class HTMLHandler {
     'CDEV': 'NDEP',
     'CHEM': 'CHEM',
     'CIS': 'BUSI',
+    'CMC': 'MUCT',
     'COMM': 'COMM',
+    'CORR': 'SOWK',
     'CPTR': 'CPTR',
     'CYBS': 'CPTR',
     'DRMA': 'COMM',
@@ -179,6 +185,7 @@ class HTMLHandler {
     'ENGL': 'ENGL',
     'ENGR': 'ENGI',
     'ENVI': 'ENGI',
+    'FILM': 'VISA',
     'FINA': 'BUSI',
     'FLTV': 'COMM',
     'FREN': 'ENGL',
@@ -188,6 +195,7 @@ class HTMLHandler {
     'GNRL': 'NDEP',
     'GREK': 'RELB',
     'GRPH': 'TECH',
+    'HEBR': 'RELB',
     'HIST': 'HIST',
     'HLTH': 'HLTH',
     'HMNT': 'HIST',
@@ -231,6 +239,10 @@ class HTMLHandler {
     'SPED': 'EDUC',
     'SPPA': 'COMM',
     'TECH': 'TECH',
+    'VIS': 'VISA',
+    'VISA': 'VISA',
+    'VISD': 'VISA',
+    'VISF': 'VISA',
     'WRIT': 'ENGL',
   };
 
@@ -311,6 +323,7 @@ class HTMLHandler {
     'SPED': 'Education & Psychology',
     'SPPA': 'Communication',
     'TECH': 'Technology',
+    'VISA': 'Visual Arts',
     'WRIT': 'English & Modern Languages',
   };
 }

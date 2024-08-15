@@ -1,5 +1,6 @@
 import 'package:csv/csv.dart';
-import 'package:schedule_client/domain/schedule.dart';
+import 'package:schedule_client/domain/sample_csv.dart';
+import 'package:universal_html/html.dart' as html;
 
 class CSVHandler {
   // cache containing data from schedule.dart as list of list of strings
@@ -18,8 +19,9 @@ class CSVHandler {
       return _data;
     }
     _usingTest = test;
-    final String csvFile = await getSchedule();
-
+    final String csvFile = test
+        ? await getSample()
+        : await html.HttpRequest.getString('assets/class_data.csv');
     _data = const CsvToListConverter().convert<String>(
       csvFile,
       fieldDelimiter: ',',

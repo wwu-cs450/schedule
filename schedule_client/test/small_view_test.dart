@@ -20,7 +20,7 @@ void main() {
   });
 
   testWidgets('Small: Search by Campus', (WidgetTester tester) async {
-    await campusTest(tester, 965, requirement: equals('RO'));
+    await campusTest(tester, 965, requirement: equals('CMC'));
   });
 
   testWidgets('Small: Search by Level', (WidgetTester tester) async {

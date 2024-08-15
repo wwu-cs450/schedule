@@ -10,7 +10,7 @@ void main() {
   });
   test('constructor and accessors', () {
     final course = Course(
-      Department.departmentwithCode('CPTR'),
+      Department.departmentWithCode('CPTR'),
       Subject.subjectWithCode('CPTR'),
       'Fundamentals of Programming I',
       '141',
@@ -28,7 +28,7 @@ void main() {
   });
   test('constructor and accessors on lab', () {
     final course = Course(
-      Department.departmentwithCode('ART'),
+      Department.departmentWithCode('ART'),
       Subject.subjectWithCode('DRMA'),
       'Performance',
       '253SN',

@@ -15,11 +15,15 @@ class Department implements Comparable {
     return _instances;
   }
 
-  static Department departmentwithCode(String code) {
-    final departmentOfCode =
-        Department.instances.firstWhere((instance) => instance.code == code);
-
-    return departmentOfCode;
+  static Department departmentWithCode(String code) {
+    try {
+      final departmentOfCode =
+          Department.instances.firstWhere((instance) => instance.code == code);
+      return departmentOfCode;
+    } catch (e) {
+      // print('Department "$code" not found!');
+      rethrow;
+    }
   }
 
   bool includesCourse(Course course) {

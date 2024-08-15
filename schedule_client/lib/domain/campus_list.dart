@@ -16,10 +16,12 @@ extension InitializeCampus on Campus {
 ACA,Adventist Colleges Abroad
 ACDM,Acadeum
 BI,Billings
+CMC,Christian Music Center
 CP,College Place
 LAFS,LA Film Studies Center
 MI,Missoula
 PD,Portland
+RIZE,Rize
 RO,Rosario''';
   }
 }

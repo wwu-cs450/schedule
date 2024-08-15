@@ -100,7 +100,7 @@ class Course implements Comparable {
         level = 'Upper';
       }
 
-      final department = Department.departmentwithCode(classData[3]);
+      final department = Department.departmentWithCode(classData[3]);
       final subject = Subject.subjectWithCode(classData[7]);
       _instances.add(
         Course(
