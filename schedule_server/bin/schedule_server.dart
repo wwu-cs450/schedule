@@ -13,8 +13,8 @@ void main() async {
   //Change path based on hostname
   final host = Platform.localHostname;
   final File file;
-  if (host == 'schedule') {
-    file = File('/var/www/html/class_data.csv');
+  if (host == 'schedule-vm') {
+    file = File('/var/www/html/assets/class_data.csv');
   } else {
     file = File('../schedule_client/assets/class_data.csv');
   }

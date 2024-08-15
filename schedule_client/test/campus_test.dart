@@ -11,7 +11,7 @@ void main() {
   test('instances', () {
     final campuses = Campus.instances;
     assert(Campus.allCampuses().name == 'All Campuses');
-    assert(campuses.length == 9);
+    assert(campuses.length == 11);
     assert(
       campuses.any(
         (element) => element.code == 'PD',

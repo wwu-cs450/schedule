@@ -76,7 +76,7 @@ Future<void> campusTest(
   await dropdownTester(
     tester,
     menu: 'Campus',
-    options: ['BI Billings', 'CP College Place', 'RO Rosario'],
+    options: ['BI Billings', 'CP College Place', 'CMC Christian Music Center'],
     condition: requirement,
     cellKeys: ['Campus'],
     testerWidth: width,

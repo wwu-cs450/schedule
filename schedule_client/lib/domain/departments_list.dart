@@ -38,5 +38,6 @@ Map<String, String> _departments = {
   'RELB': 'Theology',
   'SOWK': 'Social Work & Sociology',
   'TECH': 'Technology',
+  'VISA': 'Visual Arts',
   'WWU': 'Walla Walla University',
 };

@@ -19,60 +19,24 @@
 
   <title>WWU Class Schedule</title>
   <link rel="manifest" href="manifest.json">
-
   <style>
-    .container {
-      width: 100vw;
-      height: 100vh;
+    body {
       display: flex;
-      /* Default Axis is X*/
       justify-content: center;
-      /* Main Axis */
       align-items: center;
-      /* Cross Axis */
+      height: 100vh;
+      margin: 0;
     }
-
     .indicator {
       width: 100px;
       height: 100px;
     }
   </style>
-
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
 </head>
-
 <body>
   <div id="loading_indicator" class="container">
     <img class="indicator" src="./loading.gif" />
   </div>
-  <script>
-    window.addEventListener('load', function (ev) {
-      // Remove loading indicator after 10 seconds if it isn't already gone
-      setTimeout(function () {
-        var loadingIndicator = document.getElementById("loading_indicator");
-        if (loadingIndicator) {
-          loadingIndicator.remove();
-        }
-      }, 10000);
-
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function (engineInitializer) {
-          engineInitializer.initializeEngine().then(function (appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
+  <script src="flutter_bootstrap.js" async></script>
 </body>
-
 </html>

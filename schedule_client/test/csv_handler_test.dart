@@ -5,8 +5,7 @@ import 'package:schedule_client/domain/data_handler.dart';
 
 void main() {
   test('List from CSV', () async {
-    final List<List<String>> copyData =
-        await DataHandler.fetchData(useCsv: true, test: true);
+    final List<List<String>> copyData = await DataHandler.fetchData(test: true);
     const List<List<String>> testCases = [
       [
         '1',
@@ -240,7 +239,7 @@ void main() {
   test('CSV from List', () async {
     //using test data
     final String csv = CSVHandler.csvFromList(
-      await DataHandler.fetchData(useCsv: false, test: true),
+      await DataHandler.fetchData(test: true),
     );
 
     const List<String> testCases = [

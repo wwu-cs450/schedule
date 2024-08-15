@@ -104,8 +104,14 @@ class Class implements Comparable {
       final Set<Instructor> currInstructors = Instructor.instances
           .where((each) => listing[23].contains(each.name))
           .toSet();
-      final Campus currCampus =
-          Campus.instances.firstWhere((each) => each.code == listing[1]);
+      late final Campus currCampus;
+      try {
+        currCampus =
+            Campus.instances.firstWhere((each) => each.code == listing[1]);
+      } catch (e) {
+        // print('Campus not found: "${listing[1]}"');
+        rethrow;
+      }
       var termYear = (int.parse(listing[2]) / 1000).truncate().toString() +
           (int.parse(listing[2]) % 2000).toString();
       var termMonth = '';

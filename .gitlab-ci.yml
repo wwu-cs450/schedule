@@ -2,17 +2,6 @@ image: "ghcr.io/cirruslabs/flutter:3.22.3"
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
-  PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
-
-cache:
-  paths:
-    - .pub-cache/
-
-install-dependencies:
-  stage: .pre
-  script:
-    - cd schedule_client
-    - flutter pub get --no-precompile
 
 build_client:
   stage: build
@@ -33,10 +22,10 @@ build_server:
     - set -e
     - cd schedule_server
     - dart pub get
-    - dart compile exe -o schedule_server --target-os linux bin/schedule_server.dart
+    - dart compile exe -o schedule --target-os linux bin/schedule_server.dart
   artifacts:
     paths:
-      - schedule_server/schedule_server
+      - schedule_server/schedule
 
 lint_client:
   stage: test
@@ -101,8 +90,8 @@ deploy:
   script:
     - sudo /bin/systemctl stop schedule.service
     - rsync -av --delete schedule_client/build/web/ /var/www/html/
-    - cp schedule_server/schedule_server /opt/schedule/
+    - cp schedule_server/schedule /opt/
     - sudo /bin/systemctl restart schedule.service
-  only:
-    - main
+  # only:
+  #   - main
   when: manual
