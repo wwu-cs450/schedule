@@ -5,18 +5,17 @@ import 'package:schedule_client/domain/subject.dart';
 void main() {
   test('constructor and accessors', () {
     final subject = Subject('CPTR', 'Computer Science');
-    assert(subject.code == 'CPTR');
-    assert(subject.name == 'Computer Science');
+    expect(subject.code, 'CPTR');
+    expect(subject.name, 'Computer Science');
   });
 
   test('instances', () {
     final subjects = Subject.instances;
-    assert(Subject.allSubjects().name == 'All Subjects');
-    assert(subjects.length == 101);
-    assert(
-      subjects.any(
-        (element) => element.code == 'CPTR',
-      ),
+    expect(Subject.allSubjects().name, 'All Subjects');
+    expect(subjects.length, 102);
+    expect(
+      subjects.any((element) => element.code == 'CPTR'),
+      true,
     );
   });
 }
