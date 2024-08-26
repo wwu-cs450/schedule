@@ -192,6 +192,7 @@ class HTMLHandler {
     'GBUS': 'BUSI',
     'GDEV': 'CPTR',
     'GEOG': 'HIST',
+    'GEOL': 'ACDM',
     'GNRL': 'NDEP',
     'GREK': 'RELB',
     'GRPH': 'TECH',

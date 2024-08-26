@@ -46,6 +46,7 @@ Map<String, String> _subjects = {
   'GCDP': 'Global Community Development Program',
   'GDEV': 'Game Development',
   'GEOG': 'World Geography',
+  'GEOL': 'Geology',
   'GNRL': 'General',
   'GREK': 'Greek',
   'GRMN': 'German',
