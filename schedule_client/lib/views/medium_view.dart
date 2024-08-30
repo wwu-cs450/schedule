@@ -13,7 +13,7 @@ class MediumView extends MainView {
         //Opacity(opacity: 0, child: invisibleBox()),
         DecoratedBox(
           decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.black),
+            border: Border.all(width: 0.5, color: Colors.white),
           ),
           position: DecorationPosition.foreground,
           child: Column(
@@ -24,8 +24,8 @@ class MediumView extends MainView {
                   children: [
                     invisibleBox(),
                     headerCell('Class #', 50),
-                    headerCell('Subject', 80.0),
-                    headerCell('Sec', 40.0),
+                    headerCell('Subject', 90.0),
+                    headerCell('Sec', 30.0),
                     headerCell('Term', 70.0),
                     headerCell('Title', 200.0),
                     headerCell('Cr', 30.0),
@@ -115,8 +115,8 @@ class MediumView extends MainView {
               children: [
                 savedBox(aClass, index, bkgndColor: aColor[0]),
                 cell('ClassNumber', aClass.getClN(), 50, aColor[0]),
-                cell('Subject', subj, 80.0, aColor[0]),
-                cell('Section', aClass.section, 40.0, aColor[0]),
+                cell('Subject', subj, 90.0, aColor[0]),
+                cell('Section', aClass.section, 30.0, aColor[0]),
                 mediumTermCell(aClass, aColor),
                 cell('Title', aClass.getTitle(), 200.0, aColor[0]),
                 cell('Credits', credits, 30.0, aColor[0]),
