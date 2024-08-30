@@ -36,7 +36,13 @@ abstract class MainView {
     return Semantics(
       label: 'Class saving checkbox.',
       hint: 'Click on this to save a class for later.',
-      child: SizedBox(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.white,
+            width: 0.5,
+          ),
+        ),
         width: 30,
         child: Checkbox(
           key: Key('Class $index save box'),
@@ -53,6 +59,10 @@ abstract class MainView {
     return Container(
       decoration: BoxDecoration(
         color: Color(palette['blue']!),
+        border: Border.all(
+          color: Colors.white,
+          width: 0.5,
+        ),
       ),
       width: 30,
     );
@@ -98,6 +108,10 @@ abstract class MainView {
         width: width,
         decoration: BoxDecoration(
           color: Color(palette['blue']!),
+          border: Border.all(
+            color: Colors.white,
+            width: 0.5,
+          ),
         ),
         child: Text(
           key: Key('${input.trim()} Header Card'),
@@ -121,35 +135,44 @@ abstract class MainView {
     const Alignment right = Alignment.centerRight;
     const Alignment left = Alignment.centerLeft;
     const Alignment center = Alignment.center;
+    final key = keyString == 'Spring' ||
+            keyString == 'Summer' ||
+            keyString == 'Fall' ||
+            keyString == 'Winter'
+        ? const Key('Term Color Cell')
+        : null;
+    final alignment = align == 'r'
+        ? right
+        : align == 'l'
+            ? left
+            : align == 'c'
+                ? center
+                : AlignmentDirectional.centerStart;
+    final boxDecoration = BoxDecoration(
+      color: Color(bkgndColor),
+      border: Border.all(
+        color: Colors.white,
+        width: 0.5,
+      ),
+    );
+    final text = Text(
+      key: Key('$keyString Cell'),
+      input,
+      style: const TextStyle(
+        color: Color(0xFF00003e),
+        fontSize: 12,
+      ),
+    );
     return Semantics(
       label: '$keyString cell.',
       hint: 'The $keyString for this row is $input.',
       child: Container(
-        key: keyString == 'Spring' ||
-                keyString == 'Summer' ||
-                keyString == 'Fall' ||
-                keyString == 'Winter'
-            ? const Key('Term Color Cell')
-            : null,
-        alignment: align == 'r'
-            ? right
-            : align == 'l'
-                ? left
-                : align == 'c'
-                    ? center
-                    : AlignmentDirectional.centerStart,
+        key: key,
+        padding: const EdgeInsets.all(5),
+        alignment: alignment,
         width: width,
-        decoration: BoxDecoration(
-          color: Color(bkgndColor),
-        ),
-        child: Text(
-          key: Key('$keyString Cell'),
-          input,
-          style: const TextStyle(
-            color: Color(0xFF00003e),
-            fontSize: 12,
-          ),
-        ),
+        decoration: boxDecoration,
+        child: text,
       ),
     );
   }
@@ -173,7 +196,12 @@ Widget tooltipCell(
         width: width,
         decoration: BoxDecoration(
           color: Color(bkgndColor),
+          border: Border.all(
+            color: Colors.white,
+            width: 0.5,
+          ),
         ),
+        padding: const EdgeInsets.all(5),
         child: Text(
           key: Key('$keyString Cell'),
           input,
