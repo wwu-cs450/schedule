@@ -214,6 +214,10 @@ class Class implements Comparable {
     return course.subject.code.toString();
   }
 
+  String getVideo() {
+    return video;
+  }
+
   String getInstructors() {
     return instructors.map((e) => e.name).join('\n');
   }

@@ -90,7 +90,7 @@ class WideView extends MainView {
                 cell('Classroom', room, 80.0, color[0]),
                 cell('Instructors', profs, 200.0, color[0]),
                 cell('Campus', aClass.getCampus(), 60.0, color[0]),
-                cell('Video', aClass.video, 50.0, color[0]),
+                cell('Video', '', 50.0, color[0], 'c', aClass.video),
                 cell('Consent', aClass.consent, 190.0, color[0]),
               ],
             ),

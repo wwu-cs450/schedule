@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:universal_html/html.dart';
 import 'package:universal_html/parsing.dart';
 
 class HTMLHandler {
@@ -140,7 +141,13 @@ class HTMLHandler {
       //SCHEDULE_PRINT we don't use it, so for yeah I will leave it blank.
       data[x][26] = '';
       //VIDEO_LINK
-      data[x][27] = '';
+      if (nodes[40].hasChildNodes()) {
+        data[x][27] =
+            (nodes[40] as TableCellElement).children[0].attributes['href'] ??
+                '';
+      } else {
+        data[x][27] = '';
+      }
       //CONSENT,  I=Instructor consent required, D=Department consent required, N=No consent needed
       if (nodes[42].text == null || nodes[42].text == '') {
         data[x][28] = 'N';
