@@ -127,20 +127,19 @@ abstract class MainView {
 
   Widget cell(
     String keyString,
-    String input,
+    String cellText,
     double width,
     int bkgndColor, [
     String? align,
+    String? videoLink = '',
   ]) {
     const Alignment right = Alignment.centerRight;
     const Alignment left = Alignment.centerLeft;
     const Alignment center = Alignment.center;
-    final key = keyString == 'Spring' ||
-            keyString == 'Summer' ||
-            keyString == 'Fall' ||
-            keyString == 'Winter'
-        ? const Key('Term Color Cell')
-        : null;
+    final key =
+        ['Spring', 'Summer1', 'Summer2', 'Fall', 'Winter'].contains(keyString)
+            ? const Key('Term Color Cell')
+            : null;
     final alignment = align == 'r'
         ? right
         : align == 'l'
@@ -155,17 +154,46 @@ abstract class MainView {
         width: 0.5,
       ),
     );
-    final text = Text(
-      key: Key('$keyString Cell'),
-      input,
-      style: const TextStyle(
-        color: Color(0xFF00003e),
-        fontSize: 12,
-      ),
-    );
+
+    final text = videoLink!.isEmpty
+        ? Text(
+            key: Key('$keyString Cell'),
+            cellText,
+            style: const TextStyle(
+              color: Color(0xFF00003e),
+              fontSize: 12,
+            ),
+          )
+        : InkWell(
+            onTap: () async {
+              final Uri url = Uri.parse(videoLink);
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: const Text(
+              'Video',
+              key: Key('Video Link Cell'), // Changed key to be unique
+              style: TextStyle(
+                color: Colors.blue, // Changed color to blue to indicate a link
+                decoration:
+                    TextDecoration.underline, // Underline to indicate a link
+                decorationColor: Colors.blue, // Set underline color to blue
+                fontSize: 12,
+                height:
+                    1.5, // Adjust height to create space between text and underline
+              ),
+              textHeightBehavior: TextHeightBehavior(
+                applyHeightToFirstAscent: false,
+                applyHeightToLastDescent: true,
+              ),
+            ),
+          );
     return Semantics(
       label: '$keyString cell.',
-      hint: 'The $keyString for this row is $input.',
+      hint: 'The $keyString for this row is $cellText.',
       child: Container(
         key: key,
         padding: const EdgeInsets.all(5),
