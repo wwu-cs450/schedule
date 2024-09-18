@@ -7,30 +7,30 @@ build_client:
   stage: build
   script:
     - set -e
-    - cd schedule_client
+    - cd client
     - flutter --version
     - flutter config --enable-web
     - flutter pub get --precompile
     - flutter build web --release
   artifacts:
     paths:
-      - schedule_client/build/web/
+      - client/build/web/
 
 build_server:
   stage: build
   script:
     - set -e
-    - cd schedule_server
+    - cd server
     - dart pub get
-    - dart compile exe -o schedule --target-os linux bin/schedule_server.dart
+    - dart compile exe -o schedule --target-os linux bin/server.dart
   artifacts:
     paths:
-      - schedule_server/schedule
+      - server/schedule
 
 lint_client:
   stage: test
   script:
-    - cd schedule_client
+    - cd client
     - flutter clean
     - flutter pub get
     - dart analyze --fatal-infos
@@ -38,7 +38,7 @@ lint_client:
 lint_server:
   stage: test
   script:
-    - cd schedule_server
+    - cd server
     - flutter clean
     - flutter pub get
     - dart analyze --fatal-infos
@@ -46,19 +46,19 @@ lint_server:
 format_client:
   stage: test
   script:
-    - cd schedule_client
+    - cd client
     - dart format --set-exit-if-changed lib/ test/
 
 format_server:
   stage: test
   script:
-    - cd schedule_server
+    - cd server
     - dart format --set-exit-if-changed lib/ test/
 
 test_client:
   stage: test
   script:
-    - cd schedule_client
+    - cd client
     - flutter --version
     - flutter test  $PUB_VARS --machine --coverage --concurrency=1
     - lcov --summary coverage/lcov.info
@@ -74,7 +74,7 @@ test_client:
 test_server:
   stage: test
   script:
-    - cd schedule_server
+    - cd server
     - dart test $PUB_VARS
   artifacts:
     name: coverage
@@ -89,8 +89,8 @@ deploy:
     - schedule
   script:
     - sudo /bin/systemctl stop schedule.service
-    - rsync -av --delete schedule_client/build/web/ /var/www/html/
-    - cp schedule_server/schedule /opt/
+    - rsync -av --delete client/build/web/ /var/www/html/
+    - cp server/schedule /opt/
     - sudo /bin/systemctl restart schedule.service
   # only:
   #   - main
