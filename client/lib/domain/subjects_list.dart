@@ -22,6 +22,7 @@ Map<String, String> _subjects = {
   'BUAD': 'Business Administration',
   'CDEV': 'Career Development',
   'CHEM': 'Chemistry',
+  'CHPL': 'Chaplaincy',
   'CIS': 'Computer Information Systems',
   'CMC': 'Christian Music Center',
   'COMM': 'Communications',

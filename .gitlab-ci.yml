@@ -1,4 +1,4 @@
-image: "ghcr.io/cirruslabs/flutter:3.24.2"
+image: "ghcr.io/cirruslabs/flutter:3.24.4"
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"

@@ -15,6 +15,7 @@ extension InitializeCampus on Campus {
     return '''
 ACA,Adventist Colleges Abroad
 ACDM,Acadeum
+AHU,AdventHealth University
 BI,Billings
 CMC,Christian Music Center
 CP,College Place
