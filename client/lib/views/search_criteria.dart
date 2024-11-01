@@ -319,9 +319,10 @@ class SearchCriteria extends ChangeNotifier {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: DropdownMenu(
-          requestFocusOnTap: false,
+          requestFocusOnTap: true,
           width: width,
           menuHeight: 500,
+          enableSearch: true,
           textStyle: const TextStyle(fontSize: 14),
           inputDecorationTheme: const InputDecorationTheme(
             border: OutlineInputBorder(
