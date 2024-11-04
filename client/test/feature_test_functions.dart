@@ -499,3 +499,33 @@ Future<void> mediumTermTest(WidgetTester tester) async {
     expect(termFlag, isTrue, reason: '  Reason: Term is incorrect.');
   }
 }
+
+Future<void> auditViewTest(WidgetTester tester) async {
+  await buildTestEnvironment(tester, 970);
+  final options = {
+    'Audit Page': find.byKey(const Key('Audit Page')).hitTestable(),
+    'Main Page': find.byKey(const Key('Main Page')).hitTestable(),
+  };
+  expect(options['Audit Page'], findsOneWidget);
+  await doTap(tester, options['Audit Page']!);
+  // Find the TextField and enter text
+  final textFieldFinder = find.byKey(const Key('Audit TextField'));
+  await tester.enterText(
+    textFieldFinder,
+    'This is pasted text',
+  );
+
+  // Tap the submit button
+  final submitButtonFinder = find.byKey(const Key('Submit Button'));
+  await tester.tap(submitButtonFinder);
+  await tester.pump();
+
+  expect(
+    find.text('This is pasted text'),
+    findsAtLeast(1),
+  );
+
+  // Verify that the TextField is scrollable
+  final scrollableFinder = find.byType(SingleChildScrollView);
+  expect(scrollableFinder, findsOneWidget);
+}
