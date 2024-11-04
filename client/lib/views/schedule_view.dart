@@ -59,6 +59,21 @@ class ScheduleView {
     );
   }
 
+  Widget _creditAmount() {
+    return Semantics(
+      label: 'Credit amount.',
+      hint: 'Displays the total number of credits.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'Total Credits: ${results.scheduleData.isEmpty ? 0 : results.scheduleData.map((aClass) => aClass.getCredits()).reduce((a, b) => a + b)}',
+          key: const Key('totalCreditsText'),
+          style: const TextStyle(fontSize: 16),
+        ),
+      ),
+    );
+  }
+
   Widget _saveData() {
     return Semantics(
       label: 'Save data button.',
@@ -177,6 +192,7 @@ class ScheduleView {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _termDropdown(),
+            _creditAmount(),
             _saveData(),
           ],
         ),
