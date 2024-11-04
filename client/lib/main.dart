@@ -98,6 +98,11 @@ class HomePage extends StatelessWidget {
                 icon: Icon(Icons.schedule),
                 label: 'Schedule',
               ),
+              NavigationDestination(
+                key: Key('Audit Page'),
+                icon: Icon(Icons.checklist),
+                label: 'Degree Audit',
+              ),
             ],
           ),
           drawer: results.sidebar,

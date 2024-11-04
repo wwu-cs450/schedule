@@ -1,4 +1,5 @@
 import 'package:client/domain/class.dart';
+import 'package:client/views/audit_view.dart';
 import 'package:client/views/main_view.dart';
 import 'package:client/views/schedule_view.dart';
 import 'package:flutter/material.dart';
@@ -190,6 +191,9 @@ class MediumView extends MainView {
             Expanded(child: mediumRowBuilder(results.savedData)),
           ],
         );
+      case 2:
+        // Audit Page
+        return const AuditView();
       default:
         return const Column(children: [Placeholder()]);
     }

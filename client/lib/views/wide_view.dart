@@ -1,4 +1,5 @@
 import 'package:client/domain/class.dart';
+import 'package:client/views/audit_view.dart';
 import 'package:client/views/main_view.dart';
 import 'package:client/views/schedule_view.dart';
 import 'package:flutter/material.dart';
@@ -145,7 +146,11 @@ class WideView extends MainView {
             Expanded(child: wideRowBuilder(results.savedData)),
           ],
         );
+      case 2:
+        // Audit Page
+        return const AuditView();
       default:
+        debugPrint('Error: Invalid index - $index');
         return const Column(children: [Placeholder()]);
     }
   }
