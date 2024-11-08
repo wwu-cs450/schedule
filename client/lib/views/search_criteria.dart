@@ -36,7 +36,6 @@ class SearchCriteria extends ChangeNotifier {
   Term scheduleTerm = Term.instances.elementAt(2);
 
   final startTimes = {
-    'Any Start Time': null,
     for (HourMinute time = HourMinute(hour: 7, minute: 0);
         time <= HourMinute(hour: 20, minute: 0);
         time = time.add(const Duration(hours: 1)))
@@ -56,7 +55,6 @@ class SearchCriteria extends ChangeNotifier {
   }
 
   final endTimes = {
-    'Any End Time': null,
     for (HourMinute time = HourMinute(hour: 7, minute: 50);
         time <= HourMinute(hour: 20, minute: 50);
         time = time.add(const Duration(hours: 1)))
@@ -116,9 +114,9 @@ class SearchCriteria extends ChangeNotifier {
         key: 'Level',
         items: {
           'Any Level': 'Any',
-          'Lower': 'Lower',
-          'Upper': 'Upper',
-          'Grad': 'Grad',
+          'Lower (100-299)': 'Lower',
+          'Upper (300-499)': 'Upper',
+          'Grad (500+)': 'Grad',
         },
         width: 200,
       ),
@@ -322,7 +320,7 @@ class SearchCriteria extends ChangeNotifier {
           requestFocusOnTap: true,
           width: width,
           menuHeight: 500,
-          enableSearch: true,
+          enableFilter: true,
           textStyle: const TextStyle(fontSize: 14),
           inputDecorationTheme: const InputDecorationTheme(
             border: OutlineInputBorder(
@@ -346,7 +344,6 @@ class SearchCriteria extends ChangeNotifier {
                     items.entries.firstWhere((entry) => entry.value == val).key,
               ),
           ],
-          initialSelection: _searchCriteria[key],
           onSelected: (value) {
             _searchCriteria[key] = value;
             doSearch();
