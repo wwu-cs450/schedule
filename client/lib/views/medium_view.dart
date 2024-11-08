@@ -64,7 +64,7 @@ class MediumView extends MainView {
       term = 'Sum $startYear';
       color = colors[1];
     } else if (term == 'Fall $startYear') {
-      term = 'Aut $startYear';
+      term = 'Fal $startYear';
       color = colors[2];
     } else if (term == 'Winter ${startYear + 1}') {
       term = 'Wtr ${startYear + 1}';

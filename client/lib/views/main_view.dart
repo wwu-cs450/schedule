@@ -7,7 +7,7 @@ abstract class MainView {
   MainView(this.startYear, this.results) {
     qtrs = [
       'Sum $startYear',
-      'Aut $startYear',
+      'Fal $startYear',
       'Wtr ${startYear + 1}',
       'Spr ${startYear + 1}',
       'Sum ${startYear + 1}',
@@ -72,7 +72,7 @@ abstract class MainView {
     String term;
     if (key == 'Sum $startYear') {
       term = 'Summer $startYear';
-    } else if (key == 'Aut $startYear') {
+    } else if (key == 'Fal $startYear') {
       term = 'Fall $startYear';
     } else if (key == 'Wtr ${startYear + 1}') {
       term = 'Winter ${startYear + 1}';

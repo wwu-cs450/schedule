@@ -66,7 +66,7 @@ class Class implements Comparable {
   6  WWU_GS
   7  SUBJECT
   8  WWU_SUM1
-  9  WWU_AUT
+  9  WWU_FAL
   10  WWU_WTR
   11  WWU_SPR
   12  WWU_SUM2
