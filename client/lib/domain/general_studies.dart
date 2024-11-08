@@ -221,4 +221,13 @@ Engaging Society (Choose one)
 - One quarter of Foreign Language (4)*
 ''';
   }
+
+  static String? findCategory(String courseName) {
+    for (final category in all) {
+      if (category.courses.any((course) => course.contains(courseName))) {
+        return category.category;
+      }
+    }
+    return null;
+  }
 }
