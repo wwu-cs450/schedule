@@ -84,6 +84,7 @@ Future<void> campusTest(
   );
 }
 
+// TODO: Why is this referencing terms?
 Future<void> levelTest(
   WidgetTester tester,
   double width, {
@@ -95,7 +96,7 @@ Future<void> levelTest(
   await dropdownTester(
     tester,
     menu: 'Level',
-    options: ['Lower', 'Upper', 'Grad'],
+    options: ['Lower (100-299)', 'Upper (300-499)', 'Grad (500+)'],
     condition: requirement,
     cellKeys: keys,
     testerWidth: width,

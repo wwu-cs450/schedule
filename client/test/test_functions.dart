@@ -154,6 +154,16 @@ Future<void> dropdownTester(
   multiExpect(ddownOpts, findsNothing);
   await doTap(tester, finders[menu]!);
   multiExpect(ddownOpts, findsOneWidget);
+  for (int i = 1; i < options.length; i++) {
+    final option = options[i];
+    final delimiter = option.contains(' ') ? ' ' : ':';
+    await tester.enterText(finders[menu]!, option.split(delimiter)[0]);
+    await tester.pumpAndSettle();
+    expect(find.text(options[i]).hitTestable(), findsOneWidget);
+    expect(find.text(options[0]).hitTestable(), findsNothing);
+    await tester.enterText(finders[menu]!, '');
+    await tester.pumpAndSettle();
+  }
   await doTap(tester, ddownOpts[2]);
   expect(ddownOpts[2], findsOneWidget);
   multiExpect(excludeIndex(ddownOpts, 2), findsNothing);
