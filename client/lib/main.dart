@@ -9,10 +9,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await DataHandler.fetchData();
   Class.instances;
   runApp(const MyApp());
-  // SemanticsBinding.instance.ensureSemantics();
 }
 
 late SearchCriteria results;
@@ -21,7 +21,6 @@ const startYear = 2024;
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     results = SearchCriteria(context);
