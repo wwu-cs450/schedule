@@ -401,7 +401,7 @@ Future<void> defaultSortTest(
       final termCellData = textInCellWithKey(each, 'Term Row');
       if (termCellData == 'Sum $startYear') {
         term = 1;
-      } else if (termCellData == 'Aut $startYear') {
+      } else if (termCellData == 'Fal $startYear') {
         term = 2;
       } else if (termCellData == 'Wtr ${startYear + 1}') {
         term = 3;
@@ -480,7 +480,7 @@ Future<void> mediumTermTest(WidgetTester tester) async {
     final termDecoration = termContainer.decoration! as BoxDecoration;
     if (number == '1408') {
       foundFlag = true;
-      if (termData == 'Aut') {
+      if (termData == 'Fal') {
         termFlag = true;
       } else {
         termFlag = false;

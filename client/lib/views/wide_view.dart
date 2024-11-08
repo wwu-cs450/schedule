@@ -16,7 +16,7 @@ class WideView extends MainView {
           headerCell('Class#', 45),
           headerCell('Subject', 50.0),
           headerCell('Sum ${startYear % 1000}', 50.0),
-          headerCell('Aut ${startYear % 1000}', 50.0),
+          headerCell('Fal ${startYear % 1000}', 50.0),
           headerCell('Wtr ${(startYear + 1) % 1000}', 50.0),
           headerCell('Spr ${(startYear + 1) % 1000}', 50.0),
           headerCell('Sum ${(startYear + 1) % 1000}', 50.0),

@@ -100,7 +100,7 @@ class HTMLHandler {
       data[x][7] = nodes[2].text?.trim() ?? '';
       //WWU_SUM1
       data[x][8] = nodes[4].text?.trim() ?? '';
-      //WWU_AUT
+      //WWU_FAL
       data[x][9] = nodes[6].text?.trim() ?? '';
       //WWU_WTR
       data[x][10] = nodes[8].text?.trim() ?? '';
