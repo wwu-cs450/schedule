@@ -500,32 +500,34 @@ Future<void> mediumTermTest(WidgetTester tester) async {
   }
 }
 
-Future<void> auditViewTest(WidgetTester tester) async {
-  await buildTestEnvironment(tester, 970);
-  final options = {
-    'Audit Page': find.byKey(const Key('Audit Page')).hitTestable(),
-    'Main Page': find.byKey(const Key('Main Page')).hitTestable(),
-  };
-  expect(options['Audit Page'], findsOneWidget);
-  await doTap(tester, options['Audit Page']!);
-  // Find the TextField and enter text
-  final textFieldFinder = find.byKey(const Key('Audit TextField'));
-  await tester.enterText(
-    textFieldFinder,
-    'This is pasted text',
-  );
+Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
+  // Step 1: Build the Test Environment
+  await buildTestEnvironment(tester, width);
 
-  // Tap the submit button
-  final submitButtonFinder = find.byKey(const Key('Submit Button'));
-  await tester.tap(submitButtonFinder);
-  await tester.pump();
+  // Step 2: Navigate to PDF Upload Page
+  // Replace 'Pdf Upload' with the actual key or finder for your Pdf Upload page if different
+  final pdfUploadButton = find.byKey(const Key('Pdf Page')).hitTestable();
+  await doTap(tester, pdfUploadButton);
 
+  // Step 3: Verify "Select PDF" Button Exists
+  final selectPdfButton = find.byKey(const Key('Select PDF Button'));
   expect(
-    find.text('This is pasted text'),
-    findsAtLeast(1),
+    selectPdfButton,
+    findsOneWidget,
+    reason: '"Select PDF" button should be present.',
   );
 
-  // Verify that the TextField is scrollable
-  final scrollableFinder = find.byType(SingleChildScrollView);
-  expect(scrollableFinder, findsOneWidget);
+  await doTap(tester, selectPdfButton);
+  expect(
+    find.text('Is this PDF your Audit or Transcript?'),
+    findsOneWidget,
+    reason: 'The confirmation prompt should appear after selecting a PDF.',
+  );
+
+  await doTap(tester, find.text('Audit'));
+  expect(
+    find.text('Mocked PDF Content'),
+    findsOneWidget,
+    reason: 'The extracted text should be displayed after selecting a PDF.',
+  );
 }

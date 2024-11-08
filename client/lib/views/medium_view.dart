@@ -1,6 +1,6 @@
 import 'package:client/domain/class.dart';
-import 'package:client/views/audit_view.dart';
 import 'package:client/views/main_view.dart';
+import 'package:client/views/pdf_upload_page.dart';
 import 'package:client/views/schedule_view.dart';
 import 'package:flutter/material.dart';
 
@@ -192,8 +192,8 @@ class MediumView extends MainView {
           ],
         );
       case 2:
-        // Audit Page
-        return const AuditView();
+        // Pdf Upload Page
+        return const PdfView();
       default:
         return const Column(children: [Placeholder()]);
     }

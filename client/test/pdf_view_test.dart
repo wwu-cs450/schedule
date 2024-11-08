@@ -8,7 +8,7 @@ void main() {
     await DataHandler.fetchData(test: true);
   });
 
-  testWidgets('Audit Page', (WidgetTester tester) async {
-    await auditViewTest(tester);
+  testWidgets('Pdf Page', (WidgetTester tester) async {
+    await pdfUploadPageTest(tester, 2370);
   });
 }

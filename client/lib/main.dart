@@ -99,9 +99,9 @@ class HomePage extends StatelessWidget {
                 label: 'Schedule',
               ),
               NavigationDestination(
-                key: Key('Audit Page'),
+                key: Key('Pdf Page'),
                 icon: Icon(Icons.checklist),
-                label: 'Degree Audit',
+                label: 'PDF Upload',
               ),
             ],
           ),
