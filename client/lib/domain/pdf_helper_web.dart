@@ -19,6 +19,7 @@ class PdfHelper {
   ) async {
     final result =
         await promiseToFuture<String>(_extractTextFromPDF(arrayBuffer));
+
     return result;
   }
 
