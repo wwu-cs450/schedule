@@ -194,6 +194,14 @@ class Class implements Comparable {
     }
   }
 
+  static List<String> getAllClassrooms() {
+    final Set<String> classrooms = {};
+    for (final classInstance in _instances) {
+      classrooms.add(classInstance.classroom);
+    }
+    return classrooms.toList();
+  }
+
   void changeEnrollmentStatus() {
     isOpenForEnrollment = !isOpenForEnrollment;
   }
