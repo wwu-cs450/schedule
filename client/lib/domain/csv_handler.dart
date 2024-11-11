@@ -19,17 +19,23 @@ class CSVHandler {
       return _data;
     }
     _usingTest = test;
-    final String csvFile = test
-        ? await getSample()
-        : await html.HttpRequest.getString('assets/class_data.csv');
-    _data = const CsvToListConverter().convert<String>(
-      csvFile,
-      fieldDelimiter: ',',
-      eol: '\n',
-      convertEmptyTo: '',
-      shouldParseNumbers: false,
-    );
-    return _data;
+    try {
+      final String csvFile = test
+          ? await getSample()
+          : await html.HttpRequest.getString('assets/class_data.csv');
+      _data = const CsvToListConverter().convert<String>(
+        csvFile,
+        fieldDelimiter: ',',
+        eol: '\n',
+        convertEmptyTo: '',
+        shouldParseNumbers: false,
+      );
+      return _data;
+    } catch (e) {
+      throw Exception(
+        'Failed to load csv file: $e \n Remember to run the server',
+      );
+    }
   }
 
   // returns a csv from a list of lists of strings

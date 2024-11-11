@@ -532,3 +532,9 @@ Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
     reason: 'The extracted text should be displayed after selecting a PDF.',
   );
 }
+
+Future<void> errorViewTest(WidgetTester tester) async {
+  main();
+  await buildTestEnvironment(tester, 970);
+  expect(find.textContaining('Failed to load csv file:'), findsOneWidget);
+}

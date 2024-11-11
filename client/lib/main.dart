@@ -1,5 +1,6 @@
 import 'package:client/domain/class.dart';
 import 'package:client/domain/data_handler.dart';
+import 'package:client/views/error_view.dart';
 import 'package:client/views/medium_view.dart';
 import 'package:client/views/search_criteria.dart';
 import 'package:client/views/small_view.dart';
@@ -10,16 +11,22 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DataHandler.fetchData();
-  Class.instances;
-  runApp(const MyApp());
+  String? errorMessage;
+  try {
+    await DataHandler.fetchData();
+    Class.instances;
+  } catch (e) {
+    errorMessage = e.toString();
+  }
+  runApp(MyApp(errorMessage: errorMessage));
 }
 
 late SearchCriteria results;
 const startYear = 2024;
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, this.errorMessage});
+  final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,12 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const HomePage(title: 'WWU Class Schedule'),
+        home: errorMessage == null
+            ? const HomePage(title: 'WWU Class Schedule')
+            : Scaffold(
+                appBar: AppBar(title: const Text('Error')),
+                body: ErrorDisplay(errorMessage: errorMessage!),
+              ),
       ),
     );
   }
