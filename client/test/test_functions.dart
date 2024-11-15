@@ -154,6 +154,14 @@ Future<void> dropdownTester(
   multiExpect(ddownOpts, findsNothing);
   await doTap(tester, finders[menu]!);
   multiExpect(ddownOpts, findsOneWidget);
+  /*
+  Flutter has not yet implemented the fix for the issue mentioned in #129.
+  This test will fail until the issue is resolved.
+
+  await tester.enterText(finders[menu]!, ' z');
+  await tester.pumpAndSettle();
+  expect(find.text(' z').hitTestable(), findsNothing);
+  */
   for (int i = 1; i < options.length; i++) {
     final option = options[i];
     final delimiter = option.contains(' ') ? ' ' : ':';
