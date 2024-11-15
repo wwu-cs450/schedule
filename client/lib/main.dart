@@ -95,6 +95,7 @@ class HomePage extends StatelessWidget {
             },
           ),
           bottomNavigationBar: NavigationBar(
+            selectedIndex: results.selectedIndex,
             onDestinationSelected: (index) {
               results.selectedIndex = index;
             },
