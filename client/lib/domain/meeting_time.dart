@@ -99,6 +99,18 @@ class MeetingTime {
   // public instance variables
   bool isARR = false;
 
+  // Add the overlaps method
+  bool overlaps(MeetingTime other) {
+    for (final _AMeetingTime time in _meetingTimes) {
+      for (final _AMeetingTime otherTime in other._meetingTimes) {
+        if (time.overlaps(otherTime)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   // private methods
   // throw FormatException where applicable
 
@@ -475,6 +487,13 @@ class _AMeetingTime implements Comparable<_AMeetingTime> {
 
   // get duration between start and stop
   Duration get duration => end.durationFrom(start);
+
+  // check if two meeting times overlap
+  bool overlaps(_AMeetingTime other) =>
+      day == other.day &&
+      ((start >= other.start && start < other.end) ||
+          (end > other.start && end <= other.end) ||
+          (start <= other.start && end >= other.end));
 
   @override
   // necessary for sorting in list
