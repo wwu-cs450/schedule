@@ -242,6 +242,13 @@ class SearchCriteria extends ChangeNotifier {
             child: Checkbox(
               key: Key('$key Checkbox'),
               value: _searchCriteria[key],
+              fillColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return const Color(0xFF656950); // Color when selected
+                }
+                return Colors.white; // White background when unselected
+              }),
+              checkColor: Colors.white, // Ensures checkmark is visible on white
               onChanged: (bool? value) {
                 _searchCriteria[key] = value!;
                 doSearch();
