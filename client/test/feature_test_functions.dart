@@ -7,6 +7,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:client/main.dart';
+import 'package:client/views/audit_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -502,15 +503,11 @@ Future<void> mediumTermTest(WidgetTester tester) async {
 }
 
 Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
-  // Step 1: Build the Test Environment
   await buildTestEnvironment(tester, width);
 
-  // Step 2: Navigate to PDF Upload Page
-  // Replace 'Pdf Upload' with the actual key or finder for your Pdf Upload page if different
   final pdfUploadButton = find.byKey(const Key('Pdf Page')).hitTestable();
   await doTap(tester, pdfUploadButton);
 
-  // Step 3: Verify "Select PDF" Button Exists
   final selectPdfButton = find.byKey(const Key('Select PDF Button'));
   expect(
     selectPdfButton,
@@ -527,9 +524,9 @@ Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
 
   await doTap(tester, find.text('Audit'));
   expect(
-    find.text('Mocked PDF Content'),
+    find.text('No sections found.'),
     findsOneWidget,
-    reason: 'The extracted text should be displayed after selecting a PDF.',
+    reason: 'The "No sections found" message should appear.',
   );
 }
 
@@ -537,4 +534,27 @@ Future<void> errorViewTest(WidgetTester tester) async {
   main();
   await buildTestEnvironment(tester, 970);
   expect(find.textContaining('Failed to load csv file:'), findsOneWidget);
+}
+
+Future<void> auditViewParse(WidgetTester tester, String extractedText) async {
+  await buildTestEnvironment(tester, 970);
+  await tester.pumpWidget(
+    MaterialApp(
+      home: AuditPage(extractedText: extractedText),
+    ),
+  );
+
+  // Confirm each expected header text is found exactly once
+  expect(
+    find.text('IMPORTANT DEGREE AUDIT INFORMATION (RG 584)'),
+    findsOneWidget,
+  );
+  expect(
+    find.text('FALL THROUGH AND INSUFFICIENT (RG 633)'),
+    findsOneWidget,
+  );
+  expect(
+    find.text('OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)'),
+    findsOneWidget,
+  );
 }
