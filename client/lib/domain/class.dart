@@ -206,6 +206,21 @@ class Class implements Comparable {
     isOpenForEnrollment = !isOpenForEnrollment;
   }
 
+  // new method get emptyclassrooms takes one arguement of day, hour and minute and returns classrooms that are empty at that time
+  static List<String> getAvailableClassrooms(MeetingTime schedule) {
+    final List<String> availableClassrooms = [];
+    final Set<String> occupiedClassrooms = _instances
+        .where((classInstance) => classInstance.schedule.overlaps(schedule))
+        .map((classInstance) => classInstance.classroom)
+        .toSet();
+    for (final classroom in getAllClassrooms()) {
+      if (!occupiedClassrooms.contains(classroom)) {
+        availableClassrooms.add(classroom);
+      }
+    }
+    return availableClassrooms;
+  }
+
   void updateWaitlist(String updateType) {
     if (updateType == 'add') {
       waitlist = waitlist + 1;
