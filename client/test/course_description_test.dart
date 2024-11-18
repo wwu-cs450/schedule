@@ -20,5 +20,39 @@ Computer Science
 
       expect(getCourseDescription(text), expectedDescription);
     });
+
+    test('should return course description for another course', () {
+      const text = '''
+CPTR 141 Fundamentals of Programming I
+Introduction to computer programming in-the-small using the Python language for students with little or no experience. Students will write, debug, and execute programs utilizing variables, flow control (sequencing, selection, and repetition), file I/O, lists, dictionaries, and functions.
+Credits
+4
+Distribution
+Computer Science
+''';
+
+      const expectedDescription =
+          'Introduction to computer programming in-the-small using the Python language for students with little or no experience. Students will write, debug, and execute programs utilizing variables, flow control (sequencing, selection, and repetition), file I/O, lists, dictionaries, and functions.';
+
+      expect(getCourseDescription(text), expectedDescription);
+    });
+
+    test('should return course description for a course with prerequisites',
+        () {
+      const text = '''
+CPTR 352 Operating Systems
+Rigorous introduction to the principles and practice of modern operating systems. Students will be able to explain the process and thread models used in modern operating systems, implement and utilize synchronization primitives, compare and contrast strategies for handling deadlock and resource scheduling, explain modern memory organization and management techniques, and describe the structure of modern file systems.
+Credits
+4
+Prerequisite
+CPTR 242, CPTR 280
+Distribution
+Computer Science
+''';
+
+      const expectedDescription =
+          'Rigorous introduction to the principles and practice of modern operating systems. Students will be able to explain the process and thread models used in modern operating systems, implement and utilize synchronization primitives, compare and contrast strategies for handling deadlock and resource scheduling, explain modern memory organization and management techniques, and describe the structure of modern file systems.';
+      expect(getCourseDescription(text), expectedDescription);
+    });
   });
 }
