@@ -154,14 +154,9 @@ Future<void> dropdownTester(
   multiExpect(ddownOpts, findsNothing);
   await doTap(tester, finders[menu]!);
   multiExpect(ddownOpts, findsOneWidget);
-  /*
-  Flutter has not yet implemented the fix for the issue mentioned in #129.
-  This test will fail until the issue is resolved.
-
-  await tester.enterText(finders[menu]!, ' z');
+  await tester.enterText(finders[menu]!, 'This is not an entry.');
   await tester.pumpAndSettle();
-  expect(find.text(' z').hitTestable(), findsNothing);
-  */
+  expect(find.text('This is not an entry.').hitTestable(), findsOneWidget);
   for (int i = 1; i < options.length; i++) {
     final option = options[i];
     final delimiter = option.contains(' ') ? ' ' : ':';
@@ -169,9 +164,9 @@ Future<void> dropdownTester(
     await tester.pumpAndSettle();
     expect(find.text(options[i]).hitTestable(), findsOneWidget);
     expect(find.text(options[0]).hitTestable(), findsNothing);
-    await tester.enterText(finders[menu]!, '');
-    await tester.pumpAndSettle();
   }
+  await tester.enterText(finders[menu]!, '');
+  await tester.pumpAndSettle();
   await doTap(tester, ddownOpts[2]);
   expect(ddownOpts[2], findsOneWidget);
   multiExpect(excludeIndex(ddownOpts, 2), findsNothing);
