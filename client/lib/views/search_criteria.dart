@@ -98,16 +98,19 @@ class SearchCriteria extends ChangeNotifier {
         items: {
           for (final e in Department.instances) '${e.code} ${e.name}': e,
         },
+        selection: null,
         width: 200,
       ),
       menu(
         key: 'Subject',
         items: {for (final e in Subject.instances) '${e.code} ${e.name}': e},
+        selection: null,
         width: 200,
       ),
       menu(
         key: 'Campus',
         items: {for (final e in Campus.instances) '${e.code} ${e.name}': e},
+        selection: null,
         width: 200,
       ),
       menu(
@@ -118,12 +121,14 @@ class SearchCriteria extends ChangeNotifier {
           'Upper (300-499)': 'Upper',
           'Grad (500+)': 'Grad',
         },
+        selection: null,
         width: 200,
       ),
       textForm(key: 'Instructor', width: 100),
       menu(
         key: 'Term',
         items: {for (final e in Term.instances) e.name: e},
+        selection: null,
         width: 200,
       ),
       menu(
@@ -137,11 +142,12 @@ class SearchCriteria extends ChangeNotifier {
           '4 Cr': '4',
           '>4 Cr': '>4',
         },
+        selection: null,
         width: 200,
       ),
       selectWeekdays(),
-      menu(key: 'Start Time', items: startTimes, width: 200),
-      menu(key: 'End Time', items: endTimes, width: 200),
+      menu(key: 'Start Time', items: startTimes, selection: null, width: 200),
+      menu(key: 'End Time', items: endTimes, selection: null, width: 200),
       selector(key: 'GS'),
       selector(key: 'Status'),
     ];
@@ -318,6 +324,7 @@ class SearchCriteria extends ChangeNotifier {
     required String key,
     required Map<String, dynamic> items,
     required double width,
+    required dynamic selection,
   }) {
     return Semantics(
       hint: 'Select a $key from the dropdown menu.',
@@ -351,9 +358,25 @@ class SearchCriteria extends ChangeNotifier {
                     items.entries.firstWhere((entry) => entry.value == val).key,
               ),
           ],
+          initialSelection: selection,
           onSelected: (value) {
             _searchCriteria[key] = value;
             doSearch();
+          },
+          /*
+          The searchCallback is just a temporary patch until Flutter fixes the
+          issue mentioned in #129
+          */
+          searchCallback: (entries, query) {
+            if (query.isEmpty) {
+              return null;
+            }
+            final int index = entries.indexWhere(
+              (DropdownMenuEntry<dynamic> entry) =>
+                  entry.label.toLowerCase().contains(query.toLowerCase()),
+            );
+
+            return index != -1 ? index : null;
           },
         ),
       ),
