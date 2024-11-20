@@ -125,6 +125,7 @@ void main() {
     );
     expect(hasStudents.currEnrollment, 62);
   });
+
   test('getAvailableClassrooms', () {
     final MeetingTime schedule = MeetingTime.fromString('MWF 2:00PM-3:00PM');
     final List<String> availableClassrooms =
