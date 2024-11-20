@@ -285,7 +285,7 @@ class SearchCriteria extends ChangeNotifier {
               filled: true,
               fillColor: const Color.fromARGB(255, 247, 246, 246),
               labelText: key,
-              labelStyle: const TextStyle(fontSize: 12),
+              labelStyle: const TextStyle(fontSize: 14),
             ),
             initialValue: key == 'Class Number'
                 ? _searchCriteria[key] == 0
