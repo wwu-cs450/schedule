@@ -196,7 +196,7 @@ class Class implements Comparable {
 
   static List<String> getAllClassrooms() {
     final Set<String> classrooms = {};
-    for (final classInstance in _instances) {
+    for (final classInstance in instances) {
       classrooms.add(classInstance.classroom);
     }
     return classrooms.toList();
@@ -209,7 +209,7 @@ class Class implements Comparable {
   // new method get emptyclassrooms takes one arguement of day, hour and minute and returns classrooms that are empty at that time
   static List<String> getAvailableClassrooms(MeetingTime schedule) {
     final List<String> availableClassrooms = [];
-    final Set<String> occupiedClassrooms = _instances
+    final Set<String> occupiedClassrooms = instances
         .where((classInstance) => classInstance.schedule.overlaps(schedule))
         .map((classInstance) => classInstance.classroom)
         .toSet();
