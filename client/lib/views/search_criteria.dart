@@ -33,7 +33,27 @@ class SearchCriteria extends ChangeNotifier {
 
   bool scheduleDownloaded = false;
 
-  Term scheduleTerm = Term.instances.elementAt(2);
+  Term? _scheduleTerm;
+  Term get scheduleTerm {
+    if (_scheduleTerm != null) {
+      return _scheduleTerm!;
+    }
+    if (scheduleData.isNotEmpty) {
+      return getTermForSchedule(scheduleData);
+    }
+    return Term.instances.elementAt(3);
+  }
+
+  set scheduleTerm(Term term) {
+    _scheduleTerm = term;
+  }
+
+  Term getTermForSchedule(List<Class> scheduleData) {
+    if (scheduleData.isNotEmpty) {
+      return scheduleData.first.term;
+    }
+    return Term.instances.elementAt(3);
+  }
 
   final startTimes = {
     for (HourMinute time = HourMinute(hour: 7, minute: 0);
