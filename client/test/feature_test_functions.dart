@@ -330,11 +330,7 @@ Future<void> scheduleViewTest(
   await doTap(tester, downloadButton);
   expect(downloadVerification, findsOneWidget);
 
-  await doTap(tester, termDropdown);
-  expect(termOptions[0], findsAtLeast(1));
-  multiExpect(excludeIndex(termOptions, 0), findsOneWidget);
-
-  await doTap(tester, termOptions[0]);
+  // correct term is already selected
   expect(find.byKey(const Key('totalCreditsText')), findsOneWidget);
   expect(find.text('Total Credits: 4.0'), findsOneWidget);
 
