@@ -6,6 +6,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'dart:async';
+
 import 'package:client/main.dart';
 import 'package:client/views/audit_view.dart';
 import 'package:flutter/material.dart';
@@ -527,7 +529,7 @@ Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
 }
 
 Future<void> errorViewTest(WidgetTester tester) async {
-  main();
+  unawaited(main()); // TODO: Change to awaited
   await buildTestEnvironment(tester, 970);
   expect(find.textContaining('Failed to load csv file:'), findsOneWidget);
 }
