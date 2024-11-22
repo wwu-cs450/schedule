@@ -1,5 +1,6 @@
 import 'package:client/domain/class.dart';
 import 'package:client/main.dart';
+import 'package:client/views/bulletin_pdf_page.dart';
 import 'package:client/views/main_view.dart';
 import 'package:client/views/pdf_upload_page.dart';
 import 'package:client/views/schedule_view.dart';
@@ -381,6 +382,9 @@ class SmallView extends MainView {
       case 2:
         // Audit Page
         return const PdfView();
+      case 3:
+        // Bulletin Pdf Page
+        return const BulletinPdfView();
       default:
         return const Column(children: [Placeholder()]);
     }

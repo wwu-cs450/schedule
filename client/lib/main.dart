@@ -115,6 +115,11 @@ class HomePage extends StatelessWidget {
                 icon: Icon(Icons.checklist),
                 label: 'PDF Upload',
               ),
+              NavigationDestination(
+                key: Key('Bulletin Page'),
+                icon: Icon(Icons.checklist),
+                label: 'Bulletin Scanner',
+              ),
             ],
           ),
           drawer: results.sidebar,
