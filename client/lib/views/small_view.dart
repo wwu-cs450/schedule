@@ -80,8 +80,11 @@ class SmallView extends MainView {
                     const SizedBox(width: 2),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 15.0),
+                        padding: const EdgeInsets.all(10),
                         child: Column(
+                          mainAxisAlignment:
+                              MainAxisAlignment.center, // Center vertically
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               maxLines: 2,
@@ -93,7 +96,16 @@ class SmallView extends MainView {
                               onPressed: () => {
                                 results.updateInfo(index),
                               },
-                              child: const Text('Tap for more details.'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF656950),
+                              ),
+                              child: const Text(
+                                'Tap for more details',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ],
                         ),
