@@ -1,5 +1,6 @@
 // File: lib/views/audit_view.dart
 
+import 'package:client/domain/requirement_class.dart';
 import 'package:flutter/material.dart';
 
 class AuditPage extends StatelessWidget {
@@ -7,18 +8,16 @@ class AuditPage extends StatelessWidget {
   final String extractedText;
 
   /// Extracts sections from the provided [extractedText] based on headers.
-  /// Returns a list of [Section] objects containing headers and their contents.
-  List<Section> extractSections(String extractedText) {
+  /// Returns a list of [SimpleSection] objects containing headers and their contents.
+  List<SimpleSection> extractSections(String extractedText) {
     final RegExp headerRegex = RegExp(
       r'((?:[A-Z]{3,}|GS)[A-Z\s&]*)\s*\((?:RG|R)\s*\d+(?:\s*L\d+)?\)',
       caseSensitive: true,
     );
 
     final matches = headerRegex.allMatches(extractedText).toList();
-    final List<Section> sections = [];
+    final List<SimpleSection> sections = [];
     final List<String> headers = [];
-
-    // Print total matches
 
     for (var i = 0; i < matches.length; i++) {
       final match = matches[i];
@@ -40,16 +39,114 @@ class AuditPage extends StatelessWidget {
       final content = cleanContent(
         extractedText.substring(headerIndex, nextHeaderIndex).trim(),
       );
-      sections.add(Section(header: header, content: content));
+      sections.add(SimpleSection(header: header, content: content));
     }
 
     return sections;
   }
 
+  static Requirement parseOverallUndergraduateRequirements(
+    SimpleSection section,
+  ) {
+    final List<RequirementDetail> requirements = [];
+    String status = 'Not Satisfied';
+
+    String tempString = section.content;
+
+    // Regular expression to match the initial part of the string
+    final RegExp initialPartRegex = RegExp(
+      r'^(OVERALL UNDERGRADUATE REQUIREMENTS \(RG \d+\) (Satisfied|Not Satisfied): OVERALL UNDERGRADUATE REQUIREMENTS )',
+      caseSensitive: false,
+    );
+
+    // Match the initial part of the string
+    final match = initialPartRegex.firstMatch(tempString);
+
+    if (match != null) {
+      // Set the status based on the captured value
+      status = match.group(2)!;
+
+      // Remove the matched part from the tempString
+      tempString = tempString.substring(match.end).trim();
+    }
+
+    // Regular expression to match the "In Progress Courses" part
+    final RegExp inProgressRegex = RegExp(
+      r'(In Progress Courses \([A-Za-z0-9 ]+\) (Satisfied|Not Satisfied): In progress courses)',
+      caseSensitive: false,
+    );
+
+    // Match the "In Progress Courses" part
+    final inProgressMatch = inProgressRegex.firstMatch(tempString);
+
+    if (inProgressMatch != null) {
+      // Set the status based on the captured value
+      final inProgressStatus = RequirementDetail(
+        description: 'In Progress Courses',
+        unitsRequired: 0.0,
+        unitsCompleted: 0.0,
+        unitsNeeded: 0.0,
+        status: inProgressMatch.group(2) == 'Satisfied',
+      );
+      // Trim the tempString to remove everything after the "In Progress Courses" part
+      tempString = tempString.substring(0, inProgressMatch.end).trim();
+      requirements.add(inProgressStatus);
+    }
+
+    final RegExp requirementDetailRegex = RegExp(
+      r"([A-Za-z0-9 ]+? \([A-Za-z0-9 ]+\)) (Satisfied|Not Satisfied): [A-Za-z0-9\'\s]+\.? · Units: ((\d+\.\d+) required, )?(\d+\.\d+) used(, (\d+\.\d+) needed)?",
+      caseSensitive: false,
+    );
+
+    // Match each requirement detail
+    final matches = requirementDetailRegex.allMatches(tempString);
+
+    for (final match in matches) {
+      final description = match.group(1)!.trim();
+      final status = match.group(2)!.trim() == 'Satisfied';
+      final unitsRequired =
+          match.group(3) != null ? double.parse(match.group(4)!.trim()) : 0.0;
+      final unitsCompleted = double.parse(match.group(5)!.trim());
+      final unitsNeeded =
+          match.group(6) != null ? double.parse(match.group(7)!.trim()) : 0.0;
+
+      final requirementDetail = RequirementDetail(
+        description: description,
+        unitsRequired: unitsRequired,
+        unitsCompleted: unitsCompleted,
+        unitsNeeded: unitsNeeded,
+        status: status,
+      );
+
+      requirements.add(requirementDetail);
+    }
+
+    return Requirement(
+      title: section.header,
+      status: status,
+      details: requirements,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Extract the sections with titles
-    final List<Section> sections = extractSections(extractedText);
+    final List<SimpleSection> sections = extractSections(extractedText);
+    if (sections.isEmpty) {
+      return const Center(
+        child: Text(
+          'No sections found.',
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    }
+    final Requirement overallUndergraduateRequirements =
+        parseOverallUndergraduateRequirements(
+      sections.firstWhere(
+        (section) =>
+            section.header == 'OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)',
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -57,56 +154,104 @@ class AuditPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: sections.isNotEmpty
-            ? ListView.builder(
-                itemCount: sections.length,
-                itemBuilder: (context, index) {
-                  final section = sections[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 16.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Display the header
-                        SelectableText(
-                          key: Key('section_header'),
-                          section.header,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        // Display the content
-                        SelectableText(
-                          section.content,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              )
-            : const Center(
-                child: Text(
-                  'No sections found.',
-                  style: TextStyle(fontSize: 16),
+        child: ListView.builder(
+          itemCount: sections.length + 1, // Increase itemCount by 1
+          itemBuilder: (context, index) {
+            if (index < sections.length) {
+              final section = sections[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
                 ),
-              ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Display the header
+                    SelectableText(
+                      key: Key('section_header_$index'),
+                      section.header,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    // Display the content
+                    SelectableText(
+                      section.content,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              // Display the overall undergraduate requirements section
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Display the header
+                    SelectableText(
+                      key: Key(
+                        'overall_undergraduate_requirements_header',
+                      ),
+                      overallUndergraduateRequirements.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    // Display the requirements
+                    ...overallUndergraduateRequirements.details.map(
+                      (requirement) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              requirement.description,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: SelectableText(
+                                'Required: ${requirement.unitsRequired}, Completed: ${requirement.unitsCompleted}, Needed: ${requirement.unitsNeeded}, Status: ${requirement.status ? 'Satisfied' : 'Not Satisfied'}',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
 }
 
 String cleanContent(String content) {
-  return content.replaceAll(RegExp(r'\s+'), ' ').trim();
+  var updatedContent = '';
+  updatedContent = content.replaceAll(RegExp(r'\s+'), ' ').trim();
+  updatedContent = updatedContent.replaceAll(RegExp(r' Page \d+ of \d+'), '');
+  return updatedContent;
 }
 
-class Section {
-  Section({required this.header, required this.content});
+class SimpleSection {
+  SimpleSection({required this.header, required this.content});
   final String header;
   final String content;
 }

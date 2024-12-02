@@ -1,11 +1,5 @@
 import 'package:client/domain/course.dart';
 
-enum RequirementType {
-  minTotal,
-  minUpper,
-  min4Yr,
-}
-
 class Requirement {
   Requirement({
     required this.title,
@@ -13,8 +7,13 @@ class Requirement {
     required this.details,
   });
   final String title;
-  final bool status;
+  final String status;
   final List<RequirementDetail> details;
+
+  @override
+  String toString() {
+    return 'Requirement(title: $title, status: $status, details: $details)';
+  }
 }
 
 class RequirementDetail {
@@ -22,12 +21,19 @@ class RequirementDetail {
     required this.description,
     required this.unitsRequired,
     required this.unitsCompleted,
+    required this.unitsNeeded,
     required this.status,
   });
   final String description;
   final double unitsRequired;
   final double unitsCompleted;
+  final double unitsNeeded;
   final bool status;
+
+  @override
+  String toString() {
+    return 'RequirementDetail(description: $description, unitsRequired: $unitsRequired, unitsCompleted: $unitsCompleted, status: $status)';
+  }
 }
 
 class Section {
@@ -39,4 +45,9 @@ class Section {
   final String name;
   final List<Requirement> requirements;
   final List<Course> courses;
+
+  @override
+  String toString() {
+    return 'Section(name: $name, requirements: $requirements, courses: $courses)';
+  }
 }

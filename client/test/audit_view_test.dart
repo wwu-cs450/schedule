@@ -1,4 +1,6 @@
 import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/requirement_class.dart';
+import 'package:client/views/audit_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'feature_test_functions.dart';
@@ -37,5 +39,51 @@ Satisfied:   OVERALL UNDERGRADUATE REQUIREMENTS 192 units to Graduate (R9 L11)  
 minimum of 192 total units.  ·   Units:   192.00 required,
 ''';
     await auditViewParse(tester, extractedText);
+  });
+
+  testWidgets('Pare Overall Undergraduate Requirements',
+      (WidgetTester tester) async {
+    var extractedText = '''
+OVERALL UNDERGRADUATE REQUIREMENTS (RG 639) Not Satisfied: OVERALL UNDERGRADUATE
+REQUIREMENTS 192 units to Graduate (R9 L11) Not Satisfied: Complete a minimum of 192 total units.
+· Units: 192.00 required, 94.00 used, 98.00 needed 60 Upper Division units (R9 L20) Not Satisfied:
+Complete a minimum of 60 upper division units. · Units: 60.00 required, 8.00 used, 52.00 needed 96
+unit minimum from 4 year institutions (R9 L30) Not Satisfied: Bachelor's degrees need a minimum of
+96 units from 4 year institutions. · Units: 96.00 required, 94.00 used, 2.00 needed 9 allowable
+units from DRMA 252 (R9 L40) Satisfied: A maximum of 9 units in DRMA 252 may apply to degree
+requirements. · Units: 0.00 used In Progress Courses (R9 L50) Page 2 of 7 Not Satisfied: In
+progress courses Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Fall 2024
+BIOL 216 Intro to Biological Rsrch I-WD 3.00 IP Wtr 2025 BIOL 250 Biostatistics 4.00 IP Fall 2024
+CHEM 141 General Chemistry 3.00 IP Wtr 2025 CHEM 142 General Chemistry 3.00 IP Fall 2024 CHEM 144
+General Chemistry Lab 1.00 IP Wtr 2025 CHEM 145 General Chemistry Lab 1.00 IP Fall 2024 PEAC 186
+Athletics: Basketball 1.00 IP Fall 2024 PHYS 211 Gen Physics 3.00 IP Wtr 2025 PHYS 212 Gen Physics
+3.00 IP Fall 2024 PHYS 214 Gen Physics Lab 1.00 IP Wtr 2025 PHYS 215 Gen Physics Lab 1.00 IP
+Degree Application (R9 L55) Not Satisfied: Follow the 12 Clicks to Graduation
+(wallawalla.edu/degree-app) instructions to submit your degree application. (This section of your
+degree audit will be marked "Satisfied" once your application has been approved by Academic
+Records.) Residency Requirement At least 40 of the last 45 units must be taken at Walla Walla
+University.
+''';
+    extractedText = cleanContent(extractedText);
+    final section = SimpleSection(
+      header: 'OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)',
+      content: extractedText,
+    );
+    final Requirement overallUnderGrad =
+        AuditPage.parseOverallUndergraduateRequirements(section);
+
+    expect(
+      overallUnderGrad.title,
+      equals('OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)'),
+    );
+    expect(overallUnderGrad.details.length, equals(5));
+    expect(
+      overallUnderGrad.details[2].description,
+      equals('60 Upper Division units (R9 L20)'),
+    );
+    expect(
+      overallUnderGrad.details[4].status,
+      equals(true),
+    );
   });
 }
