@@ -1,4 +1,5 @@
 import 'package:client/domain/class.dart';
+import 'package:client/domain/general_studies.dart';
 import 'package:client/views/bulletin_pdf_page.dart';
 import 'package:client/views/main_view.dart';
 import 'package:client/views/pdf_upload_page.dart';
@@ -46,7 +47,9 @@ class WideView extends MainView {
     int index,
   ) {
     final color = getColor(index);
-    final gs = aClass.course.isGeneralStudies ? 'GS' : ' ';
+    final gs = aClass.course.isGeneralStudies
+        ? GeneralStudies.findCategory(aClass.course.title) ?? 'GS'
+        : ' ';
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
     final room = aClass.classroom;
     final schedule = aClass.schedule.toString(is24hr: false);
@@ -80,6 +83,13 @@ class WideView extends MainView {
                 cell('Spring', getTerm(aClass, qtrs[3]), 50.0, color[4]),
                 cell('Summer2', getTerm(aClass, qtrs[4]), 50.0, color[1]),
                 cell('Section', aClass.section, 40.0, color[0], 'c'),
+                MouseRegion(
+                  onEnter: (_) {},
+                  child: Tooltip(
+                    message: gs, // Show the GS category on hover
+                    child: cell('GS', gs, 30.0, color[0]),
+                  ),
+                ),
                 cell('GS', gs, 30.0, color[0]),
                 cell('Cr', credits, 40.0, color[0]),
                 cell('Title', aClass.getTitle(), 300.0, color[0]),
