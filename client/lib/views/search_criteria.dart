@@ -25,6 +25,7 @@ class SearchCriteria extends ChangeNotifier {
     'Credits': 'Any',
     'GS': false,
     'Status': false,
+    'Free Classrooms': false,
     'Instructor': '',
     'Schedule': <String>[],
     'Start Time': null,
@@ -170,6 +171,7 @@ class SearchCriteria extends ChangeNotifier {
       menu(key: 'End Time', items: endTimes, selection: null, width: 200),
       selector(key: 'GS'),
       selector(key: 'Status'),
+      selector(key: 'Free Classrooms'),
     ];
   }
 
