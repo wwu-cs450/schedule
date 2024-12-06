@@ -128,6 +128,47 @@ class AuditPage extends StatelessWidget {
     );
   }
 
+  static List<SimpleSection> parseNewGSFormat(String content) {
+    final RegExp generalStudyRegex = RegExp(
+      r'(GENERAL STUDIES \(RG 582\)) ([A-za-z ]+?):',
+      caseSensitive: false,
+    );
+    final match = generalStudyRegex.firstMatch(content);
+    //search the match for the string 'Not Satified' or 'Satisfied'
+
+    final RegExp requirementDetailRegex = RegExp(
+      r'GS:? ([A-Za-z ]+? (\(R ?\d+\) )?)Overall Requirement (Satisfied|Not Satisfied):',
+      caseSensitive: false,
+    );
+
+    final List<SimpleSection> sections = [];
+    final matches = [];
+    if (match != null) {
+      matches.add(match);
+    }
+    matches.addAll(requirementDetailRegex.allMatches(content));
+
+    for (int i = 0; i < matches.length; i++) {
+      final match = matches.elementAt(i);
+      final String header = 'GS ${match.group(1)!.trim()}';
+      final start = match.end;
+
+      // Extract the content between the last match end and the current match start
+      final sectionContent = content
+          .substring(
+            start,
+            i + 1 < matches.length
+                ? matches.elementAt(i + 1).start
+                : content.length,
+          )
+          .trim();
+
+      sections.add(SimpleSection(header: header, content: sectionContent));
+    }
+
+    return sections;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Extract the sections with titles
@@ -140,6 +181,7 @@ class AuditPage extends StatelessWidget {
         ),
       );
     }
+
     final Requirement overallUndergraduateRequirements =
         parseOverallUndergraduateRequirements(
       sections.firstWhere(
@@ -147,6 +189,23 @@ class AuditPage extends StatelessWidget {
             section.header == 'OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)',
       ),
     );
+
+    final int index = sections
+        .indexWhere((section) => section.header == 'GENERAL STUDIES (RG 582)');
+
+    if (index != -1) {
+      final generalStudiesSection = sections[index];
+
+      final int wordCount =
+          generalStudiesSection.content.split(RegExp(r'\s+')).length;
+
+      if (wordCount > 50) {
+        final List<SimpleSection> newSections =
+            parseNewGSFormat(generalStudiesSection.content);
+        sections.removeAt(index);
+        sections.insertAll(index, newSections);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -253,5 +312,5 @@ String cleanContent(String content) {
 class SimpleSection {
   SimpleSection({required this.header, required this.content});
   final String header;
-  final String content;
+  String content;
 }
