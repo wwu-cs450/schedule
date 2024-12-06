@@ -157,13 +157,13 @@ Future<void> dropdownTester(
   await tester.enterText(finders[menu]!, 'This is not an entry.');
   await tester.pumpAndSettle();
   expect(find.text('This is not an entry.').hitTestable(), findsOneWidget);
-  for (int i = 1; i < options.length; i++) {
+  for (int i = 0; i < options.length - 1; i++) {
     final option = options[i];
     final delimiter = option.contains(' ') ? ' ' : ':';
     await tester.enterText(finders[menu]!, option.split(delimiter)[0]);
     await tester.pumpAndSettle();
     expect(find.text(options[i]).hitTestable(), findsOneWidget);
-    expect(find.text(options[0]).hitTestable(), findsNothing);
+    expect(find.text(options[i + 1]).hitTestable(), findsOneWidget);
   }
   await tester.enterText(finders[menu]!, '');
   await tester.pumpAndSettle();

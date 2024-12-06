@@ -57,6 +57,7 @@ class SearchCriteria extends ChangeNotifier {
   }
 
   final startTimes = {
+    'Any Time': null,
     for (HourMinute time = HourMinute(hour: 7, minute: 0);
         time <= HourMinute(hour: 20, minute: 0);
         time = time.add(const Duration(hours: 1)))
@@ -76,6 +77,7 @@ class SearchCriteria extends ChangeNotifier {
   }
 
   final endTimes = {
+    'Any Time': null,
     for (HourMinute time = HourMinute(hour: 7, minute: 50);
         time <= HourMinute(hour: 20, minute: 50);
         time = time.add(const Duration(hours: 1)))
@@ -119,19 +121,19 @@ class SearchCriteria extends ChangeNotifier {
         items: {
           for (final e in Department.instances) '${e.code} ${e.name}': e,
         },
-        selection: null,
+        selection: _searchCriteria['Department'],
         width: 200,
       ),
       menu(
         key: 'Subject',
         items: {for (final e in Subject.instances) '${e.code} ${e.name}': e},
-        selection: null,
+        selection: _searchCriteria['Subject'],
         width: 200,
       ),
       menu(
         key: 'Campus',
         items: {for (final e in Campus.instances) '${e.code} ${e.name}': e},
-        selection: null,
+        selection: _searchCriteria['Campus'],
         width: 200,
       ),
       menu(
@@ -142,14 +144,14 @@ class SearchCriteria extends ChangeNotifier {
           'Upper (300-499)': 'Upper',
           'Grad (500+)': 'Grad',
         },
-        selection: null,
+        selection: _searchCriteria['Level'],
         width: 200,
       ),
       textForm(key: 'Instructor', width: 100),
       menu(
         key: 'Term',
         items: {for (final e in Term.instances) e.name: e},
-        selection: null,
+        selection: _searchCriteria['Term'],
         width: 200,
       ),
       menu(
@@ -163,12 +165,22 @@ class SearchCriteria extends ChangeNotifier {
           '4 Cr': '4',
           '>4 Cr': '>4',
         },
-        selection: null,
+        selection: _searchCriteria['Credits'],
         width: 200,
       ),
       selectWeekdays(),
-      menu(key: 'Start Time', items: startTimes, selection: null, width: 200),
-      menu(key: 'End Time', items: endTimes, selection: null, width: 200),
+      menu(
+        key: 'Start Time',
+        items: startTimes,
+        selection: _searchCriteria['Start Time'],
+        width: 200,
+      ),
+      menu(
+        key: 'End Time',
+        items: endTimes,
+        selection: _searchCriteria['End Time'],
+        width: 200,
+      ),
       selector(key: 'GS'),
       selector(key: 'Status'),
       selector(key: 'Free Classrooms'),
@@ -356,7 +368,6 @@ class SearchCriteria extends ChangeNotifier {
           requestFocusOnTap: true,
           width: width,
           menuHeight: 500,
-          enableFilter: true,
           textStyle: const TextStyle(fontSize: 14),
           inputDecorationTheme: const InputDecorationTheme(
             border: OutlineInputBorder(
