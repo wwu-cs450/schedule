@@ -35,6 +35,8 @@ class SearchCriteria extends ChangeNotifier {
   bool scheduleDownloaded = false;
 
   Term? _scheduleTerm;
+  List<Class> scheduleData = <Class>[];
+
   Term get scheduleTerm {
     if (_scheduleTerm != null) {
       return _scheduleTerm!;
@@ -51,7 +53,16 @@ class SearchCriteria extends ChangeNotifier {
 
   Term getTermForSchedule(List<Class> scheduleData) {
     if (scheduleData.isNotEmpty) {
-      return scheduleData.first.term;
+      final Term firstTerm = scheduleData.first.term;
+
+      if (!scheduleData.contains(scheduleData.first)) {
+        for (var i = 1; i < scheduleData.length; i++) {
+          if (scheduleData[i].term != firstTerm) {
+            return scheduleData[i].term;
+          }
+        }
+      }
+      return firstTerm;
     }
     return Term.instances.elementAt(3);
   }
@@ -90,7 +101,6 @@ class SearchCriteria extends ChangeNotifier {
   final List<String> keys = [];
 
   final List<Class> savedData = <Class>[];
-  List<Class> scheduleData = <Class>[];
   List<Class> classes = <Class>[];
 
   Widget? sidebar;
@@ -221,6 +231,12 @@ class SearchCriteria extends ChangeNotifier {
       savedData.remove(aClass);
       scheduleData.remove(aClass);
     }
+
+    if (_scheduleTerm == null ||
+        !savedData.any((element) => element.term == _scheduleTerm)) {
+      _scheduleTerm = savedData.isNotEmpty ? savedData.first.term : null;
+    }
+
     scheduleData =
         savedData.where((element) => element.term == scheduleTerm).toList();
     notifyListeners();
