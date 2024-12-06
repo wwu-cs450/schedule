@@ -86,4 +86,84 @@ University.
       equals(true),
     );
   });
+
+  testWidgets('Seperate New GS Requirements', (WidgetTester tester) async {
+    var extractedText = '''
+GENERAL STUDIES (RG 582) Overall Requirement Not Satisfied: You must complete the following General Studies
+requirements. · Units: 38.00 used · GPA: 0.700 required, 3.860 completed GS: Foundational Skills (R 456) Overall Requirement Not Satisfied:
+GS: Foundational Skills Written Communication & Information Literacy (R456 L10) Satisfied: Complete the writing sequence. Either ENGL 121,
+122, & 223 or HONR 141 & 243. · Units: 9.00 required, 9.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Fall
+2023 ENGL 121 College Writing I TA 3.00 TR Fall 2023 ENGL 122 College Writing II TA 3.00 TR Fall 2023 ENGL 223 Research Writing TA 3.00 TR
+Oral Communications (R456 L20) Not Satisfied: Complete one of the following: · Courses: 1.00 required, 0.00 used, 1.00 needed Courses
+Available SPCH 101, SPCH 101P, SPCH 198, SPCH 207 Quantitative Reasoning (R456 L30) Satisfied: Complete one of the following: (MATH 112 &
+113 apply only to Elementary Education majors.) · Courses: 1.00 required, 1.00 used Courses Used Term Subject Catalog Nbr Course Title
+Grade Units Type Wtr 2024 MATH 121 Precalculus I B+ 4.00 EN Foundations of Faith (R456 L40) Not Satisfied: Choose one of the following: ·
+Courses: 1.00 required, 0.00 used, 1.00 needed Courses Available RELB 104, RELB 111, RELB 231 Physical Health (R456 L50) Not Satisfied:
+Choose two of the following: · Courses: 2.00 required, 1.00 used, 1.00 needed Courses Used Term Subject Catalog Nbr Course Title Grade
+Units Type Fall 2024 PEAC 186 Athletics: Basketball 1.00 IP Courses Available PEAC 190, PEAC 198, PEAC 200, PEAC 200, PEAC 200, PEAC 200,
+PEAC 200, PEAC 200, PEAC 200, PEAC 200, PEAC 10#, PEAC 12#, PEAC 13#, PEAC 14#, PEAC 15#, PEAC 16#, PEAC 17#, PEAC 18#, PEAC 11# GS: Ways
+of Knowing (R457) Overall Requirement Not Satisfied: GS: Ways of Knowing · Courses: 4.00 used Humanities (R457 L10) Satisfied: Choose one
+of the following: · Courses: 1.00 required, 1.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Spr 2024 PHIL 204
+Essentials Critical Reasoning A 4.00 EN History (R457 L20) Not Satisfied: Choose one of the following: · Courses: 1.00 required, 0.00 used,
+1.00 needed Courses Available HIST 121, HIST 121P, HIST 122, HIST 198, HIST 221, HIST 222, HIST 240, HIST 274, HIST 275, HIST 283 Natural
+Science (R457 L30) Satisfied: Complete 4 units of the following: · Units: 4.00 required, 4.00 used Courses Used Term Subject Catalog Nbr
+Course Title Grade Units Type Fall 2023 BIOL 121 Anatomy & Physiology TA 4.00 TR Social Science (R457 L40) Satisfied: Choose one of the
+following: · Courses: 1.00 required, 1.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Fall 2023 PSYC 140 Intro
+to Psyc:Social Foundatns A 4.00 EN Exploring Scripture (R457 L50) Not Satisfied: Choose one of the following: · Courses: 1.00 required,
+0.00 used, 1.00 needed Courses Available RELB 198, RELB 302, RELB 302P, RELB 304, RELB 304P, RELB 312, RELB 312P, RELB 313, RELB 313P, RELB
+337, RELB 337P, RELB 340, RELB 362, RELB 362P, RELB 398, RELB 408 Exploring SDA Life (R457 L60) Satisfied: Choose one of the following: ·
+Courses: 1.00 required, 1.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Wtr 2024 RELT 202 Christian Beliefs A
+4.00 EN GS Ways of Engaging Overall Requirement Not Satisfied: GS Ways of Engaging Engaging the Arts (R458 L10) Not Satisfied: Choose one
+of the following: (ENGL 374 applies only to Elementary Education majors.) · Courses: 1.00 required, 0.00 used, 1.00 needed Courses
+Available ART 324, ART 325, ART 326, ART 398, DRMA 101, DRMA 363, DRMA 398, ENGL 214, ENGL 214, ENGL 214, ENGL 214, ENGL 214P, ENGL 214P,
+ENGL 214P, ENGL 214P, ENGL 318, ENGL 358, ENGL 359, ENGL 360, ENGL 363, ENGL 374, ENGL 398, ENGL 454, ENGL 474, ENGL 474, ENGL 474, ENGL
+474, FILM 198, FILM 318, HMNT 398, LANG 408, MUHL 134, MUHL 398, RELB 354, SPAN 307, SPAN 398, WRIT 324, WRIT 334, WRIT 398 Engaging
+History & Philosophy (R458 L20) Not Satisfied: Choose one of the following: (HIST 386 applies only to education majors.) · Courses: 1.00
+required, 0.00 used, 1.00 needed Courses Available ECON 359, HIST 242, HIST 254, HIST 254P, HIST 257, HIST 305, HIST 306, HIST 307, HIST
+315, HIST 354, HIST 355, HIST 359, HIST 386, HIST 434, HIST 437, HIST 448, HIST 450, HIST 463, HIST 474, PHIL 305, PHIL 315, PHIL 461
+Engaging Faith (R458 L30) Not Satisfied: Complete 6-7 unites for a total of 18 units in religion. · Units: 6.00 required, 0.00 used, 6.00
+needed · Courses: 2.00 required, 0.00 used, 2.00 needed Courses Available ENGL 454, PHIL 412, PSYC 425, RELB 274, RELB 303, RELB 306, RELB
+307, RELB 333, RELB 333P, RELB 339, RELB 345, RELB 345P, RELB 354, RELB 382P, RELB 398, RELB 410, RELB 421, RELB 421P, RELB 474, RELB 474,
+RELB 474, RELB 474, RELH 205, RELH 303, RELH 303P, RELH 398, RELH 425, RELH 455, RELM 198, RELM 233, RELT 326, RELT 340P, RELT 398, RELT
+402, RELT 408, RELT 412, RELB 198, RELB 302, RELB 302P, RELB 304, RELB 304P, RELB 312, RELB 312P, RELB 313, RELB 313P, RELB 337, RELB 337P,
+RELB 340, RELB 362, RELB 362P, RELB 408, RELH 457, RELT 110, RELT 202, RELT 417 Engaging Science & Data (R458 L40) Satisfied: Choose one of
+the following: · Courses: 1.00 required, 1.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Fall 2023 BIOL 122
+Anatomy & Physiology TA 4.00 TR Engaging Society (R458 L50) Satisfied: Choose one of the following: (EDUC 444 applies only to education
+majors.) · Courses: 1.00 required, 1.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Fall 2023 FINA 101
+Personal Finance A 4.00 EN Verify 18 Religion credits (R 30) Not Satisfied: Students with less than 45 transfer credits must complete 18
+credits of GS religion. · Units: 0.00 used GS Religion or Theology (R30 L50) Not Satisfied: Religion or Theology · Units: 18.00 required,
+4.00 used, 14.00 needed Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Wtr 2024 RELT 202 Christian Beliefs A 4.00 EN
+Courses Available RELB 104, RELB 111, RELB 231, RELB 198, RELB 302, RELB 302P, RELB 304, RELB 304P, RELB 312, RELB 312P, RELB 313, RELB
+313P, RELB 337, RELB 337P, RELB 340, RELB 362, RELB 362P, RELB 398, RELB 408, ENGL 454, PHIL 412, PSYC 425, RELB 274, RELB 303, RELB 306,
+RELB 307, RELB 333, RELB 333P, RELB 339, RELB 345, RELB 345P, RELB 354, RELB 382P, RELB 410, RELB 421, RELB 421P, RELB 474, RELB 474, RELB
+474, RELB 474, RELH 205, RELH 303, RELH 303P, RELH 398, RELH 425, RELH 455, RELM 198, RELM 233, RELT 326, RELT 340P, RELT 398, RELT 402,
+RELT 408, RELT 412, RELH 457, RELT 110, RELT 202, RELT 417''';
+    extractedText = cleanContent(extractedText);
+    final List<SimpleSection> newGSSections =
+        AuditPage.parseNewGSFormat(extractedText);
+
+    expect(
+      newGSSections.length,
+      equals(4),
+    );
+    expect(
+      newGSSections[0].header,
+      equals('GS GENERAL STUDIES (RG 582)'),
+    );
+    expect(
+      newGSSections[1].header,
+      equals('GS Foundational Skills (R 456)'),
+    );
+    expect(
+      newGSSections[2].header,
+      equals('GS Ways of Knowing (R457)'),
+    );
+    expect(
+      newGSSections[3].header,
+      equals('GS Ways of Engaging'),
+    );
+    for (final section in newGSSections) {
+      expect(section.content.isNotEmpty, equals(true));
+    }
+  });
 }
