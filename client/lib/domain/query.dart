@@ -21,6 +21,7 @@ class Query {
     String credits = '',
     bool gs = false,
     bool status = false,
+    bool notTaken = false,
     String? instructor,
     List<String> scheduledDays = const <String>[],
     HourMinute? startTime,
@@ -40,6 +41,7 @@ class Query {
     _credits = credits;
     _gs = gs;
     _status = status;
+    _notTaken = notTaken;
     _instructor = instructor ?? '';
     _scheduledDays = scheduledDays;
     _startTime = startTime;
@@ -58,6 +60,7 @@ class Query {
   late final String _credits;
   late final bool _gs;
   late final bool _status;
+  late final bool _notTaken;
   late final String _instructor;
   late final List<String> _scheduledDays;
   late final HourMinute? _startTime;
@@ -75,6 +78,7 @@ class Query {
               each.includesCredits(_credits) &&
               each.includesGS(_gs) &&
               each.includesOpen(_status) &&
+              each.includesNotTaken(_notTaken) &&
               each.includesInstructor(_instructor) &&
               each.includesDays(_scheduledDays) &&
               each.includesStartTime(_startTime) &&

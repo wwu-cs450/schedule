@@ -21,6 +21,7 @@ final Map<String, Finder> finders = {
   'Instructors': find.byKey(const Key('Instructor Text Box')).hitTestable(),
   'Status': find.byKey(const Key('Status Checkbox')).hitTestable(),
   'GS': find.byKey(const Key('GS Checkbox')).hitTestable(),
+  'notTaken': find.byKey(const Key('Not Taken Checkbox')).hitTestable(),
 };
 
 late BuildContext context;

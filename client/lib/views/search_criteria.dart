@@ -30,6 +30,7 @@ class SearchCriteria extends ChangeNotifier {
     'Schedule': <String>[],
     'Start Time': null,
     'End Time': null,
+    'Not Taken': false,
   };
 
   bool scheduleDownloaded = false;
@@ -193,6 +194,7 @@ class SearchCriteria extends ChangeNotifier {
       ),
       selector(key: 'GS'),
       selector(key: 'Status'),
+      selector(key: 'Not Taken'),
       selector(key: 'Free Classrooms'),
     ];
   }
@@ -253,6 +255,7 @@ class SearchCriteria extends ChangeNotifier {
       credits: _searchCriteria['Credits'],
       gs: _searchCriteria['GS'],
       status: _searchCriteria['Status'],
+      notTaken: _searchCriteria['Not Taken'],
       instructor: _searchCriteria['Instructor'],
       scheduledDays: _searchCriteria['Schedule'],
       startTime: _searchCriteria['Start Time'],

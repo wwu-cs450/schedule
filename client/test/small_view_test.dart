@@ -64,6 +64,15 @@ void main() {
     await gsTest(tester, 965, requirement: equals('GS'), type: 'Small');
   });
 
+  testWidgets('Small: Search by Only Not Taken', (WidgetTester tester) async {
+    await notTakenClassTest(
+      tester,
+      965,
+      requirement: equals('notTaken'),
+      type: 'Small',
+    );
+  });
+
   testWidgets('Small: Schedule View Test', (WidgetTester tester) async {
     await scheduleViewTest(tester, 965, type: 'Small');
   });

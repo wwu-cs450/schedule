@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:client/domain/campus.dart';
+import 'package:client/domain/class_storage.dart';
 import 'package:client/domain/course.dart';
 import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/hourminute.dart';
@@ -46,6 +47,8 @@ class Class implements Comparable {
   int classNumber;
   String specialNotes;
   bool saved;
+
+  final classStorage = ClassStorage();
 
   static final _instances = <Class>{};
 
@@ -317,6 +320,10 @@ class Class implements Comparable {
 
   bool includesOpen(bool status) {
     return !status || isOpenForEnrollment;
+  }
+
+  bool includesNotTaken(bool notTaken) {
+    return !notTaken || !classStorage.haveTaken(course);
   }
 
   bool includesLevel(String level) {
