@@ -72,6 +72,15 @@ void main() {
     await gsTest(tester, 970, requirement: equals('GS'), type: 'Medium');
   });
 
+  testWidgets('Medium: Search by Only Not Taken', (WidgetTester tester) async {
+    await notTakenClassTest(
+      tester,
+      970,
+      requirement: equals('notTaken'),
+      type: 'Medium',
+    );
+  });
+
   testWidgets('Medium: Schedule View Test', (WidgetTester tester) async {
     await scheduleViewTest(tester, 970, type: 'Medium');
   });

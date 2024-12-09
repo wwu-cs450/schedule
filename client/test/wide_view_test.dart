@@ -73,6 +73,15 @@ void main() {
     await gsTest(tester, 2000, requirement: equals('GS'), type: 'Wide');
   });
 
+  testWidgets('Wide: Search by Only Not Taken', (WidgetTester tester) async {
+    await notTakenClassTest(
+      tester,
+      2000,
+      requirement: equals('notTaken'),
+      type: 'Wide',
+    );
+  });
+
   testWidgets('Wide: Schedule View Test', (WidgetTester tester) async {
     await scheduleViewTest(tester, 2000, type: 'Wide');
   });

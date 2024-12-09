@@ -252,6 +252,18 @@ Future<void> gsTest(
   expectInResults(['GS'], requirement, type: type);
 }
 
+Future<void> notTakenClassTest(
+  WidgetTester tester,
+  double width, {
+  required Matcher requirement,
+  required String type,
+}) async {
+  await buildTestEnvironment(tester, width);
+  await openDrawer(tester);
+  await doTap(tester, finders['notTaken']!);
+  expectInResults(['notTaken'], requirement, type: type);
+}
+
 Future<void> scheduleViewTest(
   WidgetTester tester,
   double width, {

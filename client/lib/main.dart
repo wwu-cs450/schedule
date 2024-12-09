@@ -123,6 +123,16 @@ class HomePage extends StatelessWidget {
             ],
           ),
           drawer: results.sidebar,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              // Define the action here
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Classes Printed To Console!')),
+              );
+            },
+            tooltip: 'Add New Item',
+            child: const Icon(Icons.paste), // Tooltip for accessibility
+          ),
         );
       },
     );
