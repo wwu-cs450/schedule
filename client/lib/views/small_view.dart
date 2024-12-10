@@ -51,8 +51,14 @@ class SmallView extends MainView {
               credits,
             ),
             results.smallRowInfo[index]
-                ? details(index, room, schedule, profs, aClass)
-                : Container(),
+                ? Align(
+                    alignment: Alignment.center, // Center the details container
+                    child: details(index, room, schedule, profs, aClass),
+                  )
+                : Align(
+                    alignment: Alignment.center,
+                    child: Container(),
+                  ),
           ],
         ),
       ],
@@ -72,6 +78,7 @@ class SmallView extends MainView {
     return SizedBox(
       width: MediaQuery.of(context).size.width / 1.1,
       child: Card(
+        color: Color.fromARGB(255, 236, 222, 199),
         shape: RoundedRectangleBorder(
           side: BorderSide(
             width: 1,
@@ -189,29 +196,129 @@ class SmallView extends MainView {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.black),
-        color: const Color.fromARGB(255, 240, 236, 220),
+        borderRadius: BorderRadius.circular(10),
+        color: Color(0xFF656950),
       ),
       margin: const EdgeInsets.all(10.0),
-      child: SizedBox(
-        child: Column(
-          key: Key('Detail Row $index'),
-          children: [
-            DecoratedBox(
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width: 1,
-                    color: Colors.black,
+      child: DefaultTextStyle(
+        style: const TextStyle(color: Colors.white),
+        child: SizedBox(
+          child: Column(
+            key: Key('Detail Row $index'),
+            children: [
+              DecoratedBox(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 1,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 90,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              width: 1,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              const Text('Room(s)'),
+                              Text(
+                                key: const Key('Room Row'),
+                                room,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 185,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 15.0,
+                          bottom: 15.0,
+                        ),
+                        child: Column(
+                          children: [
+                            const Text('Schedule'),
+                            Text(
+                              key: const Key('Schedule Row'),
+                              schedule,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 140,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              width: 1,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              const Text('Instructor(s)'),
+                              Text(
+                                key: const Key('Instructor Row'),
+                                profs,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: SizedBox(
+                        width: 30,
+                        child: TextButton(
+                          onPressed: () => {
+                            results.updateInfo(index),
+                          },
+                          style: ButtonStyle(
+                            textStyle:
+                                WidgetStateProperty.resolveWith<TextStyle?>(
+                              (states) => const TextStyle(fontSize: 15),
+                            ),
+                            fixedSize: WidgetStateProperty.all(
+                              const Size.fromWidth(10),
+                            ),
+                          ),
+                          child: Text(
+                            'X',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 90,
                     child: DecoratedBox(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
                           right: BorderSide(
                             width: 1,
@@ -220,15 +327,10 @@ class SmallView extends MainView {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          children: [
-                            const Text('Room(s)'),
-                            Text(
-                              key: const Key('Room Row'),
-                              room,
-                            ),
-                          ],
+                        padding: EdgeInsets.all(15.0),
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          'Video',
                         ),
                       ),
                     ),
@@ -240,14 +342,9 @@ class SmallView extends MainView {
                         top: 15.0,
                         bottom: 15.0,
                       ),
-                      child: Column(
-                        children: [
-                          const Text('Schedule'),
-                          Text(
-                            key: const Key('Schedule Row'),
-                            schedule,
-                          ),
-                        ],
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        aClass.consent,
                       ),
                     ),
                   ),
@@ -264,102 +361,19 @@ class SmallView extends MainView {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          children: [
-                            const Text('Instructor(s)'),
-                            Text(
-                              key: const Key('Instructor Row'),
-                              profs,
-                            ),
-                          ],
+                        child: Text(
+                          key: const Key('Status Row'),
+                          textAlign: TextAlign.center,
+                          aClass.isOpenForEnrollment ? 'Open' : 'Closed',
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: SizedBox(
-                      width: 30,
-                      child: TextButton(
-                        onPressed: () => {
-                          results.updateInfo(index),
-                        },
-                        style: ButtonStyle(
-                          textStyle:
-                              WidgetStateProperty.resolveWith<TextStyle?>(
-                            (states) => const TextStyle(fontSize: 15),
-                          ),
-                          fixedSize: WidgetStateProperty.all(
-                            const Size.fromWidth(10),
-                          ),
-                        ),
-                        child: const Text('X'),
-                      ),
-                    ),
-                  ),
+                  const SizedBox(width: 30),
                 ],
               ),
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 90,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(
-                          width: 1,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        'Video',
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 185,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 15.0,
-                      bottom: 15.0,
-                    ),
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      aClass.consent,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 140,
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          width: 1,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        key: const Key('Status Row'),
-                        textAlign: TextAlign.center,
-                        aClass.isOpenForEnrollment ? 'Open' : 'Closed',
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 30),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
