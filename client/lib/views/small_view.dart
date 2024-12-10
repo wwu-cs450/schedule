@@ -388,18 +388,36 @@ class SmallView extends MainView {
     switch (index) {
       case 0:
         // Main Page
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Semantics(
-              child: Text(
-                key: const Key('Class Found'),
-                '${results.classes.length} classes found.',
+        if (results.isFreeClassroomsOnly) {
+          // build a list of free classrooms
+
+          // display the list of free classrooms
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Semantics(
+                child: Text(
+                  key: const Key('Class Found'),
+                  '${results.classes.length} classrooms found.',
+                ),
               ),
-            ),
-            Expanded(child: smallRowBuilder(results.classes)),
-          ],
-        );
+              Expanded(child: smallRowBuilder(results.classes)),
+            ],
+          );
+        } else {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Semantics(
+                child: Text(
+                  key: const Key('Class Found'),
+                  '${results.classes.length} classes found.',
+                ),
+              ),
+              Expanded(child: smallRowBuilder(results.classes)),
+            ],
+          );
+        }
       case 1:
         // Schedule Page
         return Column(

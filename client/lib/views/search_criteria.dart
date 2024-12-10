@@ -7,6 +7,7 @@ import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/query.dart';
 import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
+import 'package:client/main.dart';
 import 'package:client/views/multi_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart' as a;
@@ -32,6 +33,8 @@ class SearchCriteria extends ChangeNotifier {
     'End Time': null,
     'Not Taken': false,
   };
+
+  bool get isFreeClassroomsOnly => _searchCriteria['Free Classrooms'];
 
   bool scheduleDownloaded = false;
 
@@ -126,59 +129,77 @@ class SearchCriteria extends ChangeNotifier {
 
   List<Widget> getCriteria() {
     return [
-      textForm(key: 'Class Number', width: 100),
-      menu(
-        key: 'Department',
-        items: {
-          for (final e in Department.instances) '${e.code} ${e.name}': e,
-        },
-        selection: _searchCriteria['Department'],
-        width: 200,
-      ),
-      menu(
-        key: 'Subject',
-        items: {for (final e in Subject.instances) '${e.code} ${e.name}': e},
-        selection: _searchCriteria['Subject'],
-        width: 200,
-      ),
-      menu(
-        key: 'Campus',
-        items: {for (final e in Campus.instances) '${e.code} ${e.name}': e},
-        selection: _searchCriteria['Campus'],
-        width: 200,
-      ),
-      menu(
-        key: 'Level',
-        items: {
-          'Any Level': 'Any',
-          'Lower (100-299)': 'Lower',
-          'Upper (300-499)': 'Upper',
-          'Grad (500+)': 'Grad',
-        },
-        selection: _searchCriteria['Level'],
-        width: 200,
-      ),
-      textForm(key: 'Instructor', width: 100),
+      !results.isFreeClassroomsOnly
+          ? textForm(key: 'Class Number', width: 100)
+          : Container(),
+      !results.isFreeClassroomsOnly
+          ? menu(
+              key: 'Department',
+              items: {
+                for (final e in Department.instances) '${e.code} ${e.name}': e,
+              },
+              selection: null,
+              width: 200,
+            )
+          : Container(),
+      !results.isFreeClassroomsOnly
+          ? menu(
+              key: 'Subject',
+              items: {
+                for (final e in Subject.instances) '${e.code} ${e.name}': e,
+              },
+              selection: null,
+              width: 200,
+            )
+          : Container(),
+      !results.isFreeClassroomsOnly
+          ? menu(
+              key: 'Campus',
+              items: {
+                for (final e in Campus.instances) '${e.code} ${e.name}': e,
+              },
+              selection: null,
+              width: 200,
+            )
+          : Container(),
+      !results.isFreeClassroomsOnly
+          ? menu(
+              key: 'Level',
+              items: {
+                'Any Level': 'Any',
+                'Lower (100-299)': 'Lower',
+                'Upper (300-499)': 'Upper',
+                'Grad (500+)': 'Grad',
+              },
+              selection: null,
+              width: 200,
+            )
+          : Container(),
+      !results.isFreeClassroomsOnly
+          ? textForm(key: 'Instructor', width: 100)
+          : Container(),
       menu(
         key: 'Term',
         items: {for (final e in Term.instances) e.name: e},
         selection: _searchCriteria['Term'],
         width: 200,
       ),
-      menu(
-        key: 'Credits',
-        items: {
-          'Any Credit': 'Any',
-          '0 Cr': '0',
-          '1 Cr': '1',
-          '2 Cr': '2',
-          '3 Cr': '3',
-          '4 Cr': '4',
-          '>4 Cr': '>4',
-        },
-        selection: _searchCriteria['Credits'],
-        width: 200,
-      ),
+      !results.isFreeClassroomsOnly
+          ? menu(
+              key: 'Credits',
+              items: {
+                'Any Credit': 'Any',
+                '0 Cr': '0',
+                '1 Cr': '1',
+                '2 Cr': '2',
+                '3 Cr': '3',
+                '4 Cr': '4',
+                '>4 Cr': '>4',
+              },
+              selection: null,
+              width: 200,
+            )
+          : Container(),
       selectWeekdays(),
       menu(
         key: 'Start Time',
@@ -192,9 +213,9 @@ class SearchCriteria extends ChangeNotifier {
         selection: _searchCriteria['End Time'],
         width: 200,
       ),
-      selector(key: 'GS'),
-      selector(key: 'Status'),
-      selector(key: 'Not Taken'),
+      !results.isFreeClassroomsOnly ? selector(key: 'GS') : Container(),
+      !results.isFreeClassroomsOnly ? selector(key: 'Status') : Container(),
+      !results.isFreeClassroomsOnly ? selector(key: 'Not Taken') : Container(),
       selector(key: 'Free Classrooms'),
     ];
   }
