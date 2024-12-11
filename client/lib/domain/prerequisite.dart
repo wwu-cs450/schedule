@@ -1,13 +1,22 @@
 String getCoursePrerequisite(String text) {
-  final lines = text.split('\n');
-  final startIndex =
-      lines.indexWhere((line) => line.startsWith('Prerequisite'));
+  // Look for the keyword "Prerequisite" to mark the start of prerequisites
+  final int prerequisiteIndex = text.indexOf('Prerequisite');
 
-  if (startIndex == -1) {
-    return 'No Prerequisites';
+  if (prerequisiteIndex == -1) {
+    return 'No Prerequisites'; // Handle case where "Prerequisite" is not present
   }
 
-  final endIndex = lines.indexWhere((line) => line.startsWith('Distribution'));
-  final prerequisiteLines = lines.sublist(startIndex + 1, endIndex);
-  return prerequisiteLines.join('\n');
+  // Extract text after "Prerequisite" and before "Distribution"
+  final int distributionIndex = text.indexOf('Distribution', prerequisiteIndex);
+  final String prerequisites = (distributionIndex == -1)
+      ? text.substring(prerequisiteIndex + 'Prerequisite'.length).trim()
+      : text
+          .substring(
+            prerequisiteIndex + 'Prerequisite'.length,
+            distributionIndex,
+          )
+          .trim();
+
+  // Return extracted prerequisites or default message
+  return prerequisites.isEmpty ? 'No Prerequisites' : prerequisites;
 }

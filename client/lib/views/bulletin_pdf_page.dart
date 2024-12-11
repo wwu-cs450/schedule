@@ -48,13 +48,10 @@ class BulletinPdfViewState extends State<BulletinPdfView> {
 
       final Uint8List pdfBytes = await selectPdf();
       final String extractedText = await PdfHelper.extractTextFromPDF(pdfBytes);
-      debugPrint('Extracted text: $extractedText');
 
       setState(() {
         _courseDescription = getCourseDescription(extractedText);
-        debugPrint('Course description: $_courseDescription');
         _coursePrerequisite = getCoursePrerequisite(extractedText);
-        debugPrint('Course prerequisite: $_coursePrerequisite');
       });
 
       setState(() {
