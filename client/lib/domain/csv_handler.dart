@@ -20,9 +20,21 @@ class CSVHandler {
     }
     _usingTest = test;
     try {
-      final String csvFile = test
-          ? await getSample()
-          : await html.HttpRequest.getString('assets/class_data.csv');
+      String csvFile;
+      if (test) {
+        csvFile = await getSample();
+      } else {
+        final response = await html.HttpRequest.request(
+          'assets/class_data.csv',
+          method: 'GET',
+        );
+        if (response.status == 200) {
+          csvFile = response.responseText!;
+        } else {
+          throw Exception('Failed to load CSV file: ${response.status}');
+        }
+      }
+
       _data = const CsvToListConverter().convert<String>(
         csvFile,
         fieldDelimiter: ',',
@@ -45,5 +57,26 @@ class CSVHandler {
       fieldDelimiter: ',',
       eol: '\n',
     );
+  }
+
+  // returns the content of date_time.txt as a string
+  static Future<String> getDateTime() async {
+    try {
+      final response = await html.HttpRequest.request(
+        'assets/date_time.txt',
+        method: 'GET',
+      );
+      if (response.status == 200) {
+        return response.responseText!;
+      } else {
+        throw Exception(
+          'Failed to load date_time.txt file: ${response.status}',
+        );
+      }
+    } catch (e) {
+      throw Exception(
+        'Failed to load date_time.txt file: $e \n Remember to run the server',
+      );
+    }
   }
 }

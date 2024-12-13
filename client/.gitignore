@@ -52,3 +52,4 @@ app.*.map.json
 gl-code-quality-report.json
 .vscode/settings.json
 class_data.csv
+date_time.txt

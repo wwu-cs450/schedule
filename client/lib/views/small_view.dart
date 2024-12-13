@@ -7,7 +7,8 @@ import 'package:client/views/schedule_view.dart';
 import 'package:flutter/material.dart';
 
 class SmallView extends MainView {
-  SmallView(super.startYear, super.results);
+  SmallView(super.startYear, super.results, this.dateTime);
+  final String dateTime;
 
   Row smallClassRow(Class aClass, int index, BuildContext context) {
     String getFee() {
@@ -425,7 +426,7 @@ class SmallView extends MainView {
               Semantics(
                 child: Text(
                   key: const Key('Class Found'),
-                  '${results.classes.length} classes found.',
+                  '${results.classes.length} classes found on $dateTime.',
                 ),
               ),
               Expanded(child: smallRowBuilder(results.classes)),

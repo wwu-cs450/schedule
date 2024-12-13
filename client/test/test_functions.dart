@@ -28,7 +28,11 @@ late BuildContext context;
 
 Future<void> buildTestEnvironment(WidgetTester tester, double width) async {
   await tester.binding.setSurfaceSize(Size(width, 1000));
-  await tester.pumpWidget(const MyApp());
+  await tester.pumpWidget(
+    const MyApp(
+      dateTime: '',
+    ),
+  );
   context = tester.element(find.byType(MyApp));
   addTearDown(() async {
     await tester.binding.setSurfaceSize(null);
