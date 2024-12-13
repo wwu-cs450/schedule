@@ -10,20 +10,30 @@ String data = '';
 
 void main() async {
   data = await getSchedule();
-  //Change path based on hostname
+  // Change path based on hostname
   final host = Platform.localHostname;
-  final File file;
+  final File dataFile;
+  final File dateTimeFile;
   if (host == 'schedule-vm') {
-    file = File('/var/www/html/assets/class_data.csv');
+    dataFile = File('/var/www/html/assets/class_data.csv');
+    dateTimeFile = File('/var/www/html/assets/date_time.txt');
   } else {
-    file = File('../client/assets/class_data.csv');
+    dataFile = File('../client/assets/class_data.csv');
+    dateTimeFile = File('../client/assets/date_time.txt');
   }
 
-  // ignore: unused_local_variable
-  var dataFile = await file.writeAsString(data);
+  // Write data to class_data.csv
+  await dataFile.writeAsString(data);
+
+  // Write current date and time to date_time.txt
+  final currentDateTime = DateTime.now().toString();
+  await dateTimeFile.writeAsString(currentDateTime);
+
   const fiveMin = Duration(minutes: 5);
   Timer.periodic(fiveMin, (timer) async {
     await dataStream();
-    dataFile = await file.writeAsString(data);
+    await dataFile.writeAsString(data);
+    final currentDateTime = DateTime.now().toString();
+    await dateTimeFile.writeAsString(currentDateTime);
   });
 }

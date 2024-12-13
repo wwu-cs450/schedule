@@ -7,7 +7,8 @@ import 'package:client/views/schedule_view.dart';
 import 'package:flutter/material.dart';
 
 class WideView extends MainView {
-  WideView(super.startYear, super.results);
+  WideView(super.startYear, super.results, this.dateTime);
+  final String dateTime;
 
   Widget wideHeaderRow() {
     return IntrinsicHeight(
@@ -138,7 +139,7 @@ class WideView extends MainView {
             Semantics(
               child: Text(
                 key: const Key('Class Found'),
-                '${results.classes.length} classes found.',
+                '${results.classes.length} classes found on $dateTime.',
               ),
             ),
             wideHeaderRow(),

@@ -12,21 +12,24 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   String? errorMessage;
+  String dateTime = '';
   try {
     await DataHandler.fetchData();
     Class.instances;
+    dateTime = await DataHandler.fetchDateTime();
   } catch (e) {
     errorMessage = e.toString();
   }
-  runApp(MyApp(errorMessage: errorMessage));
+  runApp(MyApp(dateTime: dateTime, errorMessage: errorMessage));
 }
 
 late SearchCriteria results;
 const startYear = 2024;
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, this.errorMessage});
+  const MyApp({required this.dateTime, super.key, this.errorMessage});
   final String? errorMessage;
+  final String dateTime;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: errorMessage == null
-            ? const HomePage(title: 'WWU Class Schedule')
+            ? HomePage(title: 'WWU Class Schedule', dateTime: dateTime)
             : Scaffold(
                 appBar: AppBar(title: const Text('Error')),
                 body: ErrorDisplay(errorMessage: errorMessage!),
@@ -55,8 +58,9 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({required this.title, super.key});
+  const HomePage({required this.title, required this.dateTime, super.key});
   final String title;
+  final String dateTime;
 
   @override
   Widget build(BuildContext context) {
@@ -76,18 +80,18 @@ class HomePage extends StatelessWidget {
             builder: (context, constraints) {
               if ((constraints.maxWidth >= 1850) &&
                   (constraints.maxHeight > 355.0)) {
-                return WideView(startYear, results).view(
+                return WideView(startYear, results, dateTime).view(
                   results.selectedIndex,
                   context,
                 );
               } else if ((constraints.maxWidth >= 970) &&
                   (constraints.maxHeight > 355.0)) {
-                return MediumView(startYear, results).view(
+                return MediumView(startYear, results, dateTime).view(
                   results.selectedIndex,
                   context,
                 );
               } else {
-                return SmallView(startYear, results).view(
+                return SmallView(startYear, results, dateTime).view(
                   results.selectedIndex,
                   context,
                 );
@@ -123,16 +127,6 @@ class HomePage extends StatelessWidget {
             ],
           ),
           drawer: results.sidebar,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              // Define the action here
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Classes Printed To Console!')),
-              );
-            },
-            tooltip: 'Add New Item',
-            child: const Icon(Icons.paste), // Tooltip for accessibility
-          ),
         );
       },
     );

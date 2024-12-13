@@ -6,7 +6,8 @@ import 'package:client/views/schedule_view.dart';
 import 'package:flutter/material.dart';
 
 class MediumView extends MainView {
-  MediumView(super.startYear, super.results);
+  MediumView(super.startYear, super.results, this.dateTime);
+  final String dateTime;
 
   Row mediumHeaderRow() {
     return Row(
@@ -175,7 +176,7 @@ class MediumView extends MainView {
             Semantics(
               child: Text(
                 key: const Key('Class Found'),
-                '${results.classes.length} classes found.',
+                '${results.classes.length} classes found on $dateTime.',
               ),
             ),
             mediumHeaderRow(),
