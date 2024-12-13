@@ -169,6 +169,40 @@ class AuditPage extends StatelessWidget {
     return sections;
   }
 
+  static List<SimpleSection> parseEngGSFormat(String content) {
+    final RegExp generalStudyRegex = RegExp(
+      r'(ENGINEERING GENERAL STUDIES \(RG 773\)) ([A-za-z ]+?):',
+      caseSensitive: false,
+    );
+    final match = generalStudyRegex.firstMatch(content);
+
+    final RegExp requirementDetailRegex = RegExp(
+      r'([A-Z][a-zA-Z]{2,}(?:[ &][A-Za-z]+)* - Engineering General Studies \(R ?\d+\)) (Overall Requirement Not Satisfied|Satisfied):',
+    );
+
+    final List<SimpleSection> sections = [];
+    final matches = [];
+    if (match != null) {
+      matches.add(match);
+    }
+    matches.addAll(requirementDetailRegex.allMatches(content));
+    for (int i = 0; i < matches.length; i++) {
+      final match = matches.elementAt(i);
+      final String header = match.group(1)!.trim();
+      final start = match.end;
+
+      // Determine the end index for the substring
+      final end = i + 1 < matches.length
+          ? matches.elementAt(i + 1).start
+          : content.length;
+
+      final sectionContent = content.substring(start, end).trim();
+      sections.add(SimpleSection(header: header, content: sectionContent));
+    }
+
+    return sections;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Extract the sections with titles
@@ -202,6 +236,18 @@ class AuditPage extends StatelessWidget {
       if (wordCount > 50) {
         final List<SimpleSection> newSections =
             parseNewGSFormat(generalStudiesSection.content);
+        sections.removeAt(index);
+        sections.insertAll(index, newSections);
+      }
+    } else {
+      final int index = sections.indexWhere(
+        (section) => section.header == 'ENGINEERING GENERAL STUDIES (RG 773)',
+      );
+      if (index != -1) {
+        final generalStudiesSection = sections[index];
+
+        final List<SimpleSection> newSections =
+            parseEngGSFormat(generalStudiesSection.content);
         sections.removeAt(index);
         sections.insertAll(index, newSections);
       }

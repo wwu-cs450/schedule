@@ -87,7 +87,7 @@ University.
     );
   });
 
-  testWidgets('Seperate New GS Requirements', (WidgetTester tester) async {
+  testWidgets('Separate New GS Requirements', (WidgetTester tester) async {
     var extractedText = '''
 GENERAL STUDIES (RG 582) Overall Requirement Not Satisfied: You must complete the following General Studies
 requirements. · Units: 38.00 used · GPA: 0.700 required, 3.860 completed GS: Foundational Skills (R 456) Overall Requirement Not Satisfied:
@@ -163,6 +163,88 @@ RELT 408, RELT 412, RELH 457, RELT 110, RELT 202, RELT 417''';
       equals('GS Ways of Engaging'),
     );
     for (final section in newGSSections) {
+      expect(section.content.isNotEmpty, equals(true));
+    }
+  });
+
+  testWidgets('Separate Engineering GS Requirements',
+      (WidgetTester tester) async {
+    var extractedText = '''
+ENGINEERING GENERAL STUDIES (RG 773) Overall Requirement Not Satisfied: Complete the following Engineering General
+Studies requirements. · Units: 44.00 required, 44.00 used, 0.00 needed · GPA: 2.000 required, 4.000 completed
+Communication Skills - Engineering General Studies (R224) Satisfied: Complete a minimum of 11 units. · Units: 11.00    
+required, 13.00 used Writing (R224 L10) Satisfied: Complete 8-9 units from the following courses. · Units: 8.00        
+required, 9.00 used · Courses: 3.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Fall 2021 
+ENGL 121 College Writing I TA 3.00 TR Term Subject Catalog Nbr Course Title Grade Units Type Fall 2021 ENGL 122 College
+Writing II TA 3.00 TR Fall 2021 ENGL 223 Research Writing TA 3.00 TR Speech (R224 L20) Satisfied: Complete 3-4 units   
+from the following courses. · Units: 3.00 required, 4.00 used Courses Used Term Subject Catalog Nbr Course Title Grade 
+Units Type Spr 2022 SPCH 101 Fundamentals of Speech Comm A 4.00 EN Physical Activity Experience - Engineering General  
+Studies (R225) Satisfied: Complete a minimum of 2 units. · Units: 2.00 required, 2.00 used Physical Activity (R225 L10)
+Satisfied: Complete 2 units from the following courses. · Units: 2.00 required, 2.00 used Courses Used Term Subject    
+Catalog Nbr Course Title Grade Units Type Wtr 2025 PEAC 171 Basketball 1.00 IP Fall 2022 PEAC 173 Flag Ball A 1.00 EN  
+Ethics & Belief Studies - Engineering General Studies (R 226) Satisfied: Complete 18 units. · Units: 18.00 required,   
+18.00 used Religion (R226 L10) Satisfied: Complete 18 units from the following General Studies Religion courses. ·     
+Units: 18.00 required, 18.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Spr 2022 RELB 104
+Ministry of Jesus A 4.00 EN Wtr 2022 RELB 105 Sermon on the Mount A 2.00 EN Fall 2021 RELB 106 Parables of Jesus A 2.00
+EN Spr 2022 RELB 307 Creation in the Bible A 2.00 EN Wtr 2024 RELB 313 Revelation A 4.00 EN Spr 2024 RELH 303 World    
+Religions A 4.00 EN RELB Requirement (R226 L20) Satisfied: 6 units from the above GS Religion requirement must be RELB 
+courses. · Units: 6.00 required, 14.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Spr    
+2022 RELB 104 Ministry of Jesus A 4.00 EN Wtr 2022 RELB 105 Sermon on the Mount A 2.00 EN Fall 2021 RELB 106 Parables  
+of Jesus A 2.00 EN Spr 2022 RELB 307 Creation in the Bible A 2.00 EN Wtr 2024 RELB 313 Revelation A 4.00 EN Upper      
+Division Requirement (R226 L30) Satisfied: 6 units from the GS Religion requirement must be upper division. · Units:   
+6.00 required, 10.00 used Courses Used Term Subject Catalog Nbr Course Title Grade Units Type Spr 2022 RELB 307        
+Creation in the Bible A 2.00 EN Wtr 2024 RELB 313 Revelation A 4.00 EN Spr 2024 RELH 303 World Religions A 4.00 EN     
+Historical & Contemporary Issues - Engineering General Studies (R 227) Overall Requirement Not Satisfied: Complete 10  
+units. · Units: 10.00 required, 11.00 used, 0.00 needed Humanities (R227 L20) Not Satisfied: Complete 4 units from the 
+following Humanities courses. · Units: 4.00 required, 3.00 used, 1.00 needed Courses Used Term Subject Catalog Nbr     
+Course Title Grade Units Type Spr 2025 ART 326 Hist of World Art 3.00 IP Courses Available ART 198, ART 251, ART 251P, 
+ART 312, ART 324, ART 325, ART 398, DRMA 363, ENGL 198, ENGL 198H, ENGL 204, ENGL 210, ENGL 211, ENGL 212, ENGL 214,   
+ENGL 214, ENGL 214, ENGL 214, ENGL 214P, ENGL 214P, ENGL 214P, ENGL 214P, ENGL 358, ENGL 359, ENGL 363, ENGL 398, ENGL 
+454, FILM 199, FILM 215, HMNT 198, LANG 408, MUHL 124, MUHL 134, MUHL 198, PHIL 198, PHIL 204, PHIL 205, PHIL 305, PHIL
+398, PHIL 407, PHIL 412, RELB 354, RELT 412, SPAN 307, SPAN 398, HONR 131, HONR 132 Social Sciences (R227 L30)
+Satisfied: Complete 4 units from the following Social Science courses. · Units: 4.00 required, 8.00 used Courses Used  
+Term Subject Catalog Nbr Course Title Grade Units Type Fall 2019 HIST 221 Hist of the U.S. A 4.00 EN Spr 2020 HIST 222 
+Hist of the U.S. A 4.00 EN Upper Division Requirement (R227 L40) Satisfied: One course (3-4 units) from General Studies
+Humanities and Social Sciences must be upper division. · Units: 3.00 required, 3.00 used Courses Used Term Subject     
+Catalog Nbr Course Title Grade Units Type Spr 2025 ART 326 Hist of World Art 3.00 IP Electives - Engineering General   
+Studies (R 228) Satisfied: Electives- Engineering General Studies · Units: 0.00 used Approved Electives (R228 L10)     
+Satisfied: Complete elective units from the following courses to bring the Engineering General Studies total to 44     
+units. · Units: 0.00''';
+    extractedText = cleanContent(extractedText);
+    final List<SimpleSection> engGSSections =
+        AuditPage.parseEngGSFormat(extractedText);
+
+    expect(
+      engGSSections.length,
+      equals(6),
+    );
+    expect(
+      engGSSections[0].header,
+      equals('ENGINEERING GENERAL STUDIES (RG 773)'),
+    );
+    expect(
+      engGSSections[1].header,
+      equals('Communication Skills - Engineering General Studies (R224)'),
+    );
+    expect(
+      engGSSections[2].header,
+      equals(
+        'Physical Activity Experience - Engineering General Studies (R225)',
+      ),
+    );
+    expect(
+      engGSSections[3].header,
+      equals('Belief Studies - Engineering General Studies (R 226)'),
+    );
+    expect(
+      engGSSections[4].header,
+      equals('Contemporary Issues - Engineering General Studies (R 227)'),
+    );
+    expect(
+      engGSSections[5].header,
+      equals('Electives - Engineering General Studies (R 228)'),
+    );
+    for (final section in engGSSections) {
       expect(section.content.isNotEmpty, equals(true));
     }
   });
