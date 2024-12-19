@@ -1,20 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:server/schedule.dart';
 
-Future<void> dataStream() async {
-  data = await getSchedule();
-}
-
-String data = '';
+import 'package:csv/csv.dart';
+import 'package:server/html_handler.dart';
 
 void main() async {
-  data = await getSchedule();
-  // Change path based on hostname
-  final host = Platform.localHostname;
   final File dataFile;
   final File dateTimeFile;
-  if (host == 'schedule-vm') {
+  // Change path based on hostname
+  if (Platform.localHostname == 'schedule-vm') {
     dataFile = File('/var/www/html/assets/class_data.csv');
     dateTimeFile = File('/var/www/html/assets/date_time.txt');
   } else {
@@ -22,18 +16,17 @@ void main() async {
     dateTimeFile = File('../client/assets/date_time.txt');
   }
 
-  // Write data to class_data.csv
-  await dataFile.writeAsString(data);
-
-  // Write current date and time to date_time.txt
-  final currentDateTime = DateTime.now().toString();
-  await dateTimeFile.writeAsString(currentDateTime);
-
-  const fiveMin = Duration(minutes: 5);
-  Timer.periodic(fiveMin, (timer) async {
-    await dataStream();
-    await dataFile.writeAsString(data);
-    final currentDateTime = DateTime.now().toString();
-    await dateTimeFile.writeAsString(currentDateTime);
-  });
+  bool firstTime = true;
+  while (true) {
+    final List<List<String>> data = await HTMLHandler().listFromHtml();
+    final csv = ListToCsvConverter().convert(data);
+    await dataFile.writeAsString(csv);
+    final timestamp = DateTime.now().toString().substring(0, 16);
+    await dateTimeFile.writeAsString(timestamp);
+    if (firstTime) {
+      firstTime = false;
+      print('Initial download is complete.');
+    }
+    await Future.delayed(Duration(minutes: 5));
+  }
 }

@@ -426,7 +426,7 @@ class SmallView extends MainView {
               Semantics(
                 child: Text(
                   key: const Key('Class Found'),
-                  '${results.classes.length} classes found on $dateTime.',
+                  '${results.classes.length} classes found on $dateTime',
                 ),
               ),
               Expanded(child: smallRowBuilder(results.classes)),

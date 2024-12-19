@@ -175,7 +175,7 @@ class MediumView extends MainView {
             Semantics(
               child: Text(
                 key: const Key('Class Found'),
-                '${results.classes.length} classes found on $dateTime.',
+                '${results.classes.length} classes found on $dateTime',
               ),
             ),
             mediumHeaderRow(),
