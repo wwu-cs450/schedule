@@ -1,8 +1,9 @@
 import 'package:client/domain/class.dart';
 import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/search_criteria.dart';
 import 'package:client/views/error_view.dart';
 import 'package:client/views/medium_view.dart';
-import 'package:client/views/search_criteria.dart';
+import 'package:client/views/search_drawer.dart';
 import 'package:client/views/small_view.dart';
 import 'package:client/views/wide_view.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ Future<void> main() async {
   String? errorMessage;
   String dateTime = '';
   try {
+    await SearchCriteria().load();
     await DataHandler.fetchData();
     Class.instances;
     dateTime = await DataHandler.fetchDateTime();
@@ -23,7 +25,7 @@ Future<void> main() async {
   runApp(MyApp(dateTime: dateTime, errorMessage: errorMessage));
 }
 
-late SearchCriteria results;
+late SearchCriteriaView results;
 const startYear = 2024;
 
 class MyApp extends StatelessWidget {
@@ -33,8 +35,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    results = SearchCriteria(context);
-    return ChangeNotifierProvider<SearchCriteria>.value(
+    results = SearchCriteriaView(context);
+    return ChangeNotifierProvider<SearchCriteriaView>.value(
       value: results,
       child: MaterialApp(
         title: 'WWU Class Schedule',
@@ -65,7 +67,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     results.doSearch();
-    return Consumer<SearchCriteria>(
+    return Consumer<SearchCriteriaView>(
       builder: (context, appData, child) {
         return Scaffold(
           appBar: AppBar(

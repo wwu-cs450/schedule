@@ -60,13 +60,18 @@ class ScheduleView {
   }
 
   Widget _creditAmount() {
+    final credits = results.scheduleData.isEmpty
+        ? 0
+        : results.scheduleData
+            .map((aClass) => aClass.getCredits())
+            .reduce((a, b) => a + b);
     return Semantics(
       label: 'Credit amount.',
       hint: 'Displays the total number of credits.',
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          'Total Credits: ${results.scheduleData.isEmpty ? 0 : results.scheduleData.map((aClass) => aClass.getCredits()).reduce((a, b) => a + b)}',
+          'Total Credits: $credits',
           key: const Key('totalCreditsText'),
           style: const TextStyle(fontSize: 16),
         ),

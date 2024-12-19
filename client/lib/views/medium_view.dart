@@ -13,7 +13,6 @@ class MediumView extends MainView {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        //Opacity(opacity: 0, child: invisibleBox()),
         DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(width: 0.5, color: Colors.white),

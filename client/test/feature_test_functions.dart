@@ -6,8 +6,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'dart:async';
-
 import 'package:client/main.dart';
 import 'package:client/views/audit_view.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +85,6 @@ Future<void> campusTest(
   );
 }
 
-// TODO: Why is this referencing terms?
 Future<void> levelTest(
   WidgetTester tester,
   double width, {
@@ -151,13 +148,16 @@ Future<void> dayTest(
   multiExpect(ddownOpts, findsNothing);
   await doTap(tester, finders['Schedule']!);
   multiExpect(ddownOpts, findsOneWidget);
-  // Check both monday and tuesday
+
+  // Check both Monday and Tuesday
   await doTap(tester, ddownOpts[0]);
   await doTap(tester, ddownOpts[1]);
   expectInResults(['Schedule'], contains('MT'), type: type);
-  // Check both monday and wednesday
+
+  // Check both Monday and Wednesday
   await doTap(tester, ddownOpts[2]);
   expectInResults(['Schedule'], contains('MTW'), type: type);
+
   // Reverse to MT
   await doTap(tester, ddownOpts[2]);
   expectInResults(['Schedule'], contains('MT'), type: type);
@@ -538,12 +538,6 @@ Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
     findsOneWidget,
     reason: 'The "No sections found" message should appear.',
   );
-}
-
-Future<void> errorViewTest(WidgetTester tester) async {
-  unawaited(main()); // TODO: Change to awaited
-  await buildTestEnvironment(tester, 970);
-  expect(find.textContaining('Failed to load csv file:'), findsOneWidget);
 }
 
 Future<void> auditViewParse(WidgetTester tester, String extractedText) async {
