@@ -4,58 +4,37 @@ import 'package:universal_html/html.dart';
 import 'package:universal_html/parsing.dart';
 
 class HTMLHandler {
-  // cache containing fetched data using fetchListFromHtml
-  static List<List<String>> _data = List.empty();
-  //static bool _usingTest = false;
-
-  // ignore_for_file: type_annotate_public_apis
-  //note print has limits. If you want to see the whole csv use IO to write out to a file.
-  static List<List<String>> get data => _data;
-
-  static late String year;
-
-  // empty data
-  static void empty() {
-    _data = List.empty();
+  factory HTMLHandler() {
+    return _instance;
   }
+  // Singleton pattern
+  HTMLHandler._privateConstructor();
+  static final HTMLHandler _instance = HTMLHandler._privateConstructor();
+  late String year;
 
-  //Need to call this to instantiate getHtml() data!
-  //Call this in main.dart or before any multiple tests involving live HTML
-  // returns data from html getting/parsing as a list of list of strings
-
-  //Purpose: To grab the raw HTML document from
-  //"flutter pub add http" if you are missing the package from your environment.
-  //Note ios and android need permissions if developing for that.
-  static Future<String> fetchHtml() async {
+  Future<String> fetchHtml() async {
     final currentTime = DateTime.now();
     if (currentTime.month > 0 && currentTime.month < 7) {
       year = currentTime.year.toString();
     } else {
       year = (currentTime.year + 1).toString();
     }
-
-    final String quarter = 'f$year';
-    final Map<String, String> queryParams = <String, String>{
-      'strm': quarter,
-      'submit': 'Search',
-    };
     final response = await http.get(
       Uri.https(
         'classopen.wallawalla.edu',
         '/classopenps.php',
-        queryParams,
+        {
+          'strm': 'f$year',
+          'submit': 'Search',
+        },
       ),
     );
     return response.body;
   }
 
-  //Test var is strictly for unit testing
-  // html parsing
-  //FIX: Parsing Code ignores first class entry
-  static Future<List<List<String>>> listFromHtml() async {
-    List<List<String>> data = List.empty();
-    var document = '';
-    document = await fetchHtml();
+  Future<List<List<String>>> listFromHtml() async {
+    final data = <List<String>>[];
+    final document = await fetchHtml();
     final htmlDoc = parseHtmlDocument(
       document.replaceAll(RegExp(r'(<br \/>|<br>)+'), '/'),
     );
@@ -64,110 +43,98 @@ class HTMLHandler {
     if (classTable == null) {
       throw Exception('Class Table is empty.');
     }
-    final evenRows = classTable.getElementsByClassName('evenrow');
-    final oddRows = classTable.getElementsByClassName('oddrow');
-    final allRows = evenRows + oddRows;
-    data = List.generate(
-      allRows.length,
-      (i) => List<String>.filled(30, '', growable: false),
-      growable: false,
-    );
-    for (int x = 0; x < allRows.length; x++) {
-      final nodes = allRows[x].childNodes;
-      //CRSE_OFFER_NBR, default=1, don't know what this is for and doesn't seem to be used.
-      data[x][0] = '1';
-      //CAMPUS, =CP   CP
-      data[x][1] = nodes[38].text?.trim() ?? '';
-      //ACAD_YEAR, =2024    2024
-      data[x][2] = year;
-      //ACAD_ORG,     BIOL
+    final rows = classTable.getElementsByClassName('evenrow') +
+        classTable.getElementsByClassName('oddrow');
+    for (final each in rows) {
+      final nodes = each.childNodes;
+      final row = List<String>.filled(30, '');
+      // CRSE_OFFER_NBR, default=1; unused?
+      row[0] = '1';
+      // CAMPUS, =CP   CP
+      row[1] = nodes[38].text?.trim() ?? '';
+      // ACAD_YEAR, =2024    2024
+      row[2] = year;
+      // ACAD_ORG,     BIOL
       try {
-        data[x][3] = _subjDept[nodes[2].text!]?.trim();
+        row[3] = _subjDept[nodes[2].text!]?.trim();
       } catch (e) {
         throw Exception('Subject "${nodes[2].text!}" not found!');
       }
-      //WWU_ACAD_ORG_DESCR,   Biology
-      data[x][4] = _deptFullname[data[x][3]] ?? data[x][3];
-      //CLASS_NBR,    1536
-      data[x][5] = nodes[0].text?.trim() ?? '';
-      //WWU_GS,   GS or space
-      if (nodes[16].text == 'GS') {
-        data[x][6] = 'GS';
-      } else {
-        data[x][6] = '';
-      }
-      //SUBJECT
-      data[x][7] = nodes[2].text?.trim() ?? '';
-      //WWU_SUM1
-      data[x][8] = nodes[4].text?.trim() ?? '';
-      //WWU_FAL
-      data[x][9] = nodes[6].text?.trim() ?? '';
-      //WWU_WTR
-      data[x][10] = nodes[8].text?.trim() ?? '';
-      //WWU_SPR
-      data[x][11] = nodes[10].text?.trim() ?? '';
-      //WWU_SUM2
-      data[x][12] = nodes[12].text?.trim() ?? '';
-      //CLASS_SECTION
-      data[x][13] = nodes[14].text?.trim() ?? '';
-      //DESCR
-      data[x][14] = nodes[20].text?.trim() ?? '';
-      //WWU_UNITS
-      data[x][15] = nodes[18].text?.trim() ?? '';
-      //ENRL_STAT
-      data[x][16] = nodes[22].text?.trim() ?? '';
-      //ENRL_TOT
-      data[x][17] = nodes[24].text?.trim() ?? '';
-      //ENRL_CAP
-      data[x][18] = nodes[26].text?.trim() ?? ''; //good up to here
-      //WAIT_TOT
-      data[x][19] =
-          nodes[28].text?.trim().replaceAll(' in wait list', '') ?? '';
-      //FEE_AMT
-      data[x][20] = nodes[30].text?.trim().replaceAll('\$', '') ?? '';
-      //WWU_MTG_PAT_COMB
-      data[x][21] = nodes[32].text?.trim() ?? '';
-      //WWU_ROOM -- sometimes is only a line break
-      data[x][22] =
-          nodes[34].text?.trim().replaceFirst(RegExp(r'^/$'), '') ?? '';
-      //WWU_INSTR_NAME
-      data[x][23] = nodes[36].text?.trim() ?? '';
-      //DESCRLONG
-      data[x][24] = nodes[44].text?.trim() ?? '';
-      //INSTRUCTION_MODE
-      data[x][25] = 'P';
-      if (data[x][22] == 'ONLINE') {
-        data[x][25] = 'O';
-      }
+      // WWU_ACAD_ORG_DESCR,   Biology
+      row[4] = _deptFullname[row[3]] ?? row[3];
+      // CLASS_NBR,    1536
+      row[5] = nodes[0].text?.trim() ?? '';
+      // WWU_GS,   GS or space
+      row[6] = nodes[16].text == 'GS' ? 'GS' : '';
+      // SUBJECT
+      row[7] = nodes[2].text?.trim() ?? '';
+      // WWU_SUM1
+      row[8] = nodes[4].text?.trim() ?? '';
+      // WWU_FAL
+      row[9] = nodes[6].text?.trim() ?? '';
+      // WWU_WTR
+      row[10] = nodes[8].text?.trim() ?? '';
+      // WWU_SPR
+      row[11] = nodes[10].text?.trim() ?? '';
+      // WWU_SUM2
+      row[12] = nodes[12].text?.trim() ?? '';
+      // CLASS_SECTION
+      row[13] = nodes[14].text?.trim() ?? '';
+      // DESCR
+      row[14] = nodes[20].text?.trim() ?? '';
+      // WWU_UNITS
+      row[15] = nodes[18].text?.trim() ?? '';
+      // ENRL_STAT
+      row[16] = nodes[22].text?.trim() ?? '';
+      // ENRL_TOT
+      row[17] = nodes[24].text?.trim() ?? '';
+      // ENRL_CAP
+      row[18] = nodes[26].text?.trim() ?? '';
+      // WAIT_TOT
+      row[19] = nodes[28].text?.trim().replaceAll(' in wait list', '') ?? '';
+      // FEE_AMT
+      row[20] = nodes[30].text?.trim().replaceAll('\$', '') ?? '';
+      // WWU_MTG_PAT_COMB
+      row[21] = nodes[32].text?.trim() ?? '';
+      // WWU_ROOM -- sometimes is only a line break
+      row[22] = nodes[34].text?.trim().replaceFirst(RegExp(r'^/$'), '') ?? '';
+      // WWU_INSTR_NAME
+      row[23] = nodes[36].text?.trim() ?? '';
+      // DESCRLONG
+      row[24] = nodes[44].text?.trim() ?? '';
+      // INSTRUCTION_MODE, O=Online, P=In Person
+      row[25] = row[22] == 'ONLINE' ? 'O' : 'P';
       //SCHEDULE_PRINT we don't use it, so for yeah I will leave it blank.
-      data[x][26] = '';
+      row[26] = '';
       //VIDEO_LINK
       if (nodes[40].hasChildNodes()) {
-        data[x][27] =
+        row[27] =
             (nodes[40] as TableCellElement).children[0].attributes['href'] ??
                 '';
       } else {
-        data[x][27] = '';
+        row[27] = '';
       }
       //CONSENT,  I=Instructor consent required, D=Department consent required, N=No consent needed
       if (nodes[42].text == null || nodes[42].text == '') {
-        data[x][28] = 'N';
+        row[28] = 'N';
       } else {
         if (nodes[42].text!.contains('Instructor')) {
-          data[x][28] = 'I';
+          row[28] = 'I';
         } else {
-          data[x][28] = 'D';
+          row[28] = 'D';
         }
       }
       //CONSENT_DESCR
-      data[x][29] = nodes[42].text?.trim() ?? '';
+      row[29] = nodes[42].text?.trim() ?? '';
+      data.add(row);
     }
     return data;
   }
 
-  // maps:
-  // Static map is a potential problem in the future
-  static const Map _subjDept = {
+  // Hard-coded maps for subject and department
+  // TODO: Dynamically generate these?
+
+  final Map _subjDept = {
     'ACCT': 'BUSI',
     'ACDM': 'ACDM',
     'ANTH': 'SOWK',
@@ -256,8 +223,7 @@ class HTMLHandler {
     'WRIT': 'ENGL',
   };
 
-  // Subject code to full department name
-  static const Map _deptFullname = {
+  final Map _deptFullname = {
     'ACCT': 'Business',
     'ACDM': 'Acadeum',
     'ANTH': 'Social Work & Sociology',

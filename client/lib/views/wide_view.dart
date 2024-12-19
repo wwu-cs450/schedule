@@ -48,9 +48,7 @@ class WideView extends MainView {
     int index,
   ) {
     final color = getColor(index);
-    final gs = aClass.course.isGeneralStudies
-        ? GeneralStudies.findCategory(aClass.course.title) ?? 'GS'
-        : ' ';
+    final gsCategory = GeneralStudies.findCategory(aClass.course.title);
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
     final room = aClass.classroom;
     final schedule = aClass.schedule.toString(is24hr: false);
@@ -84,14 +82,13 @@ class WideView extends MainView {
                 cell('Spring', getTerm(aClass, qtrs[3]), 50.0, color[4]),
                 cell('Summer2', getTerm(aClass, qtrs[4]), 50.0, color[1]),
                 cell('Section', aClass.section, 40.0, color[0], 'c'),
-                MouseRegion(
-                  onEnter: (_) {},
-                  child: Tooltip(
-                    message: gs, // Show the GS category on hover
-                    child: cell('GS', gs, 30.0, color[0]),
-                  ),
-                ),
-                cell('GS', gs, 30.0, color[0]),
+                aClass.course.isGeneralStudies
+                    ? Tooltip(
+                        // Show the GS category on hover
+                        message: gsCategory ?? '(GS category not found)',
+                        child: cell('GS', 'GS', 30.0, color[0]),
+                      )
+                    : cell('GS', '', 30.0, color[0]),
                 cell('Cr', credits, 40.0, color[0]),
                 cell('Title', aClass.getTitle(), 300.0, color[0]),
                 cell('Status', status, 55.0, color[0]),
@@ -139,7 +136,7 @@ class WideView extends MainView {
             Semantics(
               child: Text(
                 key: const Key('Class Found'),
-                '${results.classes.length} classes found on $dateTime.',
+                '${results.classes.length} classes found on $dateTime',
               ),
             ),
             wideHeaderRow(),

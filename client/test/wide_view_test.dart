@@ -111,7 +111,7 @@ void main() {
     expect(classCount, findsOneWidget);
     final textWidget = tester.widget<Text>(classCount);
     final text = textWidget.data;
-    expect(text, '2370 classes found on .');
+    expect(text, '2370 classes found on ');
   });
 }
 
