@@ -1,4 +1,5 @@
 import 'package:client/domain/sample_csv.dart';
+import 'package:client/domain/sample_txt.dart';
 import 'package:csv/csv.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -60,22 +61,26 @@ class CSVHandler {
   }
 
   // returns the content of date_time.txt as a string
-  static Future<String> getDateTime() async {
+  static Future<String> getDateTime({bool test = false}) async {
     try {
-      final response = await html.HttpRequest.request(
-        'assets/date_time.txt',
-        method: 'GET',
-      );
-      if (response.status == 200) {
-        return response.responseText!;
+      if (test) {
+        return await getDate();
       } else {
-        throw Exception(
-          'Failed to load date_time.txt file: ${response.status}',
+        final response = await html.HttpRequest.request(
+          'assets/date_time.txt',
+          method: 'GET',
         );
+        if (response.status == 200) {
+          return response.responseText!;
+        } else {
+          throw Exception(
+            'Failed to load TXT file: ${response.status}',
+          );
+        }
       }
     } catch (e) {
       throw Exception(
-        'Failed to load date_time.txt file: $e \n Remember to run the server',
+        'Failed to load txt file: $e \n Remember to run the server',
       );
     }
   }

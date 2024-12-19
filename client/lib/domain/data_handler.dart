@@ -23,8 +23,8 @@ class DataHandler {
   }
 
   // use this to get date and time from date_time.txt
-  static Future<String> fetchDateTime() async {
-    _dateTime = await CSVHandler.getDateTime();
+  static Future<String> fetchDateTime({bool test = false}) async {
+    _dateTime = await CSVHandler.getDateTime(test: test);
     return _dateTime;
   }
 }
