@@ -130,7 +130,7 @@ class SearchCriteriaView extends ChangeNotifier {
               items: {
                 for (final e in Department.instances) '${e.code} ${e.name}': e,
               },
-              selection: null,
+              selection: SearchCriteria().criteria['Department'],
               width: 200,
             )
           : Container(),
@@ -140,7 +140,7 @@ class SearchCriteriaView extends ChangeNotifier {
               items: {
                 for (final e in Subject.instances) '${e.code} ${e.name}': e,
               },
-              selection: null,
+              selection: SearchCriteria().criteria['Subject'],
               width: 200,
             )
           : Container(),
@@ -150,7 +150,7 @@ class SearchCriteriaView extends ChangeNotifier {
               items: {
                 for (final e in Campus.instances) '${e.code} ${e.name}': e,
               },
-              selection: null,
+              selection: SearchCriteria().criteria['Campus'],
               width: 200,
             )
           : Container(),
@@ -163,7 +163,7 @@ class SearchCriteriaView extends ChangeNotifier {
                 'Upper (300-499)': 'Upper',
                 'Grad (500+)': 'Grad',
               },
-              selection: null,
+              selection: SearchCriteria().criteria['Level'],
               width: 200,
             )
           : Container(),
@@ -188,7 +188,7 @@ class SearchCriteriaView extends ChangeNotifier {
                 '4 Cr': '4',
                 '>4 Cr': '>4',
               },
-              selection: null,
+              selection: SearchCriteria().criteria['Credits'],
               width: 200,
             )
           : Container(),
@@ -205,11 +205,43 @@ class SearchCriteriaView extends ChangeNotifier {
         selection: SearchCriteria().criteria['End Time'],
         width: 200,
       ),
+      resetButton(),
       !results.isFreeClassroomsOnly ? selector(key: 'GS') : Container(),
       !results.isFreeClassroomsOnly ? selector(key: 'Status') : Container(),
       !results.isFreeClassroomsOnly ? selector(key: 'Not Taken') : Container(),
       selector(key: 'Free Classrooms'),
     ];
+  }
+
+  ElevatedButton resetButton() {
+    return ElevatedButton(
+      key: const Key('Reset Filters Button'),
+      onPressed: () {
+        SearchCriteria().criteria['Campus'] = Campus.allCampuses();
+        SearchCriteria().criteria['Department'] = Department.allDepartments();
+        SearchCriteria().criteria['Subject'] = Subject.allSubjects();
+        SearchCriteria().criteria['Term'] = Term.allTerms();
+        SearchCriteria().criteria['Class Number'] = 0;
+        SearchCriteria().criteria['Level'] = 'Any';
+        SearchCriteria().criteria['Credits'] = 'Any';
+        SearchCriteria().criteria['GS'] = false;
+        SearchCriteria().criteria['Status'] = false;
+        SearchCriteria().criteria['Free Classrooms'] = false;
+        SearchCriteria().criteria['Instructor'] = '';
+        SearchCriteria().criteria['Schedule'] = <String>[];
+        SearchCriteria().criteria['Start Time'] = null;
+        SearchCriteria().criteria['End Time'] = null;
+        SearchCriteria().criteria['Not Taken'] = false;
+        doSearch();
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red, // Set the button color to red
+      ),
+      child: Text(
+        'Reset Filters',
+        style: TextStyle(color: Colors.black), // Set the text color to black
+      ),
+    );
   }
 
   void updateSchedule(Term term) {
