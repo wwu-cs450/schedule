@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:client/main.dart';
-import 'package:client/views/search_criteria.dart';
+import 'package:client/views/search_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -36,7 +36,7 @@ Future<void> buildTestEnvironment(WidgetTester tester, double width) async {
   context = tester.element(find.byType(MyApp));
   addTearDown(() async {
     await tester.binding.setSurfaceSize(null);
-    results = SearchCriteria(context);
+    results = SearchCriteriaView(context);
   });
 }
 
@@ -220,14 +220,16 @@ void expectInResults(
                   .hasMatch((widget.key as ValueKey<String>).value) &&
               widget is Column,
         );
+
   for (final key in keys) {
     for (final each in dataFinder.evaluate()) {
+      final cellText = textInCellWithKey(each, '$key $container');
       if (condition != isNot('')) {
-        if (textInCellWithKey(each, '$key $container') != '') {
-          expect(textInCellWithKey(each, '$key $container'), condition);
+        if (cellText != '') {
+          expect(cellText, condition);
         }
       } else {
-        expect(textInCellWithKey(each, '$key $container'), condition);
+        expect(cellText, condition);
       }
     }
   }

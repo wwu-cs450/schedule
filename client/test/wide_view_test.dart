@@ -1,4 +1,6 @@
 import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/prefs.dart';
+import 'package:client/domain/search_criteria.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'feature_test_functions.dart';
@@ -6,7 +8,13 @@ import 'feature_test_functions.dart';
 void main() {
   // For RegExp calls, look up documentation for Regex symbols.
   setUp(() async {
+    AbstractPrefs.instance = MockPrefs();
     await DataHandler.fetchData(test: true);
+  });
+
+  tearDown(() {
+    AbstractPrefs.instance = null;
+    SearchCriteria.clearInstance();
   });
 
   testWidgets('Wide: Search Criteria Test', (WidgetTester tester) async {

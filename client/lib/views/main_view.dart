@@ -1,5 +1,5 @@
 import 'package:client/domain/class.dart';
-import 'package:client/views/search_criteria.dart';
+import 'package:client/views/search_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,7 +13,7 @@ abstract class MainView {
       'Sum ${startYear + 1}',
     ];
   }
-  SearchCriteria results;
+  SearchCriteriaView results;
   int startYear;
   late final List<String> qtrs;
 

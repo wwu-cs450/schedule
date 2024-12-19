@@ -5,6 +5,7 @@ import 'package:client/domain/class.dart';
 import 'package:client/domain/department.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/query.dart';
+import 'package:client/domain/search_criteria.dart';
 import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
 import 'package:client/main.dart';
@@ -12,29 +13,20 @@ import 'package:client/views/multi_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart' as a;
 
-class SearchCriteria extends ChangeNotifier {
-  SearchCriteria(this.context);
+class SearchCriteriaView extends ChangeNotifier {
+  SearchCriteriaView(this.context);
+
   BuildContext context;
   late List<Widget> criteria;
-  final Map<String, dynamic> _searchCriteria = {
-    'Campus': Campus.allCampuses(),
-    'Department': Department.allDepartments(),
-    'Subject': Subject.allSubjects(),
-    'Term': Term.allTerms(),
-    'Class Number': 0,
-    'Level': 'Any',
-    'Credits': 'Any',
-    'GS': false,
-    'Status': false,
-    'Free Classrooms': false,
-    'Instructor': '',
-    'Schedule': <String>[],
-    'Start Time': null,
-    'End Time': null,
-    'Not Taken': false,
-  };
 
-  bool get isFreeClassroomsOnly => _searchCriteria['Free Classrooms'];
+  Future<void> updateSearchCriteria(String key, dynamic value) async {
+    SearchCriteria().criteria[key] = value;
+    await SearchCriteria().save();
+    doSearch();
+    notifyListeners();
+  }
+
+  bool get isFreeClassroomsOnly => SearchCriteria().criteria['Free Classrooms'];
 
   bool scheduleDownloaded = false;
 
@@ -107,7 +99,7 @@ class SearchCriteria extends ChangeNotifier {
   final List<Class> savedData = <Class>[];
   List<Class> classes = <Class>[];
 
-  Widget? sidebar;
+  late Widget sidebar;
 
   void createDrawer() {
     criteria = getCriteria();
@@ -181,7 +173,7 @@ class SearchCriteria extends ChangeNotifier {
       menu(
         key: 'Term',
         items: {for (final e in Term.instances) e.name: e},
-        selection: _searchCriteria['Term'],
+        selection: SearchCriteria().criteria['Term'],
         width: 200,
       ),
       !results.isFreeClassroomsOnly
@@ -204,13 +196,13 @@ class SearchCriteria extends ChangeNotifier {
       menu(
         key: 'Start Time',
         items: startTimes,
-        selection: _searchCriteria['Start Time'],
+        selection: SearchCriteria().criteria['Start Time'],
         width: 200,
       ),
       menu(
         key: 'End Time',
         items: endTimes,
-        selection: _searchCriteria['End Time'],
+        selection: SearchCriteria().criteria['End Time'],
         width: 200,
       ),
       !results.isFreeClassroomsOnly ? selector(key: 'GS') : Container(),
@@ -266,21 +258,24 @@ class SearchCriteria extends ChangeNotifier {
   }
 
   void doSearch() {
+    final instructor = SearchCriteria().criteria['Instructor'];
+    final startTime = SearchCriteria().criteria['Start Time'];
+    final endTime = SearchCriteria().criteria['End Time'];
     classes = Query(
-      department: _searchCriteria['Department'],
-      subject: _searchCriteria['Subject'],
-      term: _searchCriteria['Term'],
-      campus: _searchCriteria['Campus'],
-      classNumber: _searchCriteria['Class Number'],
-      level: _searchCriteria['Level'],
-      credits: _searchCriteria['Credits'],
-      gs: _searchCriteria['GS'],
-      status: _searchCriteria['Status'],
-      notTaken: _searchCriteria['Not Taken'],
-      instructor: _searchCriteria['Instructor'],
-      scheduledDays: _searchCriteria['Schedule'],
-      startTime: _searchCriteria['Start Time'],
-      endTime: _searchCriteria['End Time'],
+      department: SearchCriteria().criteria['Department'],
+      subject: SearchCriteria().criteria['Subject'],
+      term: SearchCriteria().criteria['Term'],
+      campus: SearchCriteria().criteria['Campus'],
+      classNumber: SearchCriteria().criteria['Class Number'],
+      level: SearchCriteria().criteria['Level'],
+      credits: SearchCriteria().criteria['Credits'],
+      gs: SearchCriteria().criteria['GS'],
+      notTaken: SearchCriteria().criteria['Not Taken'],
+      status: SearchCriteria().criteria['Status'],
+      instructor: instructor,
+      scheduledDays: SearchCriteria().criteria['Schedule'],
+      startTime: startTime,
+      endTime: endTime,
     ).results().toList();
     classes.sort();
     smallRowInfo = List.generate(classes.length, (index) => false);
@@ -300,7 +295,7 @@ class SearchCriteria extends ChangeNotifier {
             context: context,
             width: 200,
             allItems: inputList.keys.toList(),
-            selectedItems: _searchCriteria['Schedule'],
+            selectedItems: SearchCriteria().criteria['Schedule'],
             label: 'Weekdays',
             onChanged: () {
               doSearch();
@@ -321,7 +316,7 @@ class SearchCriteria extends ChangeNotifier {
             hint: 'Check this box to filter classes by General Studies.',
             child: Checkbox(
               key: Key('$key Checkbox'),
-              value: _searchCriteria[key],
+              value: SearchCriteria().criteria[key],
               fillColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
                   return const Color(0xFF656950); // Color when selected
@@ -329,9 +324,8 @@ class SearchCriteria extends ChangeNotifier {
                 return Colors.white; // White background when unselected
               }),
               checkColor: Colors.white, // Ensures checkmark is visible on white
-              onChanged: (bool? value) {
-                _searchCriteria[key] = value!;
-                doSearch();
+              onChanged: (bool? value) async {
+                await updateSearchCriteria(key, value!);
               },
             ),
           ),
@@ -359,33 +353,28 @@ class SearchCriteria extends ChangeNotifier {
               filled: true,
               fillColor: const Color.fromARGB(255, 247, 246, 246),
               labelText: key,
-              labelStyle: const TextStyle(fontSize: 14),
+              labelStyle: const TextStyle(fontSize: 12),
             ),
             initialValue: key == 'Class Number'
-                ? _searchCriteria[key] == 0
+                ? SearchCriteria().criteria[key] == 0
                     ? ''
-                    : _searchCriteria[key].toString()
-                : _searchCriteria[key],
-            onChanged: (value) {
+                    : SearchCriteria().criteria[key].toString()
+                : SearchCriteria().criteria[key],
+            onChanged: (value) async {
               if (key == 'Class Number') {
                 if (value.length == 4) {
+                  var classNumber = 0;
                   try {
-                    _searchCriteria[key] = int.parse(value);
+                    classNumber = int.parse(value);
                   } on FormatException {
-                    _searchCriteria[key] = 0;
+                    // not a number
                   }
-                  doSearch();
+                  await updateSearchCriteria(key, classNumber);
                 } else if (value.isEmpty) {
-                  _searchCriteria[key] = 0;
-                  doSearch();
+                  await updateSearchCriteria(key, 0);
                 }
               } else {
-                if (value.isNotEmpty) {
-                  _searchCriteria[key] = value;
-                } else if (value.isEmpty) {
-                  _searchCriteria[key] = '';
-                }
-                doSearch();
+                await updateSearchCriteria(key, value);
               }
             },
           ),
@@ -432,9 +421,8 @@ class SearchCriteria extends ChangeNotifier {
               ),
           ],
           initialSelection: selection,
-          onSelected: (value) {
-            _searchCriteria[key] = value;
-            doSearch();
+          onSelected: (value) async {
+            await updateSearchCriteria(key, value!);
           },
           /*
           The searchCallback is just a temporary patch until Flutter fixes the

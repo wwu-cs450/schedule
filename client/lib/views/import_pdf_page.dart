@@ -86,7 +86,12 @@ class ImportPDFPageState extends State<ImportPDFPage> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: Colors.deepPurple.withOpacity(0.2),
+                  color: Color.fromRGBO(
+                    103,
+                    58,
+                    183,
+                    0.2,
+                  ), // 20% opacity for deepPurple
                   width: 2,
                 ),
               ),
