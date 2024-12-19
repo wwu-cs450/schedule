@@ -114,6 +114,16 @@ class SearchCriteriaView extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deselectAllTerms() {
+    for (final aClass in scheduleData) {
+      aClass.saved = false;
+    }
+    savedData.clear();
+    scheduleData.clear();
+    _scheduleTerm = null;
+    notifyListeners();
+  }
+
   void updateInfo(int index) {
     smallRowInfo[index] = !smallRowInfo[index];
     notifyListeners();

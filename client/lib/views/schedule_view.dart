@@ -190,15 +190,30 @@ class ScheduleView {
     return rows;
   }
 
+  Widget _deselectAllButton() {
+    return Semantics(
+      label: 'Deselect all classes/terms button.',
+      hint: 'Click to deselect all classes.',
+      child: ElevatedButton(
+        key: const Key('Deselect All Button'),
+        onPressed: () {
+          results.deselectAllTerms();
+        },
+        child: const Text('Deselect All Classes'),
+      ),
+    );
+  }
+
   Widget build() {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _termDropdown(),
-            _creditAmount(),
-            _saveData(),
+            Expanded(child: _termDropdown()),
+            Expanded(child: _creditAmount()),
+            Expanded(child: _saveData()),
+            Expanded(child: _deselectAllButton()),
           ],
         ),
         Table(
