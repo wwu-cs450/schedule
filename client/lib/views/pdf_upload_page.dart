@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-
+import 'package:client/domain/class_storage.dart';
 import 'package:client/domain/pdf_helper.dart'; // Import the Dart helper
 import 'package:client/views/audit_view.dart';
 import 'package:client/views/transcript_page.dart';
@@ -146,6 +146,24 @@ class PdfViewState extends State<PdfView> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        key: const Key('Clear Transcript Button'),
+        onPressed: () {
+          // Define the action here
+          final notEmpty = ClassStorage().clearTranscript();
+          if (!notEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No Transcript Stored')),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Transcript Cleared')),
+            );
+          }
+        },
+        tooltip: 'Clear Transcript',
+        child: const Icon(Icons.clear), // Tooltip for accessibility
       ),
     );
   }

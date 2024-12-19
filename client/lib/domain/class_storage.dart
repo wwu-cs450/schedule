@@ -19,6 +19,16 @@ class ClassStorage {
   // Retrieve the stored classes
   List<CompletedClass> get classes => _classes;
 
+  // Clear all stored classes
+  bool clearTranscript() {
+    if (_classes.isEmpty) {
+      return false;
+    } else {
+      _classes.clear();
+      return true;
+    }
+  }
+
   bool haveTaken(Course course) {
     return _classes.any(
       (each) =>
