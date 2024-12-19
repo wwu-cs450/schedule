@@ -1,9 +1,11 @@
 import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/prefs.dart';
 import 'package:client/domain/search_criteria.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'feature_test_functions.dart';
+import 'test_functions.dart';
 
 void main() {
   // For RegExp calls, look up documentation for Regex symbols.
@@ -97,4 +99,20 @@ void main() {
   testWidgets('Wide: Default Sort', (WidgetTester tester) async {
     await defaultSortTest(tester, 2000, type: 'Wide');
   });
+
+  testWidgets('Reset Button', (WidgetTester tester) async {
+    await buildTestEnvironment(tester, 2000);
+    await openDrawer(tester);
+    final Finder resetButton = find.byKey(const Key('Reset Filters Button'));
+    expect(resetButton, findsOneWidget);
+    final Finder department = find.byKey(const Key('Department Dropdown'));
+    expect(department, findsOneWidget);
+    final classCount = find.byKey(const Key('Class Found'));
+    expect(classCount, findsOneWidget);
+    final textWidget = tester.widget<Text>(classCount);
+    final text = textWidget.data;
+    expect(text, '2370 classes found on .');
+  });
 }
+
+// await, pump and settle
