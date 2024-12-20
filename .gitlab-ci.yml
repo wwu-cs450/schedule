@@ -1,4 +1,4 @@
-image: "ghcr.io/cirruslabs/flutter:3.24.5"
+image: "ghcr.io/cirruslabs/flutter:3.27.1"
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
@@ -92,6 +92,6 @@ deploy:
     - rsync -av --delete client/build/web/ /var/www/html/
     - cp server/schedule /opt/
     - sudo /bin/systemctl restart schedule.service
-  # only:
-  #   - main
+  only:
+    - main
   when: manual
