@@ -4,7 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('List from CSV', () async {
-    final List<List<String>> copyData = await DataHandler.fetchData(test: true);
+    await DataHandler.fetchData(test: true);
+    final List<List<String>> copyData = List.from(DataHandler.data);
     const List<List<String>> testCases = [
       [
         '1',
@@ -237,8 +238,9 @@ void main() {
 
   test('CSV from List', () async {
     //using test data
+    await DataHandler.fetchData(test: true);
     final String csv = CSVHandler.csvFromList(
-      await DataHandler.fetchData(test: true),
+      DataHandler.data,
     );
 
     const List<String> testCases = [

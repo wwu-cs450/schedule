@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:client/main.dart';
-import 'package:client/views/search_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -33,14 +32,11 @@ Future<void> buildTestEnvironment(
 }) async {
   await tester.binding.setSurfaceSize(Size(width, height));
   await tester.pumpWidget(
-    const MyApp(
-      dateTime: '',
-    ),
+    const Schedule(),
   );
-  context = tester.element(find.byType(MyApp));
+  context = tester.element(find.byType(Schedule));
   addTearDown(() async {
     await tester.binding.setSurfaceSize(null);
-    results = SearchCriteriaView(context);
   });
 }
 

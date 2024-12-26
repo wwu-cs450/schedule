@@ -1,27 +1,28 @@
+import 'dart:convert';
+
 import 'package:client/domain/class.dart';
 import 'package:client/domain/csv_builder.dart';
+import 'package:client/domain/filters.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/term.dart';
-import 'package:client/main.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_html/html.dart' as html;
 
 class ScheduleView {
   ScheduleView() {
     _terms = _termEntries();
     _terms.removeAt(0);
   }
-  BuildContext context = results.context;
-  late List<DropdownMenuEntry> _terms;
+  late List<DropdownMenuEntry<Term>> _terms;
 
-  List<DropdownMenuEntry> _termEntries() {
-    final entries = <DropdownMenuEntry>[];
+  List<DropdownMenuEntry<Term>> _termEntries() {
+    final entries = <DropdownMenuEntry<Term>>[];
     final Map<String, dynamic> map = {
       for (final e in Term.instances) e.name: e,
     };
     for (final key in map.keys) {
       entries.add(DropdownMenuEntry(value: map[key], label: key));
     }
-
     return entries;
   }
 
@@ -31,7 +32,7 @@ class ScheduleView {
       hint: 'Select a term from the dropdown menu.',
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: DropdownMenu(
+        child: DropdownMenu<Term>(
           menuHeight: 500,
           textStyle: const TextStyle(fontSize: 12),
           inputDecorationTheme: const InputDecorationTheme(
@@ -50,9 +51,9 @@ class ScheduleView {
             style: TextStyle(fontSize: 12),
           ),
           dropdownMenuEntries: _terms,
-          initialSelection: results.scheduleTerm,
+          initialSelection: Filters().scheduleTerm,
           onSelected: (value) {
-            results.updateSchedule(value);
+            Filters().scheduleTerm = value as Term;
           },
         ),
       ),
@@ -60,11 +61,10 @@ class ScheduleView {
   }
 
   Widget _creditAmount() {
-    final credits = results.scheduleData.isEmpty
+    final classes = Filters().savedClassesForScheduleTerm();
+    final credits = classes.isEmpty
         ? 0
-        : results.scheduleData
-            .map((aClass) => aClass.getCredits())
-            .reduce((a, b) => a + b);
+        : classes.map((aClass) => aClass.getCredits()).reduce((a, b) => a + b);
     return Semantics(
       label: 'Credit amount.',
       hint: 'Displays the total number of credits.',
@@ -86,22 +86,34 @@ class ScheduleView {
       child: ElevatedButton(
         key: const Key('Download Button'),
         onPressed: () {
-          results.saveTextFile(createCSV(), 'Schedule.csv');
+          saveTextFile();
         },
         child: const Text('Download Schedule'),
       ),
     );
   }
 
+  void saveTextFile() {
+    final text = createCSV();
+    final filename = 'Schedule.csv';
+    html.AnchorElement()
+      // ignore: unsafe_html
+      ..href =
+          '${Uri.dataFromString(text, mimeType: 'text/plain', encoding: utf8)}'
+      ..download = filename
+      ..style.display = 'none'
+      ..click();
+  }
+
   DecoratedBox _cellBox(
-    String timeDayTitle,
+    String string,
     double fontSize,
   ) {
+    final count = string.split('\n').length;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: timeDayTitle.split('\n').length > 1
-            ? const Color.fromARGB(255, 255, 130, 121)
-            : Colors.white,
+        color:
+            count > 1 ? const Color.fromARGB(255, 255, 130, 121) : Colors.white,
         border: Border.all(
           color: Colors.black,
           width: 1.0,
@@ -111,7 +123,7 @@ class ScheduleView {
         padding: const EdgeInsets.all(5.0),
         child: Center(
           child: Text(
-            timeDayTitle,
+            string,
             style: TextStyle(fontSize: fontSize),
           ),
         ),
@@ -119,10 +131,10 @@ class ScheduleView {
     );
   }
 
-  TableCell tableCell(String input, double fontSz, TextAlign alignOpt) {
+  TableCell tableCell(String string, double fontSz, TextAlign alignOpt) {
     return TableCell(
       verticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
-      child: _cellBox(input, fontSz),
+      child: _cellBox(string, fontSz),
     );
   }
 
@@ -190,19 +202,20 @@ class ScheduleView {
 
   Widget _deselectAllButton() {
     return Semantics(
-      label: 'Deselect all classes/terms button.',
-      hint: 'Click to deselect all classes.',
+      label: 'Remove all saved classes.',
+      hint: 'Click to remove all saved classes.',
       child: ElevatedButton(
         key: const Key('Deselect All Button'),
         onPressed: () {
-          results.deselectAllTerms();
+          Filters().unsaveAll();
         },
-        child: const Text('Deselect All Classes'),
+        child: const Text('Remove All Saved Classes'),
       ),
     );
   }
 
   Widget build() {
+    final classes = Filters().savedClassesForScheduleTerm();
     return Column(
       children: [
         Row(
@@ -227,7 +240,7 @@ class ScheduleView {
           },
           children: [
             _scheduleHeader(),
-            ..._scheduleRows(results.scheduleData),
+            ..._scheduleRows(classes),
           ],
         ),
       ],

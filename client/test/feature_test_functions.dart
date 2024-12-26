@@ -6,12 +6,13 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:client/main.dart';
 import 'package:client/views/audit_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_functions.dart';
+
+const startYear = 2024;
 
 Future<void> searchCriteriaTest(WidgetTester tester, double width) async {
   await buildTestEnvironment(tester, width: width);
@@ -289,7 +290,7 @@ Future<void> scheduleViewTest(
   await doTap(tester, finders['Start Time']!);
   await doTap(tester, options['9:00AM']!);
   await closeDrawer(tester);
-  int fall2023 = 0, winter2024 = 0, spring2024 = 0;
+  int fall2024 = 0, winter2025 = 0, spring2025 = 0;
   final rows = find
       .byWidgetPredicate(
         (Widget widget) =>
@@ -307,15 +308,15 @@ Future<void> scheduleViewTest(
     final fallContent = textInCellWithKey(row, 'Fall $dataContainer');
     final wtrContent = textInCellWithKey(row, 'Winter $dataContainer');
     final sprContent = textInCellWithKey(row, 'Spring $dataContainer');
-    if ((fall2023 < 1) && (fallContent != ' ')) {
+    if ((fall2024 < 1) && (fallContent != ' ')) {
       await doTap(tester, saveBox);
-      fall2023++;
-    } else if ((winter2024 < 2) && (wtrContent != ' ')) {
+      fall2024++;
+    } else if ((winter2025 < 2) && (wtrContent != ' ')) {
       await doTap(tester, saveBox);
-      winter2024++;
-    } else if ((spring2024 < 3) && (sprContent != ' ')) {
+      winter2025++;
+    } else if ((spring2025 < 3) && (sprContent != ' ')) {
       await doTap(tester, saveBox);
-      spring2024++;
+      spring2025++;
     }
   }
 
@@ -326,13 +327,15 @@ Future<void> scheduleViewTest(
 
   // Qualifies as Schedule View test.
   // Also qualifies as download button test.
-  final redBox = find.byWidgetPredicate(
-    (Widget widget) =>
-        widget is DecoratedBox &&
-        widget.decoration is BoxDecoration &&
-        (widget.decoration as BoxDecoration).color ==
-            const Color.fromARGB(255, 255, 130, 121),
-  );
+  final redBox = find
+      .byWidgetPredicate(
+        (Widget widget) =>
+            widget is DecoratedBox &&
+            widget.decoration is BoxDecoration &&
+            (widget.decoration as BoxDecoration).color ==
+                const Color.fromARGB(255, 255, 130, 121),
+      )
+      .hitTestable();
   final termDropdown = find.byKey(const Key('Schedule View Term Dropdown'));
   final downloadButton = find.byKey(const Key('Download Button'));
 

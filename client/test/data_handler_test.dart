@@ -8,7 +8,8 @@ void main() {
     CSVHandler.empty();
   });
   test('Data from CSV', () async {
-    final List<List<String>> copyData = await DataHandler.fetchData(test: true);
+    await DataHandler.fetchData(test: true);
+    final List<List<String>> copyData = DataHandler.data;
     expect(identical(copyData, DataHandler.data), isTrue);
     expect(identical(copyData, CSVHandler.data), isTrue);
     expect(CSVHandler.data, isNotEmpty);

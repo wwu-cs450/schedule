@@ -52,46 +52,81 @@ class Class implements Comparable {
 
   static final _instances = <Class>{};
 
-  static Set<Class> get instances {
-    if (_instances.isEmpty) {
-      Class._initialize();
-    }
-    return _instances;
+  void changeEnrollmentStatus() {
+    isOpenForEnrollment = !isOpenForEnrollment;
   }
 
-  /*
-  0  CRSE_OFFER_NBR
-  1  CAMPUS
-  2  ACAD_YEAR
-  3  ACAD_ORG
-  4  WWU_ACAD_ORG_DESCR
-  5  CLASS_NBR
-  6  WWU_GS
-  7  SUBJECT
-  8  WWU_SUM1
-  9  WWU_FAL
-  10  WWU_WTR
-  11  WWU_SPR
-  12  WWU_SUM2
-  13  CLASS_SECTION
-  14  DESCR
-  15  WWU_UNITS
-  16  ENRL_STAT
-  17  ENRL_TOT
-  18  ENRL_CAP
-  19  WAIT_TOT
-  20  FEE_AMT
-  21  WWU_MTG_PAT_COMB
-  22  WWU_ROOM
-  23  WWU_INSTR_NAME
-  24  DESCRLONG
-  25  INSTRUCTION_MODE
-  26  SCHEDULE_PRINT
-  27  VIDEO_LINK
-  28  CONSENT
-  29  CONSENT_DESCR
-  */
+  // new method get emptyclassrooms takes one arguement of day, hour and minute and returns classrooms that are empty at that time
+  static List<String> getAvailableClassrooms(MeetingTime schedule) {
+    final List<String> availableClassrooms = [];
+    final Set<String> occupiedClassrooms = instances
+        .where((classInstance) => classInstance.schedule.overlaps(schedule))
+        .map((classInstance) => classInstance.classroom)
+        .toSet();
+    for (final classroom in getAllClassrooms()) {
+      if (!occupiedClassrooms.contains(classroom)) {
+        availableClassrooms.add(classroom);
+      }
+    }
+    return availableClassrooms;
+  }
+
+  static List<String> getAllClassrooms() {
+    final Set<String> classrooms = {};
+    for (final classInstance in instances) {
+      classrooms.add(classInstance.classroom);
+    }
+    return classrooms.toList();
+  }
+
+  String getCampus() => campus.code;
+
+  String getCode() => course.subject.code.toString();
+
+  String getInstructors() => instructors.map((e) => e.name).join('\n');
+
+  String getClN() => classNumber.toString();
+
+  String getCoN() => course.number.toString();
+
+  double getCredits() => course.creditsMax;
+
+  String getVideo() => video;
+
   static void _initialize() {
+    // convert CSV data to class instances
+    /*
+       0  CRSE_OFFER_NBR
+       1  CAMPUS
+       2  ACAD_YEAR
+       3  ACAD_ORG
+       4  WWU_ACAD_ORG_DESCR
+       5  CLASS_NBR
+       6  WWU_GS
+       7  SUBJECT
+       8  WWU_SUM1
+       9  WWU_FAL
+      10  WWU_WTR
+      11  WWU_SPR
+      12  WWU_SUM2
+      13  CLASS_SECTION
+      14  DESCR
+      15  WWU_UNITS
+      16  ENRL_STAT
+      17  ENRL_TOT
+      18  ENRL_CAP
+      19  WAIT_TOT
+      20  FEE_AMT
+      21  WWU_MTG_PAT_COMB
+      22  WWU_ROOM
+      23  WWU_INSTR_NAME
+      24  DESCRLONG
+      25  INSTRUCTION_MODE
+      26  SCHEDULE_PRINT
+      27  VIDEO_LINK
+      28  CONSENT
+      29  CONSENT_DESCR
+  */
     Course.getAllCourses();
     final classData = DataHandler.data;
     for (final listing in classData) {
@@ -197,31 +232,11 @@ class Class implements Comparable {
     }
   }
 
-  static List<String> getAllClassrooms() {
-    final Set<String> classrooms = {};
-    for (final classInstance in instances) {
-      classrooms.add(classInstance.classroom);
+  static Set<Class> get instances {
+    if (_instances.isEmpty) {
+      Class._initialize();
     }
-    return classrooms.toList();
-  }
-
-  void changeEnrollmentStatus() {
-    isOpenForEnrollment = !isOpenForEnrollment;
-  }
-
-  // new method get emptyclassrooms takes one arguement of day, hour and minute and returns classrooms that are empty at that time
-  static List<String> getAvailableClassrooms(MeetingTime schedule) {
-    final List<String> availableClassrooms = [];
-    final Set<String> occupiedClassrooms = instances
-        .where((classInstance) => classInstance.schedule.overlaps(schedule))
-        .map((classInstance) => classInstance.classroom)
-        .toSet();
-    for (final classroom in getAllClassrooms()) {
-      if (!occupiedClassrooms.contains(classroom)) {
-        availableClassrooms.add(classroom);
-      }
-    }
-    return availableClassrooms;
+    return _instances;
   }
 
   void updateWaitlist(String updateType) {
@@ -232,32 +247,6 @@ class Class implements Comparable {
     } else {
       throw 'waitlist out of bounds';
     }
-  }
-
-  String getCampus() => campus.code;
-
-  String getCode() {
-    return course.subject.code.toString();
-  }
-
-  String getVideo() {
-    return video;
-  }
-
-  String getInstructors() {
-    return instructors.map((e) => e.name).join('\n');
-  }
-
-  String getClN() {
-    return classNumber.toString();
-  }
-
-  String getCoN() {
-    return course.number.toString();
-  }
-
-  double getCredits() {
-    return course.creditsMax;
   }
 
   // Below are filter functions, used in the query class to filter the results.
@@ -384,5 +373,10 @@ class Class implements Comparable {
         .compareTo(
       '${other.course.subject.code} ${other.course.number} ${other.term.code} ${other.section}',
     );
+  }
+
+  @override
+  String toString() {
+    return '${course.subject.code} ${course.number} $section';
   }
 }
