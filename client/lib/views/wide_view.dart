@@ -27,7 +27,7 @@ class WideView extends MainView {
           headerCell('GS', 30.0),
           headerCell('Cr', 40.0),
           headerCell('Course Title', 300.0),
-          headerCell('Status', 55.0),
+          headerCell('Is Open', 55.0),
           headerCell('Count', 55.0),
           headerCell('Limit', 55.0),
           headerCell('Waitlist', 55.0),
@@ -84,14 +84,15 @@ class WideView extends MainView {
                 cell('Section', aClass.section, 40.0, color[0], 'c'),
                 aClass.course.isGeneralStudies
                     ? Tooltip(
-                        // Show the GS category on hover
-                        message: gsCategory ?? '(GS category not found)',
-                        child: cell('GS', 'GS', 30.0, color[0]),
+                        // Show the General Studies category on hover
+                        message: gsCategory ??
+                            '(General Studies category not found)',
+                        child: cell('General Studies', 'GS', 30.0, color[0]),
                       )
-                    : cell('GS', '', 30.0, color[0]),
+                    : cell('General Studies', '', 30.0, color[0]),
                 cell('Cr', credits, 40.0, color[0]),
                 cell('Title', aClass.getTitle(), 300.0, color[0]),
-                cell('Status', status, 55.0, color[0]),
+                cell('Is Open', status, 55.0, color[0]),
                 cell('Enrollment', enroll[0], 55.0, color[0], 'r'),
                 cell('EnrollmentLimit', enroll[1], 55.0, color[0], 'r'),
                 cell('WaitlistSize', aClass.getWList(), 55.0, color[0], 'r'),

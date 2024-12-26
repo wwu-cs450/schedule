@@ -1,6 +1,6 @@
 import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/filters.dart';
 import 'package:client/domain/prefs.dart';
-import 'package:client/domain/search_criteria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,7 +16,7 @@ void main() {
 
   tearDown(() {
     AbstractPrefs.instance = null;
-    SearchCriteria.clearInstance();
+    Filters.clearInstance();
   });
 
   testWidgets('Wide: Search Criteria Test', (WidgetTester tester) async {
@@ -80,7 +80,12 @@ void main() {
   });
 
   testWidgets('Wide: Search by Only GS', (WidgetTester tester) async {
-    await gsTest(tester, 2000, requirement: equals('GS'), type: 'Wide');
+    await gsTest(
+      tester,
+      2000,
+      requirement: equals('General Studies'),
+      type: 'Wide',
+    );
   });
 
   testWidgets('Wide: Search by Only Not Taken', (WidgetTester tester) async {
@@ -101,9 +106,9 @@ void main() {
   });
 
   testWidgets('Reset Button', (WidgetTester tester) async {
-    await buildTestEnvironment(tester, 2000);
+    await buildTestEnvironment(tester, width: 2000, height: 1500);
     await openDrawer(tester);
-    final Finder resetButton = find.byKey(const Key('Reset Filters Button'));
+    final Finder resetButton = find.byKey(const Key('Clear Filters Button'));
     expect(resetButton, findsOneWidget);
     final Finder department = find.byKey(const Key('Department Dropdown'));
     expect(department, findsOneWidget);

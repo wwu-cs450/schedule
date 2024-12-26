@@ -40,6 +40,10 @@ class Term implements Comparable {
     return foundTerm;
   }
 
+  static Term fromCode(int code) {
+    return instances.firstWhere((term) => term.code == code);
+  }
+
   static Term allTerms() {
     return instances.first;
   }

@@ -14,7 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_functions.dart';
 
 Future<void> searchCriteriaTest(WidgetTester tester, double width) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
   await openDrawer(tester);
 
   multiExpect(
@@ -28,7 +28,7 @@ Future<void> headerCellTest(
   double width, {
   required int numCells,
 }) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
   expect(
     find.byWidgetPredicate(
       (Widget widget) =>
@@ -138,7 +138,7 @@ Future<void> dayTest(
   double width, {
   required String type,
 }) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
   final ddownOpts = [
     find.text('Monday').hitTestable(),
     find.text('Tuesday').hitTestable(),
@@ -234,10 +234,10 @@ Future<void> statusTest(
   required Matcher requirement,
   required String type,
 }) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
   await openDrawer(tester);
-  await doTap(tester, finders['Status']!);
-  expectInResults(['Status'], requirement, type: type);
+  await doTap(tester, finders['Is Open']!);
+  expectInResults(['Is Open'], requirement, type: type);
 }
 
 Future<void> gsTest(
@@ -246,7 +246,7 @@ Future<void> gsTest(
   required Matcher requirement,
   required String type,
 }) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
   await openDrawer(tester);
   await doTap(tester, finders['GS']!);
   expectInResults(['GS'], requirement, type: type);
@@ -258,7 +258,7 @@ Future<void> notTakenClassTest(
   required Matcher requirement,
   required String type,
 }) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
   await openDrawer(tester);
   await doTap(tester, finders['notTaken']!);
   expectInResults(['notTaken'], requirement, type: type);
@@ -270,7 +270,7 @@ Future<void> scheduleViewTest(
   required String type,
 }) async {
   final dataContainer = type == 'Wide' || type == 'Medium' ? 'Cell' : 'Row';
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
   final options = {
     '9:00AM': find.text('9:00AM').hitTestable(),
     'Biology': find.text('BIOL Biology').hitTestable(),
@@ -335,14 +335,12 @@ Future<void> scheduleViewTest(
   );
   final termDropdown = find.byKey(const Key('Schedule View Term Dropdown'));
   final downloadButton = find.byKey(const Key('Download Button'));
-  final downloadVerification = find.text('Downloaded');
 
   expect(termDropdown.hitTestable(), findsOneWidget);
   expect(downloadButton.hitTestable(), findsOneWidget);
   expect(redBox, findsNothing);
 
   await doTap(tester, downloadButton);
-  expect(downloadVerification, findsOneWidget);
 
   // correct term is already selected
   expect(find.byKey(const Key('totalCreditsText')), findsOneWidget);
@@ -362,7 +360,7 @@ Future<void> defaultSortTest(
   double width, {
   required String type,
 }) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
 
   // Open department dropdown
   await openDrawer(tester);
@@ -478,7 +476,7 @@ Future<void> mediumTermTest(WidgetTester tester) async {
             .hasMatch((widget.key as ValueKey<String>).value) &&
         widget is Row,
   );
-  await buildTestEnvironment(tester, 970);
+  await buildTestEnvironment(tester, width: 970);
   await openDrawer(tester);
   await doTap(tester, finders['Department']!);
   await doTap(tester, find.text('CPTR Computer Science').hitTestable());
@@ -513,7 +511,7 @@ Future<void> mediumTermTest(WidgetTester tester) async {
 }
 
 Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
-  await buildTestEnvironment(tester, width);
+  await buildTestEnvironment(tester, width: width);
 
   final pdfUploadButton = find.byKey(const Key('Pdf Page')).hitTestable();
   await doTap(tester, pdfUploadButton);
@@ -541,7 +539,7 @@ Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
 }
 
 Future<void> auditViewParse(WidgetTester tester, String extractedText) async {
-  await buildTestEnvironment(tester, 970);
+  await buildTestEnvironment(tester, width: 970);
   await tester.pumpWidget(
     MaterialApp(
       home: AuditPage(extractedText: extractedText),

@@ -1,6 +1,6 @@
 import 'package:client/domain/class.dart';
 import 'package:client/domain/data_handler.dart';
-import 'package:client/domain/search_criteria.dart';
+import 'package:client/domain/filters.dart';
 import 'package:client/views/error_view.dart';
 import 'package:client/views/medium_view.dart';
 import 'package:client/views/search_drawer.dart';
@@ -15,7 +15,7 @@ Future<void> main() async {
   String? errorMessage;
   String dateTime = '';
   try {
-    await SearchCriteria().load();
+    await Filters().load();
     await DataHandler.fetchData();
     Class.instances;
     dateTime = await DataHandler.fetchDateTime();

@@ -1,89 +1,50 @@
-import 'package:client/domain/campus.dart';
 import 'package:client/domain/class.dart';
-import 'package:client/domain/department.dart';
+import 'package:client/domain/filters.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/meeting_time.dart';
-import 'package:client/domain/subject.dart';
-import 'package:client/domain/term.dart';
 
 class Query {
   Query({
-    Department? department,
-    Subject? subject,
-    Term? term,
-    Campus? campus,
+    required this.searchCriteria,
     ({HourMinute start, HourMinute end})? times,
-    bool?
-        includeSpecialTimes, // ARR and '' (class with specified time AND ARR will be included regardless)
+    // ARR and '' (class with specified time AND ARR will be included regardless)
+    bool? includeSpecialTimes,
     Set<int>? days,
-    int classNumber = 0,
-    String level = '',
-    String credits = '',
-    bool gs = false,
-    bool status = false,
-    bool notTaken = false,
-    String? instructor,
-    List<String> scheduledDays = const <String>[],
-    HourMinute? startTime,
-    HourMinute? endTime,
   }) {
-    _department = department ?? Department.allDepartments();
-    _subject = subject ?? Subject.allSubjects();
-    _term = term ?? Term.allTerms();
-    _campus = campus ?? Campus.allCampuses();
+    _scheduledDays = searchCriteria.schedule;
     _times = times;
     times == null && days == null
         ? _includeSpecialTimes = includeSpecialTimes ?? true
         : _includeSpecialTimes = false;
     _days = days;
-    _classNumber = classNumber;
-    _level = level;
-    _credits = credits;
-    _gs = gs;
-    _status = status;
-    _notTaken = notTaken;
-    _instructor = instructor ?? '';
-    _scheduledDays = scheduledDays;
-    _startTime = startTime;
-    _endTime = endTime;
   }
 
-  late final Department _department;
-  late final Subject _subject;
-  late final Term _term;
-  late final Campus _campus;
+  Filters searchCriteria;
   late final ({HourMinute start, HourMinute end})? _times;
   late final bool _includeSpecialTimes;
   late final Set<int>? _days;
-  late final int _classNumber;
-  late final String _level;
-  late final String _credits;
-  late final bool _gs;
-  late final bool _status;
-  late final bool _notTaken;
-  late final String _instructor;
   late final List<String> _scheduledDays;
-  late final HourMinute? _startTime;
-  late final HourMinute? _endTime;
 
   Set<Class> results() {
     return Class.instances
         .where(
           (each) =>
-              _department.includesCourse(each.course) && //department
-              _subject.includesCourse(each.course) && // course
-              _term.includesClass(each) && // term
-              _campus.includesClass(each) && // campus
-              each.includesLevel(_level) && // level
-              each.includesCredits(_credits) &&
-              each.includesGS(_gs) &&
-              each.includesOpen(_status) &&
-              each.includesNotTaken(_notTaken) &&
-              each.includesInstructor(_instructor) &&
+              searchCriteria.department
+                  .includesCourse(each.course) && //department
+              searchCriteria.subject.includesCourse(each.course) && // course
+              searchCriteria.term.includesClass(each) && // term
+              searchCriteria.campus.includesClass(each) && // campus
+              each.includesLevel(searchCriteria.level) && // level
+              each.includesCredits(searchCriteria.credits) &&
+              each.includesGS(searchCriteria.isGS) &&
+              each.includesOpen(searchCriteria.isOpen) &&
+              each.includesNotTaken(searchCriteria.isNotTaken) &&
+              each.includesInstructor(searchCriteria.instructor) &&
               each.includesDays(_scheduledDays) &&
-              each.includesStartTime(_startTime) &&
-              each.includesEndTime(_endTime) &&
-              (_classNumber == 0 || _classNumber == each.classNumber) &&
+              each.includesStartTime(searchCriteria.startTime) &&
+              each.includesEndTime(searchCriteria.endTime) &&
+              (searchCriteria.classNumber == 0 ||
+                  searchCriteria.classNumber == each.classNumber) &&
               ((_includeSpecialTimes &&
                       (each.schedule.isEmpty || each.schedule.isARR)) ||
                   each.schedule

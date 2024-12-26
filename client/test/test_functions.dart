@@ -19,15 +19,19 @@ final Map<String, Finder> finders = {
   'End Time': find.byKey(const Key('End Time Dropdown')).hitTestable(),
   'Class Number': find.byKey(const Key('Class Number Text Box')).hitTestable(),
   'Instructors': find.byKey(const Key('Instructor Text Box')).hitTestable(),
-  'Status': find.byKey(const Key('Status Checkbox')).hitTestable(),
-  'GS': find.byKey(const Key('GS Checkbox')).hitTestable(),
+  'Is Open': find.byKey(const Key('Is Open Checkbox')).hitTestable(),
+  'GS': find.byKey(const Key('General Studies Checkbox')).hitTestable(),
   'notTaken': find.byKey(const Key('Not Taken Checkbox')).hitTestable(),
 };
 
 late BuildContext context;
 
-Future<void> buildTestEnvironment(WidgetTester tester, double width) async {
-  await tester.binding.setSurfaceSize(Size(width, 1000));
+Future<void> buildTestEnvironment(
+  WidgetTester tester, {
+  double width = 2000,
+  double height = 1000,
+}) async {
+  await tester.binding.setSurfaceSize(Size(width, height));
   await tester.pumpWidget(
     const MyApp(
       dateTime: '',
@@ -152,7 +156,7 @@ Future<void> dropdownTester(
   required double testerWidth,
 }) async {
   final String type = testerWidth > 965 ? 'Wide' : 'Small';
-  await buildTestEnvironment(tester, testerWidth);
+  await buildTestEnvironment(tester, width: testerWidth);
   final ddownOpts = options.map((e) => find.text(e).hitTestable()).toList();
   await openDrawer(tester);
   expect(find.byKey(Key('$menu Dropdown')), findsOneWidget);
@@ -186,7 +190,7 @@ Future<void> textBoxTester(
   required double testerWidth,
 }) async {
   final String type = testerWidth > 950 ? 'Wide' : 'Small';
-  await buildTestEnvironment(tester, testerWidth);
+  await buildTestEnvironment(tester, width: testerWidth);
   await openDrawer(tester);
   // multiExpect(txtOpts, findsNothing);
   for (final opt in txtOpts) {

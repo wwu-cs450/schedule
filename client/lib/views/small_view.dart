@@ -20,11 +20,7 @@ class SmallView extends MainView {
     }
 
     String gsCheck() {
-      if (aClass.course.isGeneralStudies) {
-        return 'GS';
-      } else {
-        return 'Not GS';
-      }
+      return aClass.course.isGeneralStudies ? 'GS' : 'Not GS';
     }
 
     final term = aClass.term.name.split(' ')[0];

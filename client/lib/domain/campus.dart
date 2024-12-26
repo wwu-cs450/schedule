@@ -27,6 +27,10 @@ class Campus implements Comparable {
   int compareTo(dynamic other) {
     return name.compareTo(other.name);
   }
+
+  static Campus fromCode(String code) {
+    return instances.firstWhere((campus) => campus.code == code);
+  }
 }
 
 class AllCampuses extends Campus {
