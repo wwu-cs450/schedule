@@ -21,7 +21,7 @@ void main() {
       //test 1
       final course1 = Course(
         Department.departmentWithCode('CPTR'),
-        Subject.subjectWithCode('CPTR'),
+        Subject.fromCode('CPTR'),
         'Software Engineering',
         '450',
         'upper',
@@ -44,7 +44,7 @@ void main() {
       //test 2 - this is a duplicate class to test if the function returns unique classrooms
       final course2 = Course(
         Department.departmentWithCode('CPTR'),
-        Subject.subjectWithCode('CPTR'),
+        Subject.fromCode('CPTR'),
         'Software Engineering',
         '452',
         'upper',

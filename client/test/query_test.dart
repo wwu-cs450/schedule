@@ -5,68 +5,65 @@ import 'package:client/domain/campus.dart';
 import 'package:client/domain/class.dart';
 import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/department.dart';
+import 'package:client/domain/filters.dart';
 import 'package:client/domain/hourminute.dart';
+import 'package:client/domain/prefs.dart';
 import 'package:client/domain/query.dart';
 import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  final searchCriteria = Filters();
+
   setUp(() async {
+    AbstractPrefs.instance = MockPrefs();
+    searchCriteria.reset();
     await DataHandler.fetchData(test: true);
   });
+
   test('null query (all results)', () {
-    expect(Query().results().length, 2370);
+    expect(Query(searchCriteria: Filters()).results().length, 2370);
   });
 
-  test('count query results', () {
+  test('count query results', () async {
+    final all = Query(searchCriteria: Filters()).results().length;
+
     final csDepartment =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
-    expect(csDepartment.code, 'CPTR');
+    await searchCriteria.setDepartment(csDepartment);
+    final dCount = Query(searchCriteria: searchCriteria).results().length;
+    expect(dCount < all, isTrue);
+
     final csSubject =
         Subject.instances.firstWhere((each) => each.code == 'CPTR');
+    searchCriteria.reset();
+    await searchCriteria.setSubject(csSubject);
+    final sCount = Query(searchCriteria: searchCriteria).results().length;
+    expect(sCount < all, isTrue);
+
     final term = Term.instances.firstWhere((each) => each.code == 2241);
+    searchCriteria.reset();
+    await searchCriteria.setTerm(term);
+    final tCount = Query(searchCriteria: searchCriteria).results().length;
+    expect(tCount < all, isTrue);
+
     final campus = Campus.instances.firstWhere((each) => each.code == 'CP');
-    final allCampuses = Campus.allCampuses();
-    final allDepartments = Department.allDepartments();
-    final allSubjects = Subject.allSubjects();
-    final allTerms = Term.allTerms();
-    expect(allDepartments.code, '');
-    expect(allDepartments.name, 'All Departments');
-    expect(allSubjects.code, '');
-    expect(allSubjects.name, 'All Subjects');
-    expect(allTerms.code, 0);
-    expect(allTerms.name, 'All Terms');
-    expect(allCampuses.code, '');
-    expect(allCampuses.name, 'All Campuses');
-    final all = Query().results().length;
-    final dCount = Query(department: csDepartment).results().length;
-    final sCount = Query(subject: csSubject).results().length;
-    final tCount = Query(term: term).results().length;
-    final cCount = Query(campus: campus).results().length;
-    final tAndsCount = Query(subject: csSubject, term: term).results().length;
-    final dAndtCount =
-        Query(department: csDepartment, term: term).results().length;
-    final bCount =
-        Query(department: csDepartment, subject: csSubject, term: term)
-            .results()
-            .length;
-    expect(
-      all > dCount &&
-          all > sCount &&
-          all > tCount &&
-          all > cCount &&
-          all > tAndsCount &&
-          all > dAndtCount &&
-          all > bCount,
-      isTrue,
-    );
+    searchCriteria.reset();
+    await searchCriteria.setCampus(campus);
+    final cCount = Query(searchCriteria: searchCriteria).results().length;
+    expect(cCount < all, isTrue);
   });
-  test('query finds CPTR', () {
+
+  test('query finds CPTR', () async {
     final department =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    final list = Query(department: department, subject: subject).results();
+    await searchCriteria.setDepartment(department);
+    await searchCriteria.setSubject(subject);
+    final list = Query(searchCriteria: searchCriteria).results();
     expect(
       list.every((element) => element.course.department.code == 'CPTR'),
       isTrue,
@@ -76,10 +73,12 @@ void main() {
       isTrue,
     );
   });
-  test('query finds multiple codes within the Theology department', () {
+
+  test('query finds multiple codes within the Theology department', () async {
     final department =
         Department.instances.firstWhere((each) => each.code == 'RELB');
-    final codes = Query(department: department).results();
+    await searchCriteria.setDepartment(department);
+    final codes = Query(searchCriteria: searchCriteria).results();
     expect(
       codes.any((element) => element.course.subject.code == 'RELB'),
       isTrue,
@@ -108,40 +107,48 @@ void main() {
     );
   });
 
-  test('query finds Summer 2023', () {
+  test('query finds Summer 2023', () async {
     final term = Term.instances.firstWhere((each) => each.code == 2236);
-    final list = Query(term: term).results();
+    await searchCriteria.setTerm(term);
+    final list = Query(searchCriteria: searchCriteria).results();
     expect(list.every((element) => element.term.code == 2236), isTrue);
   });
-  test('query finds class number 1408', () {
-    final list = Query(classNumber: 1408).results();
+
+  test('query finds class number 1408', () async {
+    await searchCriteria.setClassNumber(1408);
+    final list = Query(searchCriteria: searchCriteria).results();
     expect(list.every((element) => element.classNumber == 1408), isTrue);
     expect(list.length == 2, isTrue);
   });
 
-  test('query finds College Place', () {
+  test('query finds College Place', () async {
     final campus =
         Campus.instances.firstWhere((each) => each.name == 'College Place');
-    final list = Query(campus: campus).results();
+    await searchCriteria.setCampus(campus);
+    final list = Query(searchCriteria: searchCriteria).results();
     expect(list.every((element) => element.campus.code == 'CP'), isTrue);
   });
 
   test('Query times', () {
-    final int allLength = Query().results().length;
-    final Set<Class> noSpecial = Query(includeSpecialTimes: false).results();
-    final Set<Class> largeRange =
-        Query(times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)))
-            .results();
+    final int allLength = Query(searchCriteria: Filters()).results().length;
+    final Set<Class> noSpecial =
+        Query(searchCriteria: Filters(), includeSpecialTimes: false).results();
+    final Set<Class> largeRange = Query(
+      searchCriteria: Filters(),
+      times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
+    ).results();
     final Set<Class> largeRangeSpecificDay = Query(
+      searchCriteria: Filters(),
       days: {DateTime.tuesday},
       times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
     ).results();
-    final int shortRangeLength =
-        Query(times: (start: HourMinute(hour: 8), end: HourMinute(hour: 10)))
-            .results()
-            .length;
+    final int shortRangeLength = Query(
+      searchCriteria: Filters(),
+      times: (start: HourMinute(hour: 8), end: HourMinute(hour: 10)),
+    ).results().length;
     // I think it is actually sunday but classopen doesn't follow the same day letter standard
     final Set<Class> containsSkiing = Query(
+      searchCriteria: Filters(),
       days: {
         DateTime.saturday,
       },

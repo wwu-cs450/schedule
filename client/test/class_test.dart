@@ -18,7 +18,7 @@ void main() {
   test('constructor and accessors', () {
     final course = Course(
       Department.departmentWithCode('CPTR'),
-      Subject.subjectWithCode('CPTR'),
+      Subject.fromCode('CPTR'),
       'Software Engineering',
       '450',
       'upper',

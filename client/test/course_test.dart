@@ -11,7 +11,7 @@ void main() {
   test('constructor and accessors', () {
     final course = Course(
       Department.departmentWithCode('CPTR'),
-      Subject.subjectWithCode('CPTR'),
+      Subject.fromCode('CPTR'),
       'Fundamentals of Programming I',
       '141',
       'lower',
@@ -29,7 +29,7 @@ void main() {
   test('constructor and accessors on lab', () {
     final course = Course(
       Department.departmentWithCode('ART'),
-      Subject.subjectWithCode('DRMA'),
+      Subject.fromCode('DRMA'),
       'Performance',
       '253SN',
       'upper',

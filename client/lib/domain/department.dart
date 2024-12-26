@@ -26,6 +26,10 @@ class Department implements Comparable {
     }
   }
 
+  static Department fromCode(String code) {
+    return instances.firstWhere((department) => department.code == code);
+  }
+
   bool includesCourse(Course course) {
     return course.department == this;
   }

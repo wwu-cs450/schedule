@@ -101,7 +101,7 @@ class Course implements Comparable {
       }
 
       final department = Department.departmentWithCode(classData[3]);
-      final subject = Subject.subjectWithCode(classData[7]);
+      final subject = Subject.fromCode(classData[7]);
       _instances.add(
         Course(
           department,

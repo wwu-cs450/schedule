@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:client/domain/campus.dart';
 import 'package:client/domain/class.dart';
 import 'package:client/domain/department.dart';
+import 'package:client/domain/filters.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/query.dart';
-import 'package:client/domain/search_criteria.dart';
 import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
 import 'package:client/main.dart';
@@ -19,16 +19,12 @@ class SearchCriteriaView extends ChangeNotifier {
   BuildContext context;
   late List<Widget> criteria;
 
-  Future<void> updateSearchCriteria(String key, dynamic value) async {
-    SearchCriteria().criteria[key] = value;
-    await SearchCriteria().save();
+  Future<void> _updateSearchCriteria() async {
     doSearch();
     notifyListeners();
   }
 
-  bool get isFreeClassroomsOnly => SearchCriteria().criteria['Free Classrooms'];
-
-  bool scheduleDownloaded = false;
+  bool get isFreeClassroomsOnly => Filters().isFreeClassrooms;
 
   Term? _scheduleTerm;
   List<Class> scheduleData = <Class>[];
@@ -79,7 +75,6 @@ class SearchCriteriaView extends ChangeNotifier {
       ..download = filename
       ..style.display = 'none'
       ..click();
-    scheduleDownloaded = true;
     notifyListeners();
   }
 
@@ -130,65 +125,111 @@ class SearchCriteriaView extends ChangeNotifier {
   }
 
   List<Widget> getCriteria() {
+    final classNumber = Filters().classNumber.toString();
     return [
       !results.isFreeClassroomsOnly
-          ? textForm(key: 'Class Number', width: 100)
+          ? _textField(
+              key: 'Class Number',
+              width: 100,
+              value: classNumber == '0' ? '' : classNumber,
+              onChanged: (value) async {
+                var classNumber = 0;
+                if (value.length == 4) {
+                  try {
+                    classNumber = int.parse(value);
+                  } on FormatException {
+                    // not a number
+                  }
+                }
+                await Filters().setClassNumber(classNumber);
+                await _updateSearchCriteria();
+              },
+            )
           : Container(),
       !results.isFreeClassroomsOnly
-          ? menu(
+          ? _dropdown(
               key: 'Department',
+              width: 200,
               items: {
                 for (final e in Department.instances) '${e.code} ${e.name}': e,
               },
-              selection: SearchCriteria().criteria['Department'],
-              width: 200,
+              selection: Filters().department,
+              onSelected: (value) async {
+                await Filters().setDepartment(value);
+                await _updateSearchCriteria();
+              },
             )
           : Container(),
       !results.isFreeClassroomsOnly
-          ? menu(
+          ? _dropdown(
               key: 'Subject',
+              width: 200,
               items: {
                 for (final e in Subject.instances) '${e.code} ${e.name}': e,
               },
-              selection: SearchCriteria().criteria['Subject'],
-              width: 200,
+              selection: Filters().subject,
+              onSelected: (value) async {
+                await Filters().setSubject(value);
+                await _updateSearchCriteria();
+              },
             )
           : Container(),
       !results.isFreeClassroomsOnly
-          ? menu(
+          ? _dropdown(
               key: 'Campus',
+              width: 200,
               items: {
                 for (final e in Campus.instances) '${e.code} ${e.name}': e,
               },
-              selection: SearchCriteria().criteria['Campus'],
-              width: 200,
+              selection: Filters().campus,
+              onSelected: (value) async {
+                await Filters().setCampus(value);
+                await _updateSearchCriteria();
+              },
             )
           : Container(),
       !results.isFreeClassroomsOnly
-          ? menu(
+          ? _dropdown(
               key: 'Level',
+              width: 200,
               items: {
                 'Any Level': 'Any',
                 'Lower (100-299)': 'Lower',
                 'Upper (300-499)': 'Upper',
                 'Grad (500+)': 'Grad',
               },
-              selection: SearchCriteria().criteria['Level'],
-              width: 200,
+              selection: Filters().level,
+              onSelected: (value) async {
+                await Filters().setLevel(value);
+                await _updateSearchCriteria();
+              },
             )
           : Container(),
       !results.isFreeClassroomsOnly
-          ? textForm(key: 'Instructor', width: 100)
+          ? _textField(
+              key: 'Instructor',
+              width: 100,
+              value: Filters().instructor,
+              onChanged: (value) async {
+                await Filters().setInstructor(value);
+                await _updateSearchCriteria();
+              },
+            )
           : Container(),
-      menu(
+      _dropdown(
         key: 'Term',
-        items: {for (final e in Term.instances) e.name: e},
-        selection: SearchCriteria().criteria['Term'],
         width: 200,
+        items: {for (final e in Term.instances) e.name: e},
+        selection: Filters().term,
+        onSelected: (value) async {
+          await Filters().setTerm(value);
+          await _updateSearchCriteria();
+        },
       ),
       !results.isFreeClassroomsOnly
-          ? menu(
+          ? _dropdown(
               key: 'Credits',
+              width: 200,
               items: {
                 'Any Credit': 'Any',
                 '0 Cr': '0',
@@ -198,58 +239,93 @@ class SearchCriteriaView extends ChangeNotifier {
                 '4 Cr': '4',
                 '>4 Cr': '>4',
               },
-              selection: SearchCriteria().criteria['Credits'],
-              width: 200,
+              selection: Filters().credits,
+              onSelected: (value) async {
+                await Filters().setCredits(value);
+                await _updateSearchCriteria();
+              },
             )
           : Container(),
       selectWeekdays(),
-      menu(
+      _dropdown(
         key: 'Start Time',
+        width: 200,
         items: startTimes,
-        selection: SearchCriteria().criteria['Start Time'],
-        width: 200,
+        selection: Filters().startTime,
+        onSelected: (value) async {
+          await Filters().setStartTime(value);
+          await _updateSearchCriteria();
+        },
       ),
-      menu(
+      _dropdown(
         key: 'End Time',
-        items: endTimes,
-        selection: SearchCriteria().criteria['End Time'],
         width: 200,
+        items: endTimes,
+        selection: Filters().endTime,
+        onSelected: (value) async {
+          await Filters().setEndTime(value);
+          await _updateSearchCriteria();
+        },
       ),
-      resetButton(),
-      !results.isFreeClassroomsOnly ? selector(key: 'GS') : Container(),
-      !results.isFreeClassroomsOnly ? selector(key: 'Status') : Container(),
-      !results.isFreeClassroomsOnly ? selector(key: 'Not Taken') : Container(),
-      selector(key: 'Free Classrooms'),
+      !results.isFreeClassroomsOnly
+          ? _checkbox(
+              key: 'General Studies',
+              value: Filters().isGS,
+              onChanged: () async {
+                await Filters().setIsGS(!Filters().isGS);
+                await _updateSearchCriteria();
+              },
+            )
+          : Container(),
+      !results.isFreeClassroomsOnly
+          ? _checkbox(
+              key: 'Is Open',
+              value: Filters().isOpen,
+              onChanged: () async {
+                await Filters().setIsOpen(!Filters().isOpen);
+                await _updateSearchCriteria();
+              },
+            )
+          : Container(),
+      !results.isFreeClassroomsOnly
+          ? _checkbox(
+              key: 'Not Taken',
+              value: Filters().isNotTaken,
+              onChanged: () async {
+                await Filters().setIsNotTaken(!Filters().isNotTaken);
+                await _updateSearchCriteria();
+              },
+            )
+          : Container(),
+      _checkbox(
+        key: 'Free Classrooms',
+        value: Filters().isFreeClassrooms,
+        onChanged: () async {
+          await Filters().setIsFreeClassrooms(!Filters().isFreeClassrooms);
+          await _updateSearchCriteria();
+        },
+      ),
+      clearFiltersButton(),
     ];
   }
 
-  ElevatedButton resetButton() {
-    return ElevatedButton(
-      key: const Key('Reset Filters Button'),
-      onPressed: () {
-        SearchCriteria().criteria['Campus'] = Campus.allCampuses();
-        SearchCriteria().criteria['Department'] = Department.allDepartments();
-        SearchCriteria().criteria['Subject'] = Subject.allSubjects();
-        SearchCriteria().criteria['Term'] = Term.allTerms();
-        SearchCriteria().criteria['Class Number'] = 0;
-        SearchCriteria().criteria['Level'] = 'Any';
-        SearchCriteria().criteria['Credits'] = 'Any';
-        SearchCriteria().criteria['GS'] = false;
-        SearchCriteria().criteria['Status'] = false;
-        SearchCriteria().criteria['Free Classrooms'] = false;
-        SearchCriteria().criteria['Instructor'] = '';
-        SearchCriteria().criteria['Schedule'] = <String>[];
-        SearchCriteria().criteria['Start Time'] = null;
-        SearchCriteria().criteria['End Time'] = null;
-        SearchCriteria().criteria['Not Taken'] = false;
-        doSearch();
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red, // Set the button color to red
-      ),
-      child: Text(
-        'Reset Filters',
-        style: TextStyle(color: Colors.black), // Set the text color to black
+  Widget clearFiltersButton() {
+    final buttonColor = const Color.fromARGB(255, 255, 229, 238);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(
+        key: const Key('Clear Filters Button'),
+        onPressed: () {
+          Filters().reset();
+          doSearch();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: buttonColor,
+        ),
+        child: Text(
+          'Clear Filters',
+          style: TextStyle(color: Colors.black), // Set the text color to black
+        ),
       ),
     );
   }
@@ -300,24 +376,8 @@ class SearchCriteriaView extends ChangeNotifier {
   }
 
   void doSearch() {
-    final instructor = SearchCriteria().criteria['Instructor'];
-    final startTime = SearchCriteria().criteria['Start Time'];
-    final endTime = SearchCriteria().criteria['End Time'];
     classes = Query(
-      department: SearchCriteria().criteria['Department'],
-      subject: SearchCriteria().criteria['Subject'],
-      term: SearchCriteria().criteria['Term'],
-      campus: SearchCriteria().criteria['Campus'],
-      classNumber: SearchCriteria().criteria['Class Number'],
-      level: SearchCriteria().criteria['Level'],
-      credits: SearchCriteria().criteria['Credits'],
-      gs: SearchCriteria().criteria['GS'],
-      notTaken: SearchCriteria().criteria['Not Taken'],
-      status: SearchCriteria().criteria['Status'],
-      instructor: instructor,
-      scheduledDays: SearchCriteria().criteria['Schedule'],
-      startTime: startTime,
-      endTime: endTime,
+      searchCriteria: Filters(),
     ).results().toList();
     classes.sort();
     smallRowInfo = List.generate(classes.length, (index) => false);
@@ -337,8 +397,7 @@ class SearchCriteriaView extends ChangeNotifier {
             context: context,
             width: 200,
             allItems: inputList.keys.toList(),
-            selectedItems: SearchCriteria().criteria['Schedule'],
-            label: 'Weekdays',
+            selectedItems: Filters().schedule,
             onChanged: () {
               doSearch();
             },
@@ -348,17 +407,21 @@ class SearchCriteriaView extends ChangeNotifier {
     );
   }
 
-  Widget selector({required String key}) {
+  Widget _checkbox({
+    required String key,
+    required bool value,
+    required onChanged,
+  }) {
     return SizedBox(
       child: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Semantics(
-            label: 'Used to filter classes by General Studies.',
-            hint: 'Check this box to filter classes by General Studies.',
+            label: 'Used to filter classes by $key.',
+            hint: 'Check this box to filter classes by $key.',
             child: Checkbox(
               key: Key('$key Checkbox'),
-              value: SearchCriteria().criteria[key],
+              value: value,
               fillColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
                   return const Color(0xFF656950); // Color when selected
@@ -367,17 +430,22 @@ class SearchCriteriaView extends ChangeNotifier {
               }),
               checkColor: Colors.white, // Ensures checkmark is visible on white
               onChanged: (bool? value) async {
-                await updateSearchCriteria(key, value!);
+                await onChanged();
               },
             ),
           ),
-          Text('Only ${key == 'Status' ? 'Open' : key}'),
+          Text(key),
         ],
       ),
     );
   }
 
-  Widget textForm({required String key, required double width}) {
+  Widget _textField({
+    required String key,
+    required double width,
+    required value,
+    required onChanged,
+  }) {
     return Semantics(
       label: 'Used to search for a class by the $key.',
       hint: 'Enter text here to search.',
@@ -397,27 +465,9 @@ class SearchCriteriaView extends ChangeNotifier {
               labelText: key,
               labelStyle: const TextStyle(fontSize: 12),
             ),
-            initialValue: key == 'Class Number'
-                ? SearchCriteria().criteria[key] == 0
-                    ? ''
-                    : SearchCriteria().criteria[key].toString()
-                : SearchCriteria().criteria[key],
+            initialValue: value,
             onChanged: (value) async {
-              if (key == 'Class Number') {
-                if (value.length == 4) {
-                  var classNumber = 0;
-                  try {
-                    classNumber = int.parse(value);
-                  } on FormatException {
-                    // not a number
-                  }
-                  await updateSearchCriteria(key, classNumber);
-                } else if (value.isEmpty) {
-                  await updateSearchCriteria(key, 0);
-                }
-              } else {
-                await updateSearchCriteria(key, value);
-              }
+              await onChanged(value);
             },
           ),
         ),
@@ -425,11 +475,12 @@ class SearchCriteriaView extends ChangeNotifier {
     );
   }
 
-  Widget menu({
+  Widget _dropdown({
     required String key,
     required Map<String, dynamic> items,
     required double width,
     required dynamic selection,
+    required onSelected,
   }) {
     return Semantics(
       hint: 'Select a $key from the dropdown menu.',
@@ -464,7 +515,7 @@ class SearchCriteriaView extends ChangeNotifier {
           ],
           initialSelection: selection,
           onSelected: (value) async {
-            await updateSearchCriteria(key, value!);
+            await onSelected(value);
           },
           /*
           The searchCallback is just a temporary patch until Flutter fixes the

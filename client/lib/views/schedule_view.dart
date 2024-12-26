@@ -88,9 +88,7 @@ class ScheduleView {
         onPressed: () {
           results.saveTextFile(createCSV(), 'Schedule.csv');
         },
-        child: results.scheduleDownloaded
-            ? const Text('Downloaded')
-            : const Text('Download Schedule'),
+        child: const Text('Download Schedule'),
       ),
     );
   }

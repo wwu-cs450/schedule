@@ -100,7 +100,7 @@ abstract class MainView {
     }
   }
 
-  Widget headerCell(String input, double width) {
+  Widget headerCell(String label, double width) {
     return Semantics(
       label: 'Below shows the: ',
       child: Container(
@@ -114,8 +114,8 @@ abstract class MainView {
           ),
         ),
         child: Text(
-          key: Key('${input.trim()} Header Card'),
-          input,
+          key: Key('${label.trim()} Header Card'),
+          label,
           style: const TextStyle(
             color: Color(0xFFffffff),
             fontSize: 12,
@@ -204,83 +204,83 @@ abstract class MainView {
       ),
     );
   }
-}
 
-Widget tooltipCell(
-  String keyString,
-  String input,
-  String tooltip,
-  double width,
-  int bkgndColor,
-) {
-  return Semantics(
-    label: '$keyString cell.',
-    hint: 'The $keyString for this row is $input.',
-    child: Tooltip(
-      key: const Key('Hover Cell'),
-      message: tooltip,
-      child: Container(
-        alignment: AlignmentDirectional.centerStart,
-        width: width,
-        decoration: BoxDecoration(
-          color: Color(bkgndColor),
-          border: Border.all(
-            color: Colors.white,
-            width: 0.5,
+  Widget tooltipCell(
+    String keyString,
+    String input,
+    String tooltip,
+    double width,
+    int bkgndColor,
+  ) {
+    return Semantics(
+      label: '$keyString cell.',
+      hint: 'The $keyString for this row is $input.',
+      child: Tooltip(
+        key: const Key('Hover Cell'),
+        message: tooltip,
+        child: Container(
+          alignment: AlignmentDirectional.centerStart,
+          width: width,
+          decoration: BoxDecoration(
+            color: Color(bkgndColor),
+            border: Border.all(
+              color: Colors.white,
+              width: 0.5,
+            ),
           ),
-        ),
-        padding: const EdgeInsets.all(5),
-        child: Text(
-          key: Key('$keyString Cell'),
-          input,
-          style: const TextStyle(
-            color: Color(0xFF00003e),
-            fontSize: 12,
+          padding: const EdgeInsets.all(5),
+          child: Text(
+            key: Key('$keyString Cell'),
+            input,
+            style: const TextStyle(
+              color: Color(0xFF00003e),
+              fontSize: 12,
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget videoCell(
-  String keyString,
-  String tooltip,
-  double width,
-  int bkgndColor,
-  String video,
-) {
-  return Semantics(
-    label: '$keyString cell.',
-    hint: 'The $keyString for this row is Video.',
-    child: video == ''
-        ? Container(
-            alignment: AlignmentDirectional.centerStart,
-            key: Key('$keyString Cell'),
-            width: width,
-            decoration: BoxDecoration(
-              color: Color(bkgndColor),
-            ),
-          )
-        : Container(
-            alignment: AlignmentDirectional.centerStart,
-            key: Key('$keyString Cell'),
-            width: width,
-            decoration: BoxDecoration(
-              color: Color(bkgndColor),
-            ),
-            child: InkWell(
-              onTap: () async {
-                await launchUrl(video as Uri);
-              },
-              child: const Text(
-                'Video',
-                style: TextStyle(
-                  color: Color(0xFF00003e),
-                  fontSize: 12,
+  Widget videoCell(
+    String keyString,
+    String tooltip,
+    double width,
+    int bkgndColor,
+    String video,
+  ) {
+    return Semantics(
+      label: '$keyString cell.',
+      hint: 'The $keyString for this row is Video.',
+      child: video == ''
+          ? Container(
+              alignment: AlignmentDirectional.centerStart,
+              key: Key('$keyString Cell'),
+              width: width,
+              decoration: BoxDecoration(
+                color: Color(bkgndColor),
+              ),
+            )
+          : Container(
+              alignment: AlignmentDirectional.centerStart,
+              key: Key('$keyString Cell'),
+              width: width,
+              decoration: BoxDecoration(
+                color: Color(bkgndColor),
+              ),
+              child: InkWell(
+                onTap: () async {
+                  await launchUrl(video as Uri);
+                },
+                child: const Text(
+                  'Video',
+                  style: TextStyle(
+                    color: Color(0xFF00003e),
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
-          ),
-  );
+    );
+  }
 }

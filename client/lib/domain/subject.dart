@@ -15,7 +15,7 @@ class Subject implements Comparable {
     return _instances;
   }
 
-  static Subject subjectWithCode(String code) {
+  static Subject fromCode(String code) {
     try {
       return Subject.instances.firstWhere((instance) => instance.code == code);
     } catch (e) {

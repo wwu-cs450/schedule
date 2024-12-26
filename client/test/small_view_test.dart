@@ -1,6 +1,6 @@
 import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/filters.dart';
 import 'package:client/domain/prefs.dart';
-import 'package:client/domain/search_criteria.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'feature_test_functions.dart';
@@ -13,7 +13,7 @@ void main() {
 
   tearDown(() {
     AbstractPrefs.instance = null;
-    SearchCriteria.clearInstance();
+    Filters.clearInstance();
   });
 
   testWidgets('Small: Search Criteria Test', (WidgetTester tester) async {
@@ -69,7 +69,12 @@ void main() {
   });
 
   testWidgets('Small: Search by Only GS', (WidgetTester tester) async {
-    await gsTest(tester, 965, requirement: equals('GS'), type: 'Small');
+    await gsTest(
+      tester,
+      965,
+      requirement: equals('General Studies'),
+      type: 'Small',
+    );
   });
 
   testWidgets('Small: Search by Only Not Taken', (WidgetTester tester) async {
