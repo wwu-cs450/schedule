@@ -1,16 +1,77 @@
 import 'package:client/domain/class.dart';
-import 'package:client/main.dart';
-import 'package:client/views/bulletin_pdf_page.dart';
-import 'package:client/views/main_view.dart';
-import 'package:client/views/pdf_upload_page.dart';
+import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/filters.dart';
+import 'package:client/views/abstract_view.dart';
 import 'package:client/views/schedule_view.dart';
+import 'package:client/views/search_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-class SmallView extends MainView {
-  SmallView(super.startYear, super.results, this.dateTime);
-  final String dateTime;
+class SmallView extends AbstractView {
+  const SmallView({super.key});
 
-  Row smallClassRow(Class aClass, int index, BuildContext context) {
+  @override
+  SmallViewState createState() => SmallViewState();
+}
+
+class SmallViewState extends AbstractViewState {
+  Class? detailsForClass;
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<Filters>(
+      builder: (context, filters, child) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+            title: Text(
+              'WWU Class Schedule',
+              style: GoogleFonts.getFont('Playfair'),
+            ),
+          ),
+          body: _selectedTab(),
+          drawer: _drawer(),
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: _onItemTapped,
+            destinations: const <Widget>[
+              NavigationDestination(
+                key: Key('Main Page'),
+                icon: Icon(Icons.list),
+                label: 'All Classes',
+              ),
+              NavigationDestination(
+                key: Key('Schedule Page'),
+                icon: Icon(Icons.schedule),
+                label: 'Schedule',
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _classListView(List<Class> classes) {
+    classes.sort();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Semantics(
+          child: Text(
+            key: const Key('Class Count'),
+            '${classes.length} classes (from ${DataHandler.dateTime})',
+          ),
+        ),
+        Expanded(child: _rowBuilder(classes)),
+      ],
+    );
+  }
+
+  Row _classRow(Class aClass, int index, BuildContext context) {
     String getFee() {
       if (aClass.getFee() == '0') {
         return 'No fee';
@@ -37,7 +98,7 @@ class SmallView extends MainView {
         savedBox(aClass, index),
         Stack(
           children: [
-            summary(
+            _summaryView(
               context,
               aClass,
               index,
@@ -47,10 +108,10 @@ class SmallView extends MainView {
               term,
               credits,
             ),
-            results.smallRowInfo[index]
+            aClass == detailsForClass
                 ? Align(
                     alignment: Alignment.center, // Center the details container
-                    child: details(index, room, schedule, profs, aClass),
+                    child: _detailsView(index, room, schedule, profs, aClass),
                   )
                 : Align(
                     alignment: Alignment.center,
@@ -62,114 +123,10 @@ class SmallView extends MainView {
     );
   }
 
-  SizedBox summary(
-    BuildContext context,
-    Class aClass,
-    int index,
-    String cNum,
-    String Function() gsCheck,
-    String Function() getFee,
-    String term,
-    String credits,
-  ) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.1,
-      child: Card(
-        color: Color.fromARGB(255, 236, 222, 199),
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: 1,
-            color: aClass.saved ? Colors.blue : Colors.black,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: const EdgeInsets.all(10.0),
-        key: Key('Class $index card'),
-        elevation: 5,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  children: [
-                    Text(
-                      key: const Key('Subject Row'),
-                      '${aClass.getCode()} $cNum',
-                    ),
-                    Text(key: const Key('GS Row'), gsCheck()),
-                    Text(key: const Key('Fee Row'), getFee()),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 1,
-            ),
-            Expanded(
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    right: BorderSide(width: 1, color: Colors.black),
-                    left: BorderSide(width: 1, color: Colors.black),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center, // Center vertically
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                        '${aClass.getTitle()}\n',
-                      ),
-                      detailsButton(index),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 2),
-            SizedBox(
-              width: 125,
-              // height: 100,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  children: [
-                    Text(
-                      key: Key('$term Row'),
-                      aClass.term.name,
-                    ),
-                    Text(
-                      key: const Key('Cr Row'),
-                      'Credits: ${credits.trim()}',
-                    ),
-                    Text(
-                      key: const Key('Campus Row'),
-                      aClass.getCampus(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  ElevatedButton detailsButton(int index) {
+  ElevatedButton _detailsButton(Class aClass) {
     return ElevatedButton(
       key: const Key('Details Button'),
-      onPressed: () => {
-        results.updateInfo(index),
-      },
+      onPressed: () => detailsForClass = aClass,
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(0xFF656950),
       ),
@@ -183,7 +140,7 @@ class SmallView extends MainView {
     );
   }
 
-  Container details(
+  Container _detailsView(
     int index,
     String room,
     String schedule,
@@ -288,9 +245,7 @@ class SmallView extends MainView {
                       child: SizedBox(
                         width: 30,
                         child: TextButton(
-                          onPressed: () => {
-                            results.updateInfo(index),
-                          },
+                          onPressed: () => detailsForClass = null,
                           style: ButtonStyle(
                             textStyle:
                                 WidgetStateProperty.resolveWith<TextStyle?>(
@@ -376,12 +331,20 @@ class SmallView extends MainView {
     );
   }
 
-  ListView smallRowBuilder(List<Class> data) {
+  Widget? _drawer() => _selectedIndex == 0 ? SearchDrawer() : null;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  ListView _rowBuilder(List<Class> data) {
     return ListView.builder(
       key: const Key('Results'),
       itemCount: data.length,
       itemBuilder: (context, index) {
-        return smallClassRow(
+        return _classRow(
           data[index],
           index,
           context,
@@ -390,62 +353,127 @@ class SmallView extends MainView {
     );
   }
 
-  @override
-  Widget view(
-    int index,
-    BuildContext context,
-    // Function searchCriteriaWidget,
-  ) {
-    switch (index) {
-      case 0:
-        // Main Page
-        if (results.isFreeClassroomsOnly) {
-          // build a list of free classrooms
+  Column _scheduleView() {
+    return Column(
+      children: [
+        ScheduleView().build(),
+        const SizedBox(height: 10),
+        Expanded(
+          child: _classListView(Filters().savedClassesForScheduleTerm()),
+        ),
+      ],
+    );
+  }
 
-          // display the list of free classrooms
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Semantics(
-                child: Text(
-                  key: const Key('Class Found'),
-                  '${results.classes.length} classrooms found.',
-                ),
-              ),
-              Expanded(child: smallRowBuilder(results.classes)),
-            ],
-          );
-        } else {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Semantics(
-                child: Text(
-                  key: const Key('Class Found'),
-                  '${results.classes.length} classes found on $dateTime',
-                ),
-              ),
-              Expanded(child: smallRowBuilder(results.classes)),
-            ],
-          );
-        }
-      case 1:
-        // Schedule Page
-        return Column(
-          children: [
-            ScheduleView().build(),
-            const SizedBox(height: 10),
-            Expanded(child: smallRowBuilder(results.scheduleData)),
-          ],
-        );
-      case 2:
-        // Audit Page
-        return const PdfView();
-      case 3:
-        // Bulletin Pdf Page
-        return const BulletinPdfView();
-      default:
-        return const Column(children: [Placeholder()]);
+  Widget _selectedTab() {
+    if (_selectedIndex == 0) {
+      return _classListView(Filters().classes);
+    } else if (_selectedIndex == 1) {
+      return _scheduleView();
+    } else {
+      return Center(child: Text('Tab $_selectedIndex not found'));
     }
+  }
+
+  SizedBox _summaryView(
+    BuildContext context,
+    Class aClass,
+    int index,
+    String cNum,
+    String Function() gsCheck,
+    String Function() getFee,
+    String term,
+    String credits,
+  ) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.1,
+      child: Card(
+        color: Color.fromARGB(255, 236, 222, 199),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            width: 1,
+            color: aClass.saved ? Colors.blue : Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(10.0),
+        key: Key('Class $index card'),
+        elevation: 5,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 120,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    Text(
+                      key: const Key('Subject Row'),
+                      '${aClass.getCode()} $cNum',
+                    ),
+                    Text(key: const Key('GS Row'), gsCheck()),
+                    Text(key: const Key('Fee Row'), getFee()),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 1,
+            ),
+            Expanded(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(width: 1, color: Colors.black),
+                    left: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center, // Center vertically
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        '${aClass.getTitle()}\n',
+                      ),
+                      _detailsButton(aClass),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 2),
+            SizedBox(
+              width: 125,
+              // height: 100,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    Text(
+                      key: Key('$term Row'),
+                      aClass.term.name,
+                    ),
+                    Text(
+                      key: const Key('Cr Row'),
+                      'Credits: ${credits.trim()}',
+                    ),
+                    Text(
+                      key: const Key('Campus Row'),
+                      aClass.getCampus(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

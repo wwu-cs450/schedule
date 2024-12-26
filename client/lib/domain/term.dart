@@ -7,11 +7,27 @@ class Term implements Comparable {
 
   static var _instances = <Term>{};
 
-  static Set<Term> get instances {
-    if (_instances.isEmpty) {
-      _instances = {AllTerms(), ..._initialize()};
-    }
-    return _instances;
+  static Term allTerms() {
+    return instances.first;
+  }
+
+  @override
+  int compareTo(dynamic other) {
+    return code.compareTo(other.code);
+  }
+
+  static Term findCachedTerm(int code) {
+    final foundTerm =
+        Term.instances.firstWhere((instance) => instance.code == code);
+    return foundTerm;
+  }
+
+  static Term fromCode(int code) {
+    return instances.firstWhere((term) => term.code == code);
+  }
+
+  bool includesClass(Class classInstance) {
+    return classInstance.term == this;
   }
 
   //These will need to change with time
@@ -30,27 +46,16 @@ class Term implements Comparable {
     return instances;
   }
 
-  bool includesClass(Class classInstance) {
-    return classInstance.term == this;
-  }
-
-  static Term findCachedTerm(int code) {
-    final foundTerm =
-        Term.instances.firstWhere((instance) => instance.code == code);
-    return foundTerm;
-  }
-
-  static Term fromCode(int code) {
-    return instances.firstWhere((term) => term.code == code);
-  }
-
-  static Term allTerms() {
-    return instances.first;
+  static Set<Term> get instances {
+    if (_instances.isEmpty) {
+      _instances = {AllTerms(), ..._initialize()};
+    }
+    return _instances;
   }
 
   @override
-  int compareTo(dynamic other) {
-    return code.compareTo(other.code);
+  String toString() {
+    return name;
   }
 }
 

@@ -1,3 +1,3 @@
 Future<String> getDate() async {
-  return '2024-12-13 09:11:27.995005';
+  return '2024-12-13 09:11';
 }

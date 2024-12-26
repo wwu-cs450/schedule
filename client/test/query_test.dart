@@ -20,40 +20,40 @@ void main() {
 
   setUp(() async {
     AbstractPrefs.instance = MockPrefs();
-    searchCriteria.reset();
+    await searchCriteria.reset();
     await DataHandler.fetchData(test: true);
   });
 
   test('null query (all results)', () {
-    expect(Query(searchCriteria: Filters()).results().length, 2370);
+    expect(Query().results().length, 2370);
   });
 
   test('count query results', () async {
-    final all = Query(searchCriteria: Filters()).results().length;
+    final all = Query().results().length;
 
     final csDepartment =
         Department.instances.firstWhere((each) => each.code == 'CPTR');
     await searchCriteria.setDepartment(csDepartment);
-    final dCount = Query(searchCriteria: searchCriteria).results().length;
+    final dCount = Query().results().length;
     expect(dCount < all, isTrue);
 
     final csSubject =
         Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    searchCriteria.reset();
+    await searchCriteria.reset();
     await searchCriteria.setSubject(csSubject);
-    final sCount = Query(searchCriteria: searchCriteria).results().length;
+    final sCount = Query().results().length;
     expect(sCount < all, isTrue);
 
     final term = Term.instances.firstWhere((each) => each.code == 2241);
-    searchCriteria.reset();
+    await searchCriteria.reset();
     await searchCriteria.setTerm(term);
-    final tCount = Query(searchCriteria: searchCriteria).results().length;
+    final tCount = Query().results().length;
     expect(tCount < all, isTrue);
 
     final campus = Campus.instances.firstWhere((each) => each.code == 'CP');
-    searchCriteria.reset();
+    await searchCriteria.reset();
     await searchCriteria.setCampus(campus);
-    final cCount = Query(searchCriteria: searchCriteria).results().length;
+    final cCount = Query().results().length;
     expect(cCount < all, isTrue);
   });
 
@@ -63,7 +63,7 @@ void main() {
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
     await searchCriteria.setDepartment(department);
     await searchCriteria.setSubject(subject);
-    final list = Query(searchCriteria: searchCriteria).results();
+    final list = Query().results();
     expect(
       list.every((element) => element.course.department.code == 'CPTR'),
       isTrue,
@@ -78,7 +78,7 @@ void main() {
     final department =
         Department.instances.firstWhere((each) => each.code == 'RELB');
     await searchCriteria.setDepartment(department);
-    final codes = Query(searchCriteria: searchCriteria).results();
+    final codes = Query().results();
     expect(
       codes.any((element) => element.course.subject.code == 'RELB'),
       isTrue,
@@ -110,13 +110,13 @@ void main() {
   test('query finds Summer 2023', () async {
     final term = Term.instances.firstWhere((each) => each.code == 2236);
     await searchCriteria.setTerm(term);
-    final list = Query(searchCriteria: searchCriteria).results();
+    final list = Query().results();
     expect(list.every((element) => element.term.code == 2236), isTrue);
   });
 
   test('query finds class number 1408', () async {
     await searchCriteria.setClassNumber(1408);
-    final list = Query(searchCriteria: searchCriteria).results();
+    final list = Query().results();
     expect(list.every((element) => element.classNumber == 1408), isTrue);
     expect(list.length == 2, isTrue);
   });
@@ -125,30 +125,25 @@ void main() {
     final campus =
         Campus.instances.firstWhere((each) => each.name == 'College Place');
     await searchCriteria.setCampus(campus);
-    final list = Query(searchCriteria: searchCriteria).results();
+    final list = Query().results();
     expect(list.every((element) => element.campus.code == 'CP'), isTrue);
   });
 
   test('Query times', () {
-    final int allLength = Query(searchCriteria: Filters()).results().length;
-    final Set<Class> noSpecial =
-        Query(searchCriteria: Filters(), includeSpecialTimes: false).results();
+    final int allLength = Query().results().length;
+    final Set<Class> noSpecial = Query(includeSpecialTimes: false).results();
     final Set<Class> largeRange = Query(
-      searchCriteria: Filters(),
       times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
     ).results();
     final Set<Class> largeRangeSpecificDay = Query(
-      searchCriteria: Filters(),
       days: {DateTime.tuesday},
       times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
     ).results();
     final int shortRangeLength = Query(
-      searchCriteria: Filters(),
       times: (start: HourMinute(hour: 8), end: HourMinute(hour: 10)),
     ).results().length;
     // I think it is actually sunday but classopen doesn't follow the same day letter standard
     final Set<Class> containsSkiing = Query(
-      searchCriteria: Filters(),
       days: {
         DateTime.saturday,
       },

@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:client/domain/campus.dart';
+import 'package:client/domain/class.dart';
 import 'package:client/domain/department.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/prefs.dart';
+import 'package:client/domain/query.dart';
 import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +19,14 @@ class Filters extends ChangeNotifier {
   }
   // Private constructor
   Filters._privateConstructor() {
-    reset();
+    _reset();
   }
 
   // Singleton instance
   static Filters? _instance;
+
+  final classes = <Class>[];
+  Term? _scheduleTerm;
 
   late Campus _campus;
   late Department _department;
@@ -56,98 +61,112 @@ class Filters extends ChangeNotifier {
   bool get isNotTaken => _isNotTaken;
   bool get isFreeClassrooms => _isFreeClassrooms;
 
+  Term get scheduleTerm {
+    if (_scheduleTerm == null) {
+      Set terms = savedClasses().map((e) => e.term).toSet();
+      if (terms.isEmpty) {
+        terms = Term.instances;
+      }
+      final sortedTerms = terms.toList()..sort();
+      _scheduleTerm = sortedTerms.first;
+    }
+    return _scheduleTerm!;
+  }
+
+  set scheduleTerm(Term value) {
+    _scheduleTerm = value;
+    notifyListeners();
+  }
+
+  void unsaveAll() {
+    for (final each in classes) {
+      each.saved = false;
+    }
+    notifyListeners();
+  }
+
   // Setters
   Future<void> setCampus(Campus value) async {
     _campus = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setDepartment(Department value) async {
     _department = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setSubject(Subject value) async {
     _subject = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setTerm(Term value) async {
     _term = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setClassNumber(int value) async {
     _classNumber = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setLevel(String value) async {
     _level = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setCredits(String value) async {
     _credits = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setIsGS(bool value) async {
     _isGS = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setIsOpen(bool value) async {
     _isOpen = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setInstructor(String value) async {
     _instructor = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setSchedule(List<String> value) async {
     _schedule = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setStartTime(HourMinute? value) async {
     _startTime = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setEndTime(HourMinute? value) async {
     _endTime = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setIsNotTaken(bool value) async {
     _isNotTaken = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
   Future<void> setIsFreeClassrooms(bool value) async {
     _isFreeClassrooms = value;
-    await save();
-    notifyListeners();
+    await update();
   }
 
-  void reset() {
+  Future<void> reset() async {
+    _reset();
+    await update();
+  }
+
+  void _reset() {
     _campus = Campus.allCampuses();
     _department = Department.allDepartments();
     _subject = Subject.allSubjects();
@@ -163,7 +182,6 @@ class Filters extends ChangeNotifier {
     _endTime = null;
     _isNotTaken = false;
     _isFreeClassrooms = false;
-    notifyListeners();
   }
 
   static void clearInstance() {
@@ -216,5 +234,28 @@ class Filters extends ChangeNotifier {
     // notTaken = false;
     // freeClassrooms = false;
     return;
+  }
+
+  List<Class> savedClasses() {
+    return classes
+        .where(
+          (element) => element.saved,
+        )
+        .toList();
+  }
+
+  List<Class> savedClassesForScheduleTerm() {
+    return savedClasses()
+        .where(
+          (element) => element.term == scheduleTerm,
+        )
+        .toList();
+  }
+
+  Future<void> update() async {
+    await save();
+    classes.clear();
+    classes.addAll(Query().results().toList()..sort());
+    notifyListeners();
   }
 }
