@@ -1,4 +1,3 @@
----
 include: package:lints/recommended.yaml
 linter:
   rules:
@@ -39,7 +38,6 @@ linter:
     - unnecessary_raw_strings
     - unnecessary_statements
     - unreachable_from_main
-    - unsafe_html
     - use_colored_box
     - use_decorated_box
     - use_enums

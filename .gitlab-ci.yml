@@ -1,4 +1,4 @@
-image: "ghcr.io/cirruslabs/flutter:3.27.1"
+image: "ghcr.io/cirruslabs/flutter:3.27.3"
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
@@ -22,10 +22,10 @@ build_server:
     - set -e
     - cd server
     - dart pub get
-    - dart compile exe -o schedule --target-os linux bin/server.dart
+    - dart compile exe -o api_server --target-os linux bin/server.dart
   artifacts:
     paths:
-      - server/schedule
+      - server/api_server
 
 lint_client:
   stage: test
@@ -88,10 +88,10 @@ deploy:
   tags:
     - schedule
   script:
-    - sudo /bin/systemctl stop schedule.service
+    - sudo /bin/systemctl stop api_server.service
     - rsync -av --delete client/build/web/ /var/www/html/
-    - cp server/schedule /opt/
-    - sudo /bin/systemctl restart schedule.service
+    - cp server/api_server /opt/
+    - sudo /bin/systemctl restart api_server.service
   only:
     - main
   when: manual
