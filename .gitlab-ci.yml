@@ -1,4 +1,5 @@
 image: "ghcr.io/cirruslabs/flutter:3.27.3"
+# https://github.com/cirruslabs/docker-images-flutter/pkgs/container/flutter
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
