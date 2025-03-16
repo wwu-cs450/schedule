@@ -8,11 +8,7 @@ void main() {
       'submit': 'Search',
     };
     final response = await http.get(
-      Uri.https(
-        'classopen.wallawalla.edu',
-        '/classopenps.php',
-        queryParams,
-      ),
+      Uri.https('classopen.wallawalla.edu', '/classopenps.php', queryParams),
     );
     expect(
       response.body.isNotEmpty,

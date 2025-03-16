@@ -1,26 +1,21 @@
 // File: lib/pdf_helper.dart
 
+import 'dart:js_interop';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:js/js.dart';
-import 'package:js/js_util.dart';
 
 export 'pdf_helper_stub.dart' if (dart.library.js_util) 'pdf_helper.dart';
 
 // Binds to the JavaScript extractTextFromPDF function
 @JS('extractTextFromPDF')
-external dynamic _extractTextFromPDF(Uint8List arrayBuffer);
+external JSString _extractTextFromPDF(JSUint8Array arrayBuffer);
 
 class PdfHelper {
   // Default implementation
-  static Future<String> extractTextFromPDF(
-    Uint8List arrayBuffer,
-  ) async {
-    final result =
-        await promiseToFuture<String>(_extractTextFromPDF(arrayBuffer));
-
-    return result;
+  static Future<String> extractTextFromPDF(Uint8List arrayBuffer) async {
+    final JSString text = _extractTextFromPDF(arrayBuffer.toJS);
+    return text.toDart;
   }
 
   static Future<Uint8List> selectPdf() async {

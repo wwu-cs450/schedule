@@ -31,9 +31,7 @@ Future<void> buildTestEnvironment(
   double height = 1000,
 }) async {
   await tester.binding.setSurfaceSize(Size(width, height));
-  await tester.pumpWidget(
-    const Schedule(),
-  );
+  await tester.pumpWidget(const Schedule());
   context = tester.element(find.byType(Schedule));
   addTearDown(() async {
     await tester.binding.setSurfaceSize(null);
@@ -56,10 +54,11 @@ Future<void> insertText(
 
 Widget descendWidgetTree(dynamic element, String key) {
   Widget finder = const Text(key: Key('Widget does not exist.'), '');
-  final Widget mainWidget = element is StatelessWidget
-      // ignore: invalid_use_of_protected_member
-      ? element.build(context)
-      : element is MultiChildRenderObjectElement ||
+  final Widget mainWidget =
+      element is StatelessWidget
+          // ignore: invalid_use_of_protected_member
+          ? element.build(context)
+          : element is MultiChildRenderObjectElement ||
               element is SingleChildRenderObjectElement
           ? element.widget
           : element;
@@ -192,10 +191,7 @@ Future<void> textBoxTester(
   for (final opt in txtOpts) {
     await insertText(tester, finders[textField]!, opt);
     expectInResults(cellKeys, equals(opt), type: type);
-    multiExpect(
-      excludeIndex(txtOpts, txtOpts.indexOf(opt)),
-      findsNothing,
-    );
+    multiExpect(excludeIndex(txtOpts, txtOpts.indexOf(opt)), findsNothing);
   }
 }
 
@@ -205,21 +201,24 @@ void expectInResults(
   required String type,
 }) {
   final container = type == 'Wide' || type == 'Medium' ? 'Cell' : 'Row';
-  final dataFinder = type == 'Wide' || type == 'Medium' || type == 'Small'
-      ? find.byWidgetPredicate(
-          (Widget widget) =>
-              widget.key is ValueKey<String> &&
-              RegExp(r'^Class \d{0,4}')
-                  .hasMatch((widget.key as ValueKey<String>).value) &&
-              widget is Row,
-        )
-      : find.byWidgetPredicate(
-          (Widget widget) =>
-              widget.key is ValueKey<String> &&
-              RegExp(r'^Detail Row \d{0,4}')
-                  .hasMatch((widget.key as ValueKey<String>).value) &&
-              widget is Column,
-        );
+  final dataFinder =
+      type == 'Wide' || type == 'Medium' || type == 'Small'
+          ? find.byWidgetPredicate(
+            (Widget widget) =>
+                widget.key is ValueKey<String> &&
+                RegExp(
+                  r'^Class \d{0,4}',
+                ).hasMatch((widget.key as ValueKey<String>).value) &&
+                widget is Row,
+          )
+          : find.byWidgetPredicate(
+            (Widget widget) =>
+                widget.key is ValueKey<String> &&
+                RegExp(
+                  r'^Detail Row \d{0,4}',
+                ).hasMatch((widget.key as ValueKey<String>).value) &&
+                widget is Column,
+          );
 
   for (final key in keys) {
     for (final each in dataFinder.evaluate()) {

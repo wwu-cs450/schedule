@@ -29,8 +29,9 @@ void main() {
     expect(time4.hour, 9);
     expect(time4.minute, 6);
     // using DateTime
-    final HourMinute time5 =
-        HourMinute.fromDate(DateTime(2023, 5, 5, 13, 30, 50)); // 13:30
+    final HourMinute time5 = HourMinute.fromDate(
+      DateTime(2023, 5, 5, 13, 30, 50),
+    ); // 13:30
     expect(time5.hour, 13);
     expect(time5.minute, 30);
     // using fromString. 24hr

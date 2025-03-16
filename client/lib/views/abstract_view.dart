@@ -42,57 +42,54 @@ class AbstractViewState extends State<AbstractView> {
         ['Spring', 'Summer1', 'Summer2', 'Fall', 'Winter'].contains(keyString)
             ? const Key('Term Color Cell')
             : null;
-    final alignment = align == 'r'
-        ? right
-        : align == 'l'
+    final alignment =
+        align == 'r'
+            ? right
+            : align == 'l'
             ? left
             : align == 'c'
-                ? center
-                : AlignmentDirectional.centerStart;
+            ? center
+            : AlignmentDirectional.centerStart;
     final boxDecoration = BoxDecoration(
       color: Color(bkgndColor),
-      border: Border.all(
-        color: Colors.white,
-        width: 0.5,
-      ),
+      border: Border.all(color: Colors.white, width: 0.5),
     );
 
-    final text = videoLink!.isEmpty
-        ? Text(
-            key: Key('$keyString Cell'),
-            cellText,
-            style: const TextStyle(
-              color: Color(0xFF00003e),
-              fontSize: 12,
-            ),
-          )
-        : InkWell(
-            onTap: () async {
-              final Uri url = Uri.parse(videoLink);
-              if (await canLaunchUrl(url)) {
-                await launchUrl(url);
-              } else {
-                throw 'Could not launch $url';
-              }
-            },
-            child: const Text(
-              'Video',
-              key: Key('Video Link Cell'), // Changed key to be unique
-              style: TextStyle(
-                color: Colors.blue, // Changed color to blue to indicate a link
-                decoration:
-                    TextDecoration.underline, // Underline to indicate a link
-                decorationColor: Colors.blue, // Set underline color to blue
-                fontSize: 12,
-                height:
-                    1.5, // Adjust height to create space between text and underline
+    final text =
+        videoLink!.isEmpty
+            ? Text(
+              key: Key('$keyString Cell'),
+              cellText,
+              style: const TextStyle(color: Color(0xFF00003e), fontSize: 12),
+            )
+            : InkWell(
+              onTap: () async {
+                final Uri url = Uri.parse(videoLink);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+              child: const Text(
+                'Video',
+                key: Key('Video Link Cell'), // Changed key to be unique
+                style: TextStyle(
+                  color:
+                      Colors.blue, // Changed color to blue to indicate a link
+                  decoration:
+                      TextDecoration.underline, // Underline to indicate a link
+                  decorationColor: Colors.blue, // Set underline color to blue
+                  fontSize: 12,
+                  height:
+                      1.5, // Adjust height to create space between text and underline
+                ),
+                textHeightBehavior: TextHeightBehavior(
+                  applyHeightToFirstAscent: false,
+                  applyHeightToLastDescent: true,
+                ),
               ),
-              textHeightBehavior: TextHeightBehavior(
-                applyHeightToFirstAscent: false,
-                applyHeightToLastDescent: true,
-              ),
-            ),
-          );
+            );
     return Semantics(
       label: '$keyString cell.',
       hint: 'The $keyString for this row is $cellText.',
@@ -143,18 +140,12 @@ class AbstractViewState extends State<AbstractView> {
         width: width,
         decoration: BoxDecoration(
           color: Color(palette['blue']!),
-          border: Border.all(
-            color: Colors.white,
-            width: 0.5,
-          ),
+          border: Border.all(color: Colors.white, width: 0.5),
         ),
         child: Text(
           key: Key('${label.trim()} Header Card'),
           label,
-          style: const TextStyle(
-            color: Color(0xFFffffff),
-            fontSize: 12,
-          ),
+          style: const TextStyle(color: Color(0xFFffffff), fontSize: 12),
         ),
       ),
     );
@@ -177,10 +168,7 @@ class AbstractViewState extends State<AbstractView> {
     return Container(
       decoration: BoxDecoration(
         color: Color(palette['blue']!),
-        border: Border.all(
-          color: Colors.white,
-          width: 0.5,
-        ),
+        border: Border.all(color: Colors.white, width: 0.5),
       ),
       width: 30,
     );
@@ -192,10 +180,7 @@ class AbstractViewState extends State<AbstractView> {
       hint: 'Click on this to save a class for later.',
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-            width: 0.5,
-          ),
+          border: Border.all(color: Colors.white, width: 0.5),
         ),
         width: 30,
         child: Checkbox(
@@ -229,19 +214,13 @@ class AbstractViewState extends State<AbstractView> {
           width: width,
           decoration: BoxDecoration(
             color: Color(bkgndColor),
-            border: Border.all(
-              color: Colors.white,
-              width: 0.5,
-            ),
+            border: Border.all(color: Colors.white, width: 0.5),
           ),
           padding: const EdgeInsets.all(5),
           child: Text(
             key: Key('$keyString Cell'),
             input,
-            style: const TextStyle(
-              color: Color(0xFF00003e),
-              fontSize: 12,
-            ),
+            style: const TextStyle(color: Color(0xFF00003e), fontSize: 12),
           ),
         ),
       ),

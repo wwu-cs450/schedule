@@ -18,13 +18,7 @@ class PdfViewState extends State<PdfView> {
   bool _isLoading = false;
 
   Future<Uint8List> selectPdf() async {
-    // Pick a PDF file
-    try {
-      final Uint8List pdfBytes = await PdfHelper.selectPdf();
-      return pdfBytes;
-    } catch (e) {
-      rethrow;
-    }
+    return PdfHelper.selectPdf();
   }
 
   Future<void> extractPdfText(Uint8List pdfBytes) async {
@@ -85,8 +79,8 @@ class PdfViewState extends State<PdfView> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AuditPage(extractedText: extractedText),
+                    builder:
+                        (context) => AuditPage(extractedText: extractedText),
                   ),
                 );
               },
@@ -99,8 +93,9 @@ class PdfViewState extends State<PdfView> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        TranscriptPage(extractedText: extractedText),
+                    builder:
+                        (context) =>
+                            TranscriptPage(extractedText: extractedText),
                   ),
                 );
               },
@@ -116,10 +111,7 @@ class PdfViewState extends State<PdfView> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Optional: Add an AppBar for better navigation and aesthetics
-      appBar: AppBar(
-        title: const Text('PDF Upload'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('PDF Upload'), centerTitle: true),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0), // Add padding for better UI
@@ -131,12 +123,11 @@ class PdfViewState extends State<PdfView> {
                 key: const Key('Select PDF Button'),
                 onPressed: getPdfText,
                 child: const Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                  child: Text(
-                    'Select PDF',
-                    style: TextStyle(fontSize: 18),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 12.0,
                   ),
+                  child: Text('Select PDF', style: TextStyle(fontSize: 18)),
                 ),
               ),
               const SizedBox(height: 20),
@@ -157,9 +148,9 @@ class PdfViewState extends State<PdfView> {
               const SnackBar(content: Text('No Transcript Stored')),
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Transcript Cleared')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Transcript Cleared')));
           }
         },
         tooltip: 'Clear Transcript',

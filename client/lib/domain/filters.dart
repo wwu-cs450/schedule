@@ -237,18 +237,12 @@ class Filters extends ChangeNotifier {
   }
 
   List<Class> savedClasses() {
-    return classes
-        .where(
-          (element) => element.saved,
-        )
-        .toList();
+    return classes.where((element) => element.saved).toList();
   }
 
   List<Class> savedClassesForScheduleTerm() {
     return savedClasses()
-        .where(
-          (element) => element.term == scheduleTerm,
-        )
+        .where((element) => element.term == scheduleTerm)
         .toList();
   }
 

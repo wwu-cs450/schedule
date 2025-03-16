@@ -34,12 +34,13 @@ class HourMinute implements Comparable<HourMinute> {
     }
 
     // hour parse -- possibly not padded
-    final String hourString = hourMinuteStrings[0].length < 3
-        ? hourMinuteStrings[0]
-        : hourMinuteStrings[0].substring(
-            hourMinuteStrings[0].length - 2,
-            hourMinuteStrings[0].length,
-          );
+    final String hourString =
+        hourMinuteStrings[0].length < 3
+            ? hourMinuteStrings[0]
+            : hourMinuteStrings[0].substring(
+              hourMinuteStrings[0].length - 2,
+              hourMinuteStrings[0].length,
+            );
     int hour = int.parse(hourString);
     // 12hr check
     if (string.contains('P') && hour != 12) {
@@ -69,9 +70,9 @@ class HourMinute implements Comparable<HourMinute> {
 
   // get HourMinute after Duration dur
   HourMinute add(Duration dur) => HourMinute(
-        hour: hour + dur.inHours,
-        minute: minute + (dur.inMinutes % 60),
-      );
+    hour: hour + dur.inHours,
+    minute: minute + (dur.inMinutes % 60),
+  );
 
   // get Duration from other HourMinute (this-other)
   Duration durationFrom(HourMinute other) =>

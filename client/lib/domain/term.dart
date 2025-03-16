@@ -17,8 +17,9 @@ class Term implements Comparable {
   }
 
   static Term findCachedTerm(int code) {
-    final foundTerm =
-        Term.instances.firstWhere((instance) => instance.code == code);
+    final foundTerm = Term.instances.firstWhere(
+      (instance) => instance.code == code,
+    );
     return foundTerm;
   }
 

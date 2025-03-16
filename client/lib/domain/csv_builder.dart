@@ -9,8 +9,10 @@ String createCSV() {
       classes.add(element);
     }
   }
-  final List<List<String>> toCSV =
-      List.generate(classes.length + 1, (index) => ['', '', '', '']);
+  final List<List<String>> toCSV = List.generate(
+    classes.length + 1,
+    (index) => ['', '', '', ''],
+  );
   toCSV[0][0] = 'Class Number';
   toCSV[0][1] = 'Subject';
   toCSV[0][2] = 'Class name';

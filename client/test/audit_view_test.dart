@@ -41,8 +41,9 @@ minimum of 192 total units.  ·   Units:   192.00 required,
     await auditViewParse(tester, extractedText);
   });
 
-  testWidgets('Pare Overall Undergraduate Requirements',
-      (WidgetTester tester) async {
+  testWidgets('Pare Overall Undergraduate Requirements', (
+    WidgetTester tester,
+  ) async {
     var extractedText = '''
 OVERALL UNDERGRADUATE REQUIREMENTS (RG 639) Not Satisfied: OVERALL UNDERGRADUATE
 REQUIREMENTS 192 units to Graduate (R9 L11) Not Satisfied: Complete a minimum of 192 total units.
@@ -81,10 +82,7 @@ University.
       overallUnderGrad.details[2].description,
       equals('60 Upper Division units (R9 L20)'),
     );
-    expect(
-      overallUnderGrad.details[4].status,
-      equals(true),
-    );
+    expect(overallUnderGrad.details[4].status, equals(true));
   });
 
   testWidgets('Separate New GS Requirements', (WidgetTester tester) async {
@@ -139,36 +137,23 @@ RELB 307, RELB 333, RELB 333P, RELB 339, RELB 345, RELB 345P, RELB 354, RELB 382
 474, RELB 474, RELH 205, RELH 303, RELH 303P, RELH 398, RELH 425, RELH 455, RELM 198, RELM 233, RELT 326, RELT 340P, RELT 398, RELT 402,
 RELT 408, RELT 412, RELH 457, RELT 110, RELT 202, RELT 417''';
     extractedText = cleanContent(extractedText);
-    final List<SimpleSection> newGSSections =
-        AuditPage.parseNewGSFormat(extractedText);
+    final List<SimpleSection> newGSSections = AuditPage.parseNewGSFormat(
+      extractedText,
+    );
 
-    expect(
-      newGSSections.length,
-      equals(4),
-    );
-    expect(
-      newGSSections[0].header,
-      equals('GS GENERAL STUDIES (RG 582)'),
-    );
-    expect(
-      newGSSections[1].header,
-      equals('GS Foundational Skills (R 456)'),
-    );
-    expect(
-      newGSSections[2].header,
-      equals('GS Ways of Knowing (R457)'),
-    );
-    expect(
-      newGSSections[3].header,
-      equals('GS Ways of Engaging'),
-    );
+    expect(newGSSections.length, equals(4));
+    expect(newGSSections[0].header, equals('GS GENERAL STUDIES (RG 582)'));
+    expect(newGSSections[1].header, equals('GS Foundational Skills (R 456)'));
+    expect(newGSSections[2].header, equals('GS Ways of Knowing (R457)'));
+    expect(newGSSections[3].header, equals('GS Ways of Engaging'));
     for (final section in newGSSections) {
       expect(section.content.isNotEmpty, equals(true));
     }
   });
 
-  testWidgets('Separate Engineering GS Requirements',
-      (WidgetTester tester) async {
+  testWidgets('Separate Engineering GS Requirements', (
+    WidgetTester tester,
+  ) async {
     var extractedText = '''
 ENGINEERING GENERAL STUDIES (RG 773) Overall Requirement Not Satisfied: Complete the following Engineering General
 Studies requirements. · Units: 44.00 required, 44.00 used, 0.00 needed · GPA: 2.000 required, 4.000 completed
@@ -211,13 +196,11 @@ Studies (R 228) Satisfied: Electives- Engineering General Studies · Units: 0.00
 Satisfied: Complete elective units from the following courses to bring the Engineering General Studies total to 44     
 units. · Units: 0.00''';
     extractedText = cleanContent(extractedText);
-    final List<SimpleSection> engGSSections =
-        AuditPage.parseEngGSFormat(extractedText);
-
-    expect(
-      engGSSections.length,
-      equals(6),
+    final List<SimpleSection> engGSSections = AuditPage.parseEngGSFormat(
+      extractedText,
     );
+
+    expect(engGSSections.length, equals(6));
     expect(
       engGSSections[0].header,
       equals('ENGINEERING GENERAL STUDIES (RG 773)'),

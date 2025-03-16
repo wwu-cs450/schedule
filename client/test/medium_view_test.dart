@@ -102,8 +102,9 @@ void main() {
     await defaultSortTest(tester, 970, type: 'Medium');
   });
 
-  testWidgets('Medium: Check for Correct Term Visual',
-      (WidgetTester tester) async {
+  testWidgets('Medium: Check for Correct Term Visual', (
+    WidgetTester tester,
+  ) async {
     await mediumTermTest(tester);
   });
 }

@@ -239,9 +239,7 @@ void main() {
   test('CSV from List', () async {
     //using test data
     await DataHandler.fetchData(test: true);
-    final String csv = CSVHandler.csvFromList(
-      DataHandler.data,
-    );
+    final String csv = CSVHandler.csvFromList(DataHandler.data);
 
     const List<String> testCases = [
       '1,CP,2025,ACDM,Acadeum,1140,GS,ACDM,250,,,,,,Acadeum Courses,1-18,Closed,0,0,,,,TBA,,,P,,NULL,N,',

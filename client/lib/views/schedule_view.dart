@@ -37,19 +37,13 @@ class ScheduleView {
           textStyle: const TextStyle(fontSize: 12),
           inputDecorationTheme: const InputDecorationTheme(
             border: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.black,
-                width: 1,
-              ),
+              borderSide: BorderSide(color: Colors.black, width: 1),
             ),
             filled: true,
             fillColor: Color.fromARGB(255, 247, 246, 246),
           ),
           key: const Key('Schedule View Term Dropdown'),
-          label: const Text(
-            'Term',
-            style: TextStyle(fontSize: 12),
-          ),
+          label: const Text('Term', style: TextStyle(fontSize: 12)),
           dropdownMenuEntries: _terms,
           initialSelection: Filters().scheduleTerm,
           onSelected: (value) {
@@ -62,9 +56,12 @@ class ScheduleView {
 
   Widget _creditAmount() {
     final classes = Filters().savedClassesForScheduleTerm();
-    final credits = classes.isEmpty
-        ? 0
-        : classes.map((aClass) => aClass.getCredits()).reduce((a, b) => a + b);
+    final credits =
+        classes.isEmpty
+            ? 0
+            : classes
+                .map((aClass) => aClass.getCredits())
+                .reduce((a, b) => a + b);
     return Semantics(
       label: 'Credit amount.',
       hint: 'Displays the total number of credits.',
@@ -105,27 +102,18 @@ class ScheduleView {
       ..click();
   }
 
-  DecoratedBox _cellBox(
-    String string,
-    double fontSize,
-  ) {
+  DecoratedBox _cellBox(String string, double fontSize) {
     final count = string.split('\n').length;
     return DecoratedBox(
       decoration: BoxDecoration(
         color:
             count > 1 ? const Color.fromARGB(255, 255, 130, 121) : Colors.white,
-        border: Border.all(
-          color: Colors.black,
-          width: 1.0,
-        ),
+        border: Border.all(color: Colors.black, width: 1.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Center(
-          child: Text(
-            string,
-            style: TextStyle(fontSize: fontSize),
-          ),
+          child: Text(string, style: TextStyle(fontSize: fontSize)),
         ),
       ),
     );
@@ -172,9 +160,11 @@ class ScheduleView {
   List<TableRow> _scheduleRows(List<Class> classes) {
     final rows = <TableRow>[];
 
-    for (HourMinute time = HourMinute(hour: 7, minute: 0);
-        time <= HourMinute(hour: 20, minute: 0);
-        time = time.add(const Duration(hours: 1))) {
+    for (
+      HourMinute time = HourMinute(hour: 7, minute: 0);
+      time <= HourMinute(hour: 20, minute: 0);
+      time = time.add(const Duration(hours: 1))
+    ) {
       final List<String> cNames = ['', '', '', '', '', '', '', ''];
 
       // Iterate through each class
@@ -238,10 +228,7 @@ class ScheduleView {
             5: IntrinsicColumnWidth(flex: 1.0),
             6: IntrinsicColumnWidth(flex: 1.0),
           },
-          children: [
-            _scheduleHeader(),
-            ..._scheduleRows(classes),
-          ],
+          children: [_scheduleHeader(), ..._scheduleRows(classes)],
         ),
       ],
     );

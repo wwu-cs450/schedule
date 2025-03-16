@@ -89,9 +89,10 @@ class SmallViewState extends AbstractViewState {
     final room = aClass.classroom;
     final schedule = aClass.schedule.toString(is24hr: false);
     final profs = aClass.getInstructors();
-    final credits = aClass.course.creditsMax == aClass.course.creditsMin
-        ? '${aClass.course.creditsMax}'
-        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
+    final credits =
+        aClass.course.creditsMax == aClass.course.creditsMin
+            ? '${aClass.course.creditsMax}'
+            : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     return Row(
       key: Key('Class $index'),
       children: [
@@ -110,13 +111,10 @@ class SmallViewState extends AbstractViewState {
             ),
             aClass == detailsForClass
                 ? Align(
-                    alignment: Alignment.center, // Center the details container
-                    child: _detailsView(index, room, schedule, profs, aClass),
-                  )
-                : Align(
-                    alignment: Alignment.center,
-                    child: Container(),
-                  ),
+                  alignment: Alignment.center, // Center the details container
+                  child: _detailsView(index, room, schedule, profs, aClass),
+                )
+                : Align(alignment: Alignment.center, child: Container()),
           ],
         ),
       ],
@@ -127,14 +125,10 @@ class SmallViewState extends AbstractViewState {
     return ElevatedButton(
       key: const Key('Details Button'),
       onPressed: () => detailsForClass = aClass,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF656950),
-      ),
+      style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF656950)),
       child: const Text(
         'Details',
-        style: TextStyle(
-          color: Colors.white,
-        ),
+        style: TextStyle(color: Colors.white),
         textAlign: TextAlign.center,
       ),
     );
@@ -163,10 +157,7 @@ class SmallViewState extends AbstractViewState {
               DecoratedBox(
                 decoration: const BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(
-                      width: 1,
-                      color: Colors.black,
-                    ),
+                    bottom: BorderSide(width: 1, color: Colors.black),
                   ),
                 ),
                 child: Row(
@@ -177,10 +168,7 @@ class SmallViewState extends AbstractViewState {
                       child: DecoratedBox(
                         decoration: const BoxDecoration(
                           border: Border(
-                            right: BorderSide(
-                              width: 1,
-                              color: Colors.black,
-                            ),
+                            right: BorderSide(width: 1, color: Colors.black),
                           ),
                         ),
                         child: Padding(
@@ -188,10 +176,7 @@ class SmallViewState extends AbstractViewState {
                           child: Column(
                             children: [
                               const Text('Room(s)'),
-                              Text(
-                                key: const Key('Room Row'),
-                                room,
-                              ),
+                              Text(key: const Key('Room Row'), room),
                             ],
                           ),
                         ),
@@ -200,17 +185,11 @@ class SmallViewState extends AbstractViewState {
                     SizedBox(
                       width: 185,
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 15.0,
-                          bottom: 15.0,
-                        ),
+                        padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
                         child: Column(
                           children: [
                             const Text('Schedule'),
-                            Text(
-                              key: const Key('Schedule Row'),
-                              schedule,
-                            ),
+                            Text(key: const Key('Schedule Row'), schedule),
                           ],
                         ),
                       ),
@@ -220,10 +199,7 @@ class SmallViewState extends AbstractViewState {
                       child: DecoratedBox(
                         decoration: const BoxDecoration(
                           border: Border(
-                            left: BorderSide(
-                              width: 1,
-                              color: Colors.black,
-                            ),
+                            left: BorderSide(width: 1, color: Colors.black),
                           ),
                         ),
                         child: Padding(
@@ -231,10 +207,7 @@ class SmallViewState extends AbstractViewState {
                           child: Column(
                             children: [
                               const Text('Instructor(s)'),
-                              Text(
-                                key: const Key('Instructor Row'),
-                                profs,
-                              ),
+                              Text(key: const Key('Instructor Row'), profs),
                             ],
                           ),
                         ),
@@ -249,8 +222,8 @@ class SmallViewState extends AbstractViewState {
                           style: ButtonStyle(
                             textStyle:
                                 WidgetStateProperty.resolveWith<TextStyle?>(
-                              (states) => const TextStyle(fontSize: 15),
-                            ),
+                                  (states) => const TextStyle(fontSize: 15),
+                                ),
                             fixedSize: WidgetStateProperty.all(
                               const Size.fromWidth(10),
                             ),
@@ -272,32 +245,20 @@ class SmallViewState extends AbstractViewState {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         border: Border(
-                          right: BorderSide(
-                            width: 1,
-                            color: Colors.black,
-                          ),
+                          right: BorderSide(width: 1, color: Colors.black),
                         ),
                       ),
                       child: Padding(
                         padding: EdgeInsets.all(15.0),
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          'Video',
-                        ),
+                        child: Text(textAlign: TextAlign.center, 'Video'),
                       ),
                     ),
                   ),
                   SizedBox(
                     width: 185,
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 15.0,
-                        bottom: 15.0,
-                      ),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        aClass.consent,
-                      ),
+                      padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                      child: Text(textAlign: TextAlign.center, aClass.consent),
                     ),
                   ),
                   SizedBox(
@@ -305,10 +266,7 @@ class SmallViewState extends AbstractViewState {
                     child: DecoratedBox(
                       decoration: const BoxDecoration(
                         border: Border(
-                          left: BorderSide(
-                            width: 1,
-                            color: Colors.black,
-                          ),
+                          left: BorderSide(width: 1, color: Colors.black),
                         ),
                       ),
                       child: Padding(
@@ -344,11 +302,7 @@ class SmallViewState extends AbstractViewState {
       key: const Key('Results'),
       itemCount: data.length,
       itemBuilder: (context, index) {
-        return _classRow(
-          data[index],
-          index,
-          context,
-        );
+        return _classRow(data[index], index, context);
       },
     );
   }
@@ -418,9 +372,7 @@ class SmallViewState extends AbstractViewState {
                 ),
               ),
             ),
-            const SizedBox(
-              width: 1,
-            ),
+            const SizedBox(width: 1),
             Expanded(
               child: DecoratedBox(
                 decoration: const BoxDecoration(
@@ -455,18 +407,12 @@ class SmallViewState extends AbstractViewState {
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
                   children: [
-                    Text(
-                      key: Key('$term Row'),
-                      aClass.term.name,
-                    ),
+                    Text(key: Key('$term Row'), aClass.term.name),
                     Text(
                       key: const Key('Cr Row'),
                       'Credits: ${credits.trim()}',
                     ),
-                    Text(
-                      key: const Key('Campus Row'),
-                      aClass.getCampus(),
-                    ),
+                    Text(key: const Key('Campus Row'), aClass.getCampus()),
                   ],
                 ),
               ),

@@ -57,9 +57,7 @@ class SearchDrawer extends StatelessWidget {
     return _dropdown(
       key: 'Campus',
       width: 200,
-      items: {
-        for (final e in Campus.instances) '${e.code} ${e.name}': e,
-      },
+      items: {for (final e in Campus.instances) '${e.code} ${e.name}': e},
       selection: Filters().campus,
       onSelected: (value) async {
         await Filters().setCampus(value);
@@ -128,9 +126,7 @@ class SearchDrawer extends StatelessWidget {
         onPressed: () async {
           await Filters().reset();
         },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: buttonColor,
-        ),
+        style: ElevatedButton.styleFrom(backgroundColor: buttonColor),
         child: Text(
           'Clear Filters',
           style: TextStyle(color: Colors.black), // Set the text color to black
@@ -163,9 +159,7 @@ class SearchDrawer extends StatelessWidget {
     return _dropdown(
       key: 'Department',
       width: 200,
-      items: {
-        for (final e in Department.instances) '${e.code} ${e.name}': e,
-      },
+      items: {for (final e in Department.instances) '${e.code} ${e.name}': e},
       selection: Filters().department,
       onSelected: (value) async {
         await Filters().setDepartment(value);
@@ -190,10 +184,7 @@ class SearchDrawer extends StatelessWidget {
             children: [
               SizedBox(
                 width: 176,
-                child: Text(
-                  entry.key,
-                  style: const TextStyle(fontSize: 14),
-                ),
+                child: Text(entry.key, style: const TextStyle(fontSize: 14)),
               ),
             ],
           ),
@@ -211,18 +202,13 @@ class SearchDrawer extends StatelessWidget {
           textStyle: const TextStyle(fontSize: 14),
           inputDecorationTheme: const InputDecorationTheme(
             border: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.black,
-              ),
+              borderSide: BorderSide(color: Colors.black),
             ),
             filled: true,
             fillColor: Color.fromARGB(255, 247, 246, 246),
           ),
           key: Key('$key Dropdown'),
-          label: Text(
-            key,
-            style: const TextStyle(fontSize: 14),
-          ),
+          label: Text(key, style: const TextStyle(fontSize: 14)),
           dropdownMenuEntries: entries,
           initialSelection: selection,
           onSelected: (value) async {
@@ -263,9 +249,11 @@ class SearchDrawer extends StatelessWidget {
   Map<String, HourMinute?> get _endTimes {
     return {
       'Any Time': null,
-      for (HourMinute time = HourMinute(hour: 7, minute: 50);
-          time <= HourMinute(hour: 20, minute: 50);
-          time = time.add(const Duration(hours: 1)))
+      for (
+        HourMinute time = HourMinute(hour: 7, minute: 50);
+        time <= HourMinute(hour: 20, minute: 50);
+        time = time.add(const Duration(hours: 1))
+      )
         time.toString(is24hr: false): time,
     };
   }
@@ -357,10 +345,7 @@ class SearchDrawer extends StatelessWidget {
   Padding _searchHeading() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text(
-        'Search Criteria',
-        style: const TextStyle(fontSize: 20),
-      ),
+      child: Text('Search Criteria', style: const TextStyle(fontSize: 20)),
     );
   }
 
@@ -379,9 +364,11 @@ class SearchDrawer extends StatelessWidget {
   Map<String, HourMinute?> get startTimes {
     return {
       'Any Time': null,
-      for (HourMinute time = HourMinute(hour: 7, minute: 0);
-          time <= HourMinute(hour: 20, minute: 0);
-          time = time.add(const Duration(hours: 1)))
+      for (
+        HourMinute time = HourMinute(hour: 7, minute: 0);
+        time <= HourMinute(hour: 20, minute: 0);
+        time = time.add(const Duration(hours: 1))
+      )
         time.toString(is24hr: false): time,
     };
   }
@@ -390,9 +377,7 @@ class SearchDrawer extends StatelessWidget {
     return _dropdown(
       key: 'Subject',
       width: 200,
-      items: {
-        for (final e in Subject.instances) '${e.code} ${e.name}': e,
-      },
+      items: {for (final e in Subject.instances) '${e.code} ${e.name}': e},
       selection: Filters().subject,
       onSelected: (value) async {
         await Filters().setSubject(value);
@@ -464,15 +449,16 @@ class SearchDrawer extends StatelessWidget {
         child: SizedBox(
           key: const Key('Schedule Dropdown'),
           height: 50,
-          child: MultiSelectDropdown(
-            context: context,
-            width: 200,
-            allItems: inputList.keys.toList(),
-            selectedItems: Filters().schedule,
-            onChanged: () {
-              // doSearch();
-            },
-          ).build(),
+          child:
+              MultiSelectDropdown(
+                context: context,
+                width: 200,
+                allItems: inputList.keys.toList(),
+                selectedItems: Filters().schedule,
+                onChanged: () {
+                  // doSearch();
+                },
+              ).build(),
         ),
       ),
     );

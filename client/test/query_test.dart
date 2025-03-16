@@ -31,14 +31,16 @@ void main() {
   test('count query results', () async {
     final all = Query().results().length;
 
-    final csDepartment =
-        Department.instances.firstWhere((each) => each.code == 'CPTR');
+    final csDepartment = Department.instances.firstWhere(
+      (each) => each.code == 'CPTR',
+    );
     await searchCriteria.setDepartment(csDepartment);
     final dCount = Query().results().length;
     expect(dCount < all, isTrue);
 
-    final csSubject =
-        Subject.instances.firstWhere((each) => each.code == 'CPTR');
+    final csSubject = Subject.instances.firstWhere(
+      (each) => each.code == 'CPTR',
+    );
     await searchCriteria.reset();
     await searchCriteria.setSubject(csSubject);
     final sCount = Query().results().length;
@@ -58,8 +60,9 @@ void main() {
   });
 
   test('query finds CPTR', () async {
-    final department =
-        Department.instances.firstWhere((each) => each.code == 'CPTR');
+    final department = Department.instances.firstWhere(
+      (each) => each.code == 'CPTR',
+    );
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
     await searchCriteria.setDepartment(department);
     await searchCriteria.setSubject(subject);
@@ -75,8 +78,9 @@ void main() {
   });
 
   test('query finds multiple codes within the Theology department', () async {
-    final department =
-        Department.instances.firstWhere((each) => each.code == 'RELB');
+    final department = Department.instances.firstWhere(
+      (each) => each.code == 'RELB',
+    );
     await searchCriteria.setDepartment(department);
     final codes = Query().results();
     expect(
@@ -122,8 +126,9 @@ void main() {
   });
 
   test('query finds College Place', () async {
-    final campus =
-        Campus.instances.firstWhere((each) => each.name == 'College Place');
+    final campus = Campus.instances.firstWhere(
+      (each) => each.name == 'College Place',
+    );
     await searchCriteria.setCampus(campus);
     final list = Query().results();
     expect(list.every((element) => element.campus.code == 'CP'), isTrue);
@@ -132,22 +137,22 @@ void main() {
   test('Query times', () {
     final int allLength = Query().results().length;
     final Set<Class> noSpecial = Query(includeSpecialTimes: false).results();
-    final Set<Class> largeRange = Query(
-      times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
-    ).results();
-    final Set<Class> largeRangeSpecificDay = Query(
-      days: {DateTime.tuesday},
-      times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
-    ).results();
-    final int shortRangeLength = Query(
-      times: (start: HourMinute(hour: 8), end: HourMinute(hour: 10)),
-    ).results().length;
+    final Set<Class> largeRange =
+        Query(
+          times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
+        ).results();
+    final Set<Class> largeRangeSpecificDay =
+        Query(
+          days: {DateTime.tuesday},
+          times: (start: HourMinute(hour: 8), end: HourMinute(hour: 14)),
+        ).results();
+    final int shortRangeLength =
+        Query(
+          times: (start: HourMinute(hour: 8), end: HourMinute(hour: 10)),
+        ).results().length;
     // I think it is actually sunday but classopen doesn't follow the same day letter standard
-    final Set<Class> containsSkiing = Query(
-      days: {
-        DateTime.saturday,
-      },
-    ).results();
+    final Set<Class> containsSkiing =
+        Query(days: {DateTime.saturday}).results();
 
     // check lenghts
     expect(
@@ -178,8 +183,9 @@ void main() {
     );
     // only skiing
     expect(
-      containsSkiing
-          .where((e) => e.course.title == 'Downhill Skiing/Snowboarding'),
+      containsSkiing.where(
+        (e) => e.course.title == 'Downhill Skiing/Snowboarding',
+      ),
       isNotEmpty,
     );
   });

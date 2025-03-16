@@ -89,8 +89,9 @@ class Course implements Comparable {
       }
 
       courseNumber = courseNumber.replaceAll(' ', '');
-      courseNumberOnly =
-          int.parse(courseNumber.replaceAll(RegExp('[^0-9]'), ''));
+      courseNumberOnly = int.parse(
+        courseNumber.replaceAll(RegExp('[^0-9]'), ''),
+      );
       late String level;
       if (courseNumberOnly < 300) {
         level = 'Lower';
@@ -119,7 +120,8 @@ class Course implements Comparable {
 
   @override
   int compareTo(dynamic other) {
-    return '$number ${subject.code} $title'
-        .compareTo('${other.number} ${other.subject.code} ${other.title} ');
+    return '$number ${subject.code} $title'.compareTo(
+      '${other.number} ${other.subject.code} ${other.title} ',
+    );
   }
 }

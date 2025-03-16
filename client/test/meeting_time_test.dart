@@ -67,39 +67,28 @@ void main() {
 
     // addUsingDuration
     expect(
-      test.addUsingDuration(
-        day: DateTime.tuesday,
-        start: time2,
-        length: dur1,
-      ),
+      test.addUsingDuration(day: DateTime.tuesday, start: time2, length: dur1),
       isTrue,
     );
     // addUsingDuration -- already exists
     expect(
-      test.addUsingDuration(
-        day: DateTime.tuesday,
-        start: time2,
-        length: dur1,
-      ),
+      test.addUsingDuration(day: DateTime.tuesday, start: time2, length: dur1),
       isFalse,
     );
     // addUsingDuration -- with conflict
     expect(
-      test.addUsingDuration(
-        day: DateTime.tuesday,
-        start: time3,
-        length: dur1,
-      ),
+      test.addUsingDuration(day: DateTime.tuesday, start: time3, length: dur1),
       isFalse,
     );
     expect(test, hasLength(2)); // should only add one additional element
 
     // check what was added
     expect(test[0], (day: DateTime.monday, start: time1, end: time2));
-    expect(
-      test[1],
-      (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
-    );
+    expect(test[1], (
+      day: DateTime.tuesday,
+      start: time2,
+      end: time2.add(dur1),
+    ));
 
     // removing items
     // remove something that doesn't exist
@@ -111,10 +100,11 @@ void main() {
     // remove first time
     expect(test.remove(day: DateTime.monday, start: time1, end: time2), isTrue);
     expect(test, hasLength(1));
-    expect(
-      test[0],
-      (day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
-    ); // what was the second element
+    expect(test[0], (
+      day: DateTime.tuesday,
+      start: time2,
+      end: time2.add(dur1),
+    )); // what was the second element
     // remove the last remaining time
     expect(
       test.remove(day: DateTime.tuesday, start: time2, end: time2.add(dur1)),
@@ -183,9 +173,7 @@ void main() {
     // three days
     expect(
       test.getDaysAtTime(time1),
-      unorderedEquals(
-        {DateTime.monday, DateTime.tuesday, DateTime.wednesday},
-      ),
+      unorderedEquals({DateTime.monday, DateTime.tuesday, DateTime.wednesday}),
     );
     // zero days
     expect(test.getDaysAtTime(HourMinute(hour: 13)), isEmpty);
@@ -197,10 +185,10 @@ void main() {
       isNull,
     );
     // time at start of period
-    expect(
-      test.getPeriodOnDayAtTime(time: time1, day: DateTime.tuesday),
-      (start: time1, end: time2),
-    );
+    expect(test.getPeriodOnDayAtTime(time: time1, day: DateTime.tuesday), (
+      start: time1,
+      end: time2,
+    ));
     // time at end of period
     expect(
       test.getPeriodOnDayAtTime(time: time4, day: DateTime.monday),
@@ -317,8 +305,8 @@ void main() {
     expect(test3.equals(test4), isTrue);
     expect(test4.equals(test3), isTrue);
     // same content
-    test4 = MeetingTime()
-      ..add(day: DateTime.thursday, start: time1, end: time2);
+    test4 =
+        MeetingTime()..add(day: DateTime.thursday, start: time1, end: time2);
     expect(identical(test3, test4), isFalse);
     expect(test3.equals(test4), isTrue);
     expect(test4.equals(test3), isTrue);
@@ -348,14 +336,10 @@ void main() {
     final HourMinute time7 = HourMinute(hour: 15, minute: 30);
     final HourMinute time8 = HourMinute(hour: 20, minute: 45);
 
-    ({
-      bool doesConflict,
-      Set<({int day, HourMinute time})> conflicts
-    }) testResults1;
-    ({
-      bool doesConflict,
-      Set<({int day, HourMinute time})> conflicts
-    }) testResults2;
+    ({bool doesConflict, Set<({int day, HourMinute time})> conflicts})
+    testResults1;
+    ({bool doesConflict, Set<({int day, HourMinute time})> conflicts})
+    testResults2;
 
     // adding times
     // test 1
@@ -435,137 +419,94 @@ void main() {
     MeetingTime test;
     test = MeetingTime.fromString('T 05:00 - 06:50P');
     expect(test, hasLength(1));
-    expect(
-      test[0],
-      (
-        day: DateTime.tuesday,
-        start: HourMinute(hour: 17),
-        end: HourMinute(hour: 18, minute: 50)
-      ),
-    );
+    expect(test[0], (
+      day: DateTime.tuesday,
+      start: HourMinute(hour: 17),
+      end: HourMinute(hour: 18, minute: 50),
+    ));
 
     // multiple days, single time
     test = MeetingTime.fromString('MTWF 01:00 - 01:50P');
     expect(test, hasLength(4));
-    expect(
-      test[0],
-      (
-        day: DateTime.monday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 13, minute: 50)
-      ),
-    );
-    expect(
-      test[1],
-      (
-        day: DateTime.tuesday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 13, minute: 50)
-      ),
-    );
-    expect(
-      test[2],
-      (
-        day: DateTime.wednesday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 13, minute: 50)
-      ),
-    );
-    expect(
-      test[3],
-      (
-        day: DateTime.friday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 13, minute: 50)
-      ),
-    );
+    expect(test[0], (
+      day: DateTime.monday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 13, minute: 50),
+    ));
+    expect(test[1], (
+      day: DateTime.tuesday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 13, minute: 50),
+    ));
+    expect(test[2], (
+      day: DateTime.wednesday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 13, minute: 50),
+    ));
+    expect(test[3], (
+      day: DateTime.friday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 13, minute: 50),
+    ));
 
     // multiple days, multiple times
     test = MeetingTime.fromString('MWF 01:00 - 01:50P/R 02:00 - 04:50P');
     expect(test, hasLength(4));
-    expect(
-      test[0],
-      (
-        day: DateTime.monday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 13, minute: 50)
-      ),
-    );
-    expect(
-      test[1],
-      (
-        day: DateTime.wednesday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 13, minute: 50)
-      ),
-    );
-    expect(
-      test[2],
-      (
-        day: DateTime.thursday,
-        start: HourMinute(hour: 14),
-        end: HourMinute(hour: 16, minute: 50)
-      ),
-    );
-    expect(
-      test[3],
-      (
-        day: DateTime.friday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 13, minute: 50)
-      ),
-    );
+    expect(test[0], (
+      day: DateTime.monday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 13, minute: 50),
+    ));
+    expect(test[1], (
+      day: DateTime.wednesday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 13, minute: 50),
+    ));
+    expect(test[2], (
+      day: DateTime.thursday,
+      start: HourMinute(hour: 14),
+      end: HourMinute(hour: 16, minute: 50),
+    ));
+    expect(test[3], (
+      day: DateTime.friday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 13, minute: 50),
+    ));
 
     // NOT matching schedule.dart formatting
     test = MeetingTime.fromString(
       'RU 02:10PM-04:25PM\nS 02:00 AM-04:50 AM\nS-13:00 - 14:15',
     );
     expect(test, hasLength(4));
-    expect(
-      test[0],
-      (
-        day: DateTime.thursday,
-        start: HourMinute(hour: 14, minute: 10),
-        end: HourMinute(hour: 16, minute: 25)
-      ),
-    );
-    expect(
-      test[1],
-      (
-        day: DateTime.saturday,
-        start: HourMinute(hour: 2),
-        end: HourMinute(hour: 4, minute: 50)
-      ),
-    );
-    expect(
-      test[2],
-      (
-        day: DateTime.saturday,
-        start: HourMinute(hour: 13),
-        end: HourMinute(hour: 14, minute: 15)
-      ),
-    );
-    expect(
-      test[3],
-      (
-        day: DateTime.sunday,
-        start: HourMinute(hour: 14, minute: 10),
-        end: HourMinute(hour: 16, minute: 25)
-      ),
-    );
+    expect(test[0], (
+      day: DateTime.thursday,
+      start: HourMinute(hour: 14, minute: 10),
+      end: HourMinute(hour: 16, minute: 25),
+    ));
+    expect(test[1], (
+      day: DateTime.saturday,
+      start: HourMinute(hour: 2),
+      end: HourMinute(hour: 4, minute: 50),
+    ));
+    expect(test[2], (
+      day: DateTime.saturday,
+      start: HourMinute(hour: 13),
+      end: HourMinute(hour: 14, minute: 15),
+    ));
+    expect(test[3], (
+      day: DateTime.sunday,
+      start: HourMinute(hour: 14, minute: 10),
+      end: HourMinute(hour: 16, minute: 25),
+    ));
 
     // same time listed
     test = MeetingTime.fromString('T 05:00 - 06:50P/T 05:00 - 06:50P');
     expect(test, hasLength(1));
-    expect(
-      test[0],
-      (
-        day: DateTime.tuesday,
-        start: HourMinute(hour: 17),
-        end: HourMinute(hour: 18, minute: 50)
-      ),
-      reason: 'handle same times in string',
-    );
+    expect(test[0], (
+      day: DateTime.tuesday,
+      start: HourMinute(hour: 17),
+      end: HourMinute(hour: 18, minute: 50),
+    ), reason: 'handle same times in string');
 
     // no time set
     test = MeetingTime.fromString('ARR');
@@ -589,8 +530,9 @@ void main() {
       start: HourMinute(hour: 13),
       end: HourMinute(hour: 15, minute: 50),
     );
-    final MeetingTime test2 =
-        MeetingTime.fromString(test.toString(is24hr: false));
+    final MeetingTime test2 = MeetingTime.fromString(
+      test.toString(is24hr: false),
+    );
     expect(test.equals(test2), isTrue);
 
     // edge cases

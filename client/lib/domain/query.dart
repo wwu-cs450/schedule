@@ -29,8 +29,9 @@ class Query {
     return Class.instances
         .where(
           (each) =>
-              _searchCriteria.department
-                  .includesCourse(each.course) && //department
+              _searchCriteria.department.includesCourse(
+                each.course,
+              ) && //department
               _searchCriteria.subject.includesCourse(each.course) && // course
               _searchCriteria.term.includesClass(each) && // term
               _searchCriteria.campus.includesClass(each) && // campus
@@ -49,12 +50,11 @@ class Query {
                       (each.schedule.isEmpty || each.schedule.isARR)) ||
                   each.schedule
                       .checkConflict(
-                        MeetingTime()
-                          ..addSeveralDays(
-                            days: _days,
-                            start: _times?.start,
-                            end: _times?.end,
-                          ),
+                        MeetingTime()..addSeveralDays(
+                          days: _days,
+                          start: _times?.start,
+                          end: _times?.end,
+                        ),
                       )
                       .doesConflict),
         )

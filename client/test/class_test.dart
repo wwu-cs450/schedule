@@ -128,8 +128,9 @@ void main() {
 
   test('getAvailableClassrooms', () {
     final MeetingTime schedule = MeetingTime.fromString('MWF 2:00PM-3:00PM');
-    final List<String> availableClassrooms =
-        Class.getAvailableClassrooms(schedule);
+    final List<String> availableClassrooms = Class.getAvailableClassrooms(
+      schedule,
+    );
     expect(availableClassrooms.isNotEmpty, true);
     expect(availableClassrooms.contains('KRH 210'), false);
   });
