@@ -53,10 +53,7 @@ class MultiSelectDropdown {
                   }
                   onChanged?.call();
                 },
-                child: Text(
-                  item,
-                  style: const TextStyle(color: Colors.black),
-                ),
+                child: Text(item, style: const TextStyle(color: Colors.black)),
               ),
             ],
           ),
@@ -79,10 +76,7 @@ class MultiSelectDropdown {
       ),
       inputDecorationTheme: const InputDecorationTheme(
         border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black,
-            width: 1,
-          ),
+          borderSide: BorderSide(color: Colors.black, width: 1),
         ),
         filled: true,
         fillColor: Color.fromARGB(255, 247, 246, 246),

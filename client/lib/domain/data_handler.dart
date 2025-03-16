@@ -15,9 +15,7 @@ class DataHandler {
   }
 
   // use this to get data from central place (either csv for html)
-  static Future<void> fetchData({
-    bool test = false,
-  }) async {
+  static Future<void> fetchData({bool test = false}) async {
     _data = await CSVHandler.listFromCsv(test: test);
     _dateTime = await CSVHandler.getDateTime(test: test);
   }

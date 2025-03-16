@@ -1,4 +1,4 @@
-image: "ghcr.io/cirruslabs/flutter:3.27.3"
+image: "ghcr.io/cirruslabs/flutter:3.29.2"
 # https://github.com/cirruslabs/docker-images-flutter/pkgs/container/flutter
 
 variables:

@@ -14,8 +14,9 @@ class Instructor implements Comparable {
   }
 
   static Instructor instructorWithName(String name) {
-    final instructorFound =
-        Instructor.instances.firstWhere((instance) => instance.name == name);
+    final instructorFound = Instructor.instances.firstWhere(
+      (instance) => instance.name == name,
+    );
 
     return instructorFound;
   }
@@ -26,8 +27,9 @@ class Instructor implements Comparable {
       final List<String> instructorStrings = value[23].split(', '); // col 23
       for (final instructorString in instructorStrings) {
         if (instructorString.trim().isNotEmpty &&
-            !_instances
-                .any((instructor) => instructor.name == instructorString)) {
+            !_instances.any(
+              (instructor) => instructor.name == instructorString,
+            )) {
           _instances.add(Instructor(instructorString));
         }
       }

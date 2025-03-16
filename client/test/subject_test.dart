@@ -12,9 +12,6 @@ void main() {
     final subjects = Subject.instances;
     expect(Subject.allSubjects().name, 'All Subjects');
     expect(subjects.length, 103);
-    expect(
-      subjects.any((element) => element.code == 'CPTR'),
-      true,
-    );
+    expect(subjects.any((element) => element.code == 'CPTR'), true);
   });
 }

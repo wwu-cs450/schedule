@@ -20,10 +20,6 @@ void main() {
 
   test('findCategory returns null for nonexistent course', () {
     final category = GeneralStudies.findCategory('Nonexistent Course');
-    expect(
-      category,
-      isNull,
-      reason: 'return null for non existent course.',
-    );
+    expect(category, isNull, reason: 'return null for non existent course.');
   });
 }

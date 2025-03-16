@@ -73,9 +73,7 @@ class CSVHandler {
         if (response.status == 200) {
           return response.responseText!;
         } else {
-          throw Exception(
-            'Failed to load TXT file: ${response.status}',
-          );
+          throw Exception('Failed to load TXT file: ${response.status}');
         }
       }
     } catch (e) {

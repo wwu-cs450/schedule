@@ -32,9 +32,10 @@ class AuditPage extends StatelessWidget {
       final header = headers[i];
       final nextHeader = i + 1 < headers.length ? headers[i + 1] : null;
       final headerIndex = extractedText.indexOf(header);
-      final nextHeaderIndex = nextHeader != null
-          ? extractedText.indexOf(nextHeader)
-          : extractedText.length;
+      final nextHeaderIndex =
+          nextHeader != null
+              ? extractedText.indexOf(nextHeader)
+              : extractedText.length;
 
       final content = cleanContent(
         extractedText.substring(headerIndex, nextHeaderIndex).trim(),
@@ -154,14 +155,15 @@ class AuditPage extends StatelessWidget {
       final start = match.end;
 
       // Extract the content between the last match end and the current match start
-      final sectionContent = content
-          .substring(
-            start,
-            i + 1 < matches.length
-                ? matches.elementAt(i + 1).start
-                : content.length,
-          )
-          .trim();
+      final sectionContent =
+          content
+              .substring(
+                start,
+                i + 1 < matches.length
+                    ? matches.elementAt(i + 1).start
+                    : content.length,
+              )
+              .trim();
 
       sections.add(SimpleSection(header: header, content: sectionContent));
     }
@@ -192,9 +194,10 @@ class AuditPage extends StatelessWidget {
       final start = match.end;
 
       // Determine the end index for the substring
-      final end = i + 1 < matches.length
-          ? matches.elementAt(i + 1).start
-          : content.length;
+      final end =
+          i + 1 < matches.length
+              ? matches.elementAt(i + 1).start
+              : content.length;
 
       final sectionContent = content.substring(start, end).trim();
       sections.add(SimpleSection(header: header, content: sectionContent));
@@ -209,23 +212,21 @@ class AuditPage extends StatelessWidget {
     final List<SimpleSection> sections = extractSections(extractedText);
     if (sections.isEmpty) {
       return const Center(
-        child: Text(
-          'No sections found.',
-          style: TextStyle(fontSize: 16),
-        ),
+        child: Text('No sections found.', style: TextStyle(fontSize: 16)),
       );
     }
 
     final Requirement overallUndergraduateRequirements =
         parseOverallUndergraduateRequirements(
-      sections.firstWhere(
-        (section) =>
-            section.header == 'OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)',
-      ),
-    );
+          sections.firstWhere(
+            (section) =>
+                section.header == 'OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)',
+          ),
+        );
 
-    final int index = sections
-        .indexWhere((section) => section.header == 'GENERAL STUDIES (RG 582)');
+    final int index = sections.indexWhere(
+      (section) => section.header == 'GENERAL STUDIES (RG 582)',
+    );
 
     if (index != -1) {
       final generalStudiesSection = sections[index];
@@ -234,8 +235,9 @@ class AuditPage extends StatelessWidget {
           generalStudiesSection.content.split(RegExp(r'\s+')).length;
 
       if (wordCount > 50) {
-        final List<SimpleSection> newSections =
-            parseNewGSFormat(generalStudiesSection.content);
+        final List<SimpleSection> newSections = parseNewGSFormat(
+          generalStudiesSection.content,
+        );
         sections.removeAt(index);
         sections.insertAll(index, newSections);
       }
@@ -246,17 +248,16 @@ class AuditPage extends StatelessWidget {
       if (index != -1) {
         final generalStudiesSection = sections[index];
 
-        final List<SimpleSection> newSections =
-            parseEngGSFormat(generalStudiesSection.content);
+        final List<SimpleSection> newSections = parseEngGSFormat(
+          generalStudiesSection.content,
+        );
         sections.removeAt(index);
         sections.insertAll(index, newSections);
       }
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Audit Page'),
-      ),
+      appBar: AppBar(title: const Text('Audit Page')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
@@ -302,9 +303,7 @@ class AuditPage extends StatelessWidget {
                   children: [
                     // Display the header
                     SelectableText(
-                      key: Key(
-                        'overall_undergraduate_requirements_header',
-                      ),
+                      key: Key('overall_undergraduate_requirements_header'),
                       overallUndergraduateRequirements.title,
                       style: const TextStyle(
                         fontSize: 18,

@@ -49,8 +49,10 @@ class MeetingTime {
       }
       // format string
       // replaces space between
-      splitTime =
-          time.trim().replaceFirst(RegExp(r'\s*-\s*|\s+'), '-').split('-');
+      splitTime = time
+          .trim()
+          .replaceFirst(RegExp(r'\s*-\s*|\s+'), '-')
+          .split('-');
       if (splitTime.length != 3) {
         throw FormatException(
           "Input string is not well-deliminated. Must be of form: 'days *space* start - end'.",
@@ -165,16 +167,21 @@ class MeetingTime {
     required HourMinute start,
     required HourMinute end,
   }) {
-    final _AMeetingTime newTime =
-        _AMeetingTime(start: start, end: end, day: day);
+    final _AMeetingTime newTime = _AMeetingTime(
+      start: start,
+      end: end,
+      day: day,
+    );
     final bool contains = _meetingTimes.contains(newTime);
-    final bool conflicts = _meetingTimes
-        .where(
-          (e) =>
-              e.isWithin(newTime) ||
-              (e.day == day && (e.occursDuring(start) || e.occursDuring(end))),
-        )
-        .isNotEmpty;
+    final bool conflicts =
+        _meetingTimes
+            .where(
+              (e) =>
+                  e.isWithin(newTime) ||
+                  (e.day == day &&
+                      (e.occursDuring(start) || e.occursDuring(end))),
+            )
+            .isNotEmpty;
     if (!(contains || conflicts)) {
       _meetingTimes.add(newTime);
     }
@@ -188,11 +195,7 @@ class MeetingTime {
   // Sort when adding.
   // returns true if time added successfully.
   // will consider the max if null (start=0:00, end=23:59)
-  bool add({
-    int? day,
-    HourMinute? start,
-    HourMinute? end,
-  }) {
+  bool add({int? day, HourMinute? start, HourMinute? end}) {
     if (day == null) {
       return addSeveralDays(start: start, end: end, days: null);
     } else {
@@ -202,11 +205,7 @@ class MeetingTime {
 
   // add time for several days at once.
   // returns true if at least one time was added.
-  bool addSeveralDays({
-    Set<int>? days,
-    HourMinute? start,
-    HourMinute? end,
-  }) {
+  bool addSeveralDays({Set<int>? days, HourMinute? start, HourMinute? end}) {
     // handle null start/end
     start ??= HourMinute();
     end ??= HourMinute(hour: 23, minute: 59);
@@ -230,8 +229,7 @@ class MeetingTime {
     required int day,
     required HourMinute start,
     required Duration length,
-  }) =>
-      add(day: day, start: start, end: start.add(length));
+  }) => add(day: day, start: start, end: start.add(length));
 
   // remove matching time. Update hashCode.
   bool remove({
@@ -239,8 +237,11 @@ class MeetingTime {
     required HourMinute start,
     required HourMinute end,
   }) {
-    final _AMeetingTime removeTime =
-        _AMeetingTime(start: start, end: end, day: day);
+    final _AMeetingTime removeTime = _AMeetingTime(
+      start: start,
+      end: end,
+      day: day,
+    );
     final bool contains = _meetingTimes.remove(removeTime);
     return contains;
   }
@@ -278,10 +279,11 @@ class MeetingTime {
   }
 
   // get set of days (int) that meet during time.
-  Set<int> getDaysAtTime(HourMinute time) => _meetingTimes
-      .where((e) => e.occursDuring(time))
-      .map((e) => e.day)
-      .toSet();
+  Set<int> getDaysAtTime(HourMinute time) =>
+      _meetingTimes
+          .where((e) => e.occursDuring(time))
+          .map((e) => e.day)
+          .toSet();
 
   // get start/end of period that contains time on day.
   // returns (null, null) if no period exists.
@@ -294,8 +296,9 @@ class MeetingTime {
       // if no matches
       return null;
     } else {
-      final _AMeetingTime returnTime =
-          _meetingTimes.firstWhere((e) => e.day == day && e.occursDuring(time));
+      final _AMeetingTime returnTime = _meetingTimes.firstWhere(
+        (e) => e.day == day && e.occursDuring(time),
+      );
       return (start: returnTime.start, end: returnTime.end);
     }
   }
@@ -331,7 +334,7 @@ class MeetingTime {
   //          MeetingTime1.checkConflict(MeetingTime2) will have a conflict at 1:30,
   //          MeetingTime2.checkConflict(MeetingTime1) will have a conflict at 1:30.
   ({bool doesConflict, Set<({int day, HourMinute time})> conflicts})
-      checkConflict(MeetingTime other) {
+  checkConflict(MeetingTime other) {
     final Set<({int day, HourMinute time})> conflicts = {};
     final int maxCount = length > other.length ? length : other.length;
 
@@ -506,8 +509,9 @@ class _AMeetingTime implements Comparable<_AMeetingTime> {
     // negative if respective time for this occurs before other
     final int compareStarts =
         ((day * 1440) + (start.hour * 60) + start.minute) -
-            ((other.day * 1440) + (other.start.hour * 60) + other.start.minute);
-    final int compareEnds = ((day * 1440) + (end.hour * 60) + end.minute) -
+        ((other.day * 1440) + (other.start.hour * 60) + other.start.minute);
+    final int compareEnds =
+        ((day * 1440) + (end.hour * 60) + end.minute) -
         ((other.day * 1440) + (other.end.hour * 60) + other.end.minute);
 
     if (compareStarts == 0) {

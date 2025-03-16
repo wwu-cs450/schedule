@@ -40,11 +40,7 @@ void main() {
   });
   test('course credit numbers from CSV', () {
     final courses = Course.instances;
-    assert(
-      courses.any(
-        (element) => element.creditsMin == 4.5,
-      ),
-    );
+    assert(courses.any((element) => element.creditsMin == 4.5));
     assert(
       courses.any(
         (element) =>
@@ -52,23 +48,13 @@ void main() {
             element.creditsMax == 4, // Test for NRSG494 Internship
       ),
     );
-    assert(
-      courses.any(
-        (element) => element.creditsMin != element.creditsMax,
-      ),
-    );
-    assert(
-      courses.any(
-        (element) => element.creditsMin == element.creditsMax,
-      ),
-    );
+    assert(courses.any((element) => element.creditsMin != element.creditsMax));
+    assert(courses.any((element) => element.creditsMin == element.creditsMax));
   });
   test('course titles from HTML', () {
     final courses = Course.instances;
     assert(
-      courses.any(
-        (element) => element.title == 'Introduction to Printmaking',
-      ),
+      courses.any((element) => element.title == 'Introduction to Printmaking'),
     );
   });
 }

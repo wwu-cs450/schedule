@@ -17,8 +17,9 @@ class Department implements Comparable {
 
   static Department departmentWithCode(String code) {
     try {
-      final departmentOfCode =
-          Department.instances.firstWhere((instance) => instance.code == code);
+      final departmentOfCode = Department.instances.firstWhere(
+        (instance) => instance.code == code,
+      );
       return departmentOfCode;
     } catch (e) {
       // print('Department "$code" not found!');

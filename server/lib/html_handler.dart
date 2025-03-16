@@ -20,14 +20,10 @@ class HTMLHandler {
       year = (currentTime.year + 1).toString();
     }
     final response = await http.get(
-      Uri.https(
-        'classopen.wallawalla.edu',
-        '/classopenps.php',
-        {
-          'strm': 'f$year',
-          'submit': 'Search',
-        },
-      ),
+      Uri.https('classopen.wallawalla.edu', '/classopenps.php', {
+        'strm': 'f$year',
+        'submit': 'Search',
+      }),
     );
     return response.body;
   }
@@ -43,7 +39,8 @@ class HTMLHandler {
     if (classTable == null) {
       throw Exception('Class Table is empty.');
     }
-    final rows = classTable.getElementsByClassName('evenrow') +
+    final rows =
+        classTable.getElementsByClassName('evenrow') +
         classTable.getElementsByClassName('oddrow');
     for (final each in rows) {
       final nodes = each.childNodes;
@@ -110,7 +107,7 @@ class HTMLHandler {
       if (nodes[40].hasChildNodes()) {
         row[27] =
             (nodes[40] as TableCellElement).children[0].attributes['href'] ??
-                '';
+            '';
       } else {
         row[27] = '';
       }

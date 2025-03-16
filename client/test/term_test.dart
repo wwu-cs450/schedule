@@ -12,11 +12,7 @@ void main() {
     final terms = Term.instances;
     assert(Term.allTerms().name == 'All Terms');
     assert(terms.length == 10);
-    assert(
-      terms.any(
-        (element) => element.code == 2239,
-      ),
-    );
+    assert(terms.any((element) => element.code == 2239));
   });
   test('test cached Tests', () {
     final Term summerInstance = Term.findCachedTerm(2246);

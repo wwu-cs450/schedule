@@ -25,7 +25,7 @@ linter:
     - prefer_final_in_for_each
     - prefer_final_locals
     - prefer_single_quotes
-    - require_trailing_commas
+    # - require_trailing_commas # disabled because of new Dart 3.7 formatter
     - sort_child_properties_last
     - sort_constructors_first
     - sort_pub_dependencies

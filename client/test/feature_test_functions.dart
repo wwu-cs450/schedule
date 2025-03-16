@@ -18,10 +18,7 @@ Future<void> searchCriteriaTest(WidgetTester tester, double width) async {
   await buildTestEnvironment(tester, width: width);
   await openDrawer(tester);
 
-  multiExpect(
-    finders.values.toList(),
-    findsOneWidget,
-  );
+  multiExpect(finders.values.toList(), findsOneWidget);
 }
 
 Future<void> headerCellTest(
@@ -34,8 +31,9 @@ Future<void> headerCellTest(
     find.byWidgetPredicate(
       (Widget widget) =>
           widget.key is ValueKey<String> &&
-          RegExp(r'Header Card$')
-              .hasMatch((widget.key as ValueKey<String>).value),
+          RegExp(
+            r'Header Card$',
+          ).hasMatch((widget.key as ValueKey<String>).value),
     ),
     findsExactly(numCells),
   );
@@ -91,9 +89,10 @@ Future<void> levelTest(
   double width, {
   required Matcher requirement,
 }) async {
-  final List<String> keys = width >= 2000
-      ? ['Summer1', 'Fall', 'Winter', 'Spring', 'Summer2']
-      : ['Subject'];
+  final List<String> keys =
+      width >= 2000
+          ? ['Summer1', 'Fall', 'Winter', 'Spring', 'Summer2']
+          : ['Subject'];
   await dropdownTester(
     tester,
     menu: 'Level',
@@ -221,12 +220,12 @@ Future<void> instructorTest(
   type == 'Wide'
       ? multiExpect(textOpts, findsAtLeast(1))
       : type == 'Medium'
-          ? hoverExpect(
-              tester,
-              find.byKey(const Key('Hover Cell')),
-              find.textContaining('Brian'),
-            )
-          : expectInResults(['Instructor'], contains('Brian'), type: type);
+      ? hoverExpect(
+        tester,
+        find.byKey(const Key('Hover Cell')),
+        find.textContaining('Brian'),
+      )
+      : expectInResults(['Instructor'], contains('Brian'), type: type);
 }
 
 Future<void> statusTest(
@@ -291,20 +290,23 @@ Future<void> scheduleViewTest(
   await doTap(tester, options['9:00AM']!);
   await closeDrawer(tester);
   int fall2024 = 0, winter2025 = 0, spring2025 = 0;
-  final rows = find
-      .byWidgetPredicate(
-        (Widget widget) =>
-            widget.key is ValueKey<String> &&
-            RegExp(r'^Class \d{0,4}')
-                .hasMatch((widget.key as ValueKey<String>).value) &&
-            widget is Row,
-      )
-      .evaluate();
+  final rows =
+      find
+          .byWidgetPredicate(
+            (Widget widget) =>
+                widget.key is ValueKey<String> &&
+                RegExp(
+                  r'^Class \d{0,4}',
+                ).hasMatch((widget.key as ValueKey<String>).value) &&
+                widget is Row,
+          )
+          .evaluate();
 
   // Qualifies as Save Box test.
   for (final row in rows) {
-    final saveBox =
-        find.byKey(Key('Class ${rows.toList().indexOf(row)} save box'));
+    final saveBox = find.byKey(
+      Key('Class ${rows.toList().indexOf(row)} save box'),
+    );
     final fallContent = textInCellWithKey(row, 'Fall $dataContainer');
     final wtrContent = textInCellWithKey(row, 'Winter $dataContainer');
     final sprContent = textInCellWithKey(row, 'Spring $dataContainer');
@@ -327,15 +329,16 @@ Future<void> scheduleViewTest(
 
   // Qualifies as Schedule View test.
   // Also qualifies as download button test.
-  final redBox = find
-      .byWidgetPredicate(
-        (Widget widget) =>
-            widget is DecoratedBox &&
-            widget.decoration is BoxDecoration &&
-            (widget.decoration as BoxDecoration).color ==
-                const Color.fromARGB(255, 255, 130, 121),
-      )
-      .hitTestable();
+  final redBox =
+      find
+          .byWidgetPredicate(
+            (Widget widget) =>
+                widget is DecoratedBox &&
+                widget.decoration is BoxDecoration &&
+                (widget.decoration as BoxDecoration).color ==
+                    const Color.fromARGB(255, 255, 130, 121),
+          )
+          .hitTestable();
   final termDropdown = find.byKey(const Key('Schedule View Term Dropdown'));
   final downloadButton = find.byKey(const Key('Download Button'));
 
@@ -475,8 +478,9 @@ Future<void> mediumTermTest(WidgetTester tester) async {
   final specificRow = find.byWidgetPredicate(
     (Widget widget) =>
         widget.key is ValueKey<String> &&
-        RegExp(r'^Class \d{0,4}')
-            .hasMatch((widget.key as ValueKey<String>).value) &&
+        RegExp(
+          r'^Class \d{0,4}',
+        ).hasMatch((widget.key as ValueKey<String>).value) &&
         widget is Row,
   );
   await buildTestEnvironment(tester, width: 970);
@@ -544,9 +548,7 @@ Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
 Future<void> auditViewParse(WidgetTester tester, String extractedText) async {
   await buildTestEnvironment(tester, width: 970);
   await tester.pumpWidget(
-    MaterialApp(
-      home: AuditPage(extractedText: extractedText),
-    ),
+    MaterialApp(home: AuditPage(extractedText: extractedText)),
   );
 
   // Confirm each expected header text is found exactly once
@@ -554,10 +556,7 @@ Future<void> auditViewParse(WidgetTester tester, String extractedText) async {
     find.text('IMPORTANT DEGREE AUDIT INFORMATION (RG 584)'),
     findsOneWidget,
   );
-  expect(
-    find.text('FALL THROUGH AND INSUFFICIENT (RG 633)'),
-    findsOneWidget,
-  );
+  expect(find.text('FALL THROUGH AND INSUFFICIENT (RG 633)'), findsOneWidget);
   expect(
     find.text('OVERALL UNDERGRADUATE REQUIREMENTS (RG 639)'),
     findsOneWidget,

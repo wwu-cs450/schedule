@@ -73,17 +73,12 @@ class MediumViewState extends AbstractViewState {
           ),
         ),
         headerRow(),
-        Expanded(
-          child: rowBuilder(classes),
-        ),
+        Expanded(child: rowBuilder(classes)),
       ],
     );
   }
 
-  Widget classRow(
-    Class aClass,
-    int index,
-  ) {
+  Widget classRow(Class aClass, int index) {
     // Default, Summer, Fall, Winter, Spring
     final cNum = aClass.course.number;
     final subj = '${aClass.getCode()} $cNum';
@@ -94,9 +89,10 @@ class MediumViewState extends AbstractViewState {
     final schedule = aClass.schedule.toString(is24hr: false);
     final profs = aClass.getInstructors();
 
-    final credits = aClass.course.creditsMax == aClass.course.creditsMin
-        ? '${aClass.course.creditsMax}'
-        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
+    final credits =
+        aClass.course.creditsMax == aClass.course.creditsMin
+            ? '${aClass.course.creditsMax}'
+            : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     final enroll = [
       aClass.currEnrollment.toString(),
       aClass.maxEnrollment.toString(),
@@ -107,9 +103,7 @@ class MediumViewState extends AbstractViewState {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         DecoratedBox(
-          decoration: BoxDecoration(
-            color: Color(aColor[0]),
-          ),
+          decoration: BoxDecoration(color: Color(aColor[0])),
           position: DecorationPosition.background,
           child: IntrinsicHeight(
             child: Row(
@@ -218,10 +212,7 @@ class MediumViewState extends AbstractViewState {
       key: const Key('Results'),
       itemCount: data.length,
       itemBuilder: (context, index) {
-        return classRow(
-          data[index],
-          index,
-        );
+        return classRow(data[index], index);
       },
     );
   }

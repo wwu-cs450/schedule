@@ -74,26 +74,22 @@ class LargeViewState extends AbstractViewState {
           ),
         ),
         headerRow(),
-        Expanded(
-          child: rowBuilder(classes),
-        ),
+        Expanded(child: rowBuilder(classes)),
       ],
     );
   }
 
-  Widget classRow(
-    Class aClass,
-    int index,
-  ) {
+  Widget classRow(Class aClass, int index) {
     final color = getColor(index);
     final gsCategory = GeneralStudies.findCategory(aClass.course.title);
     final status = aClass.isOpenForEnrollment ? 'Open' : 'Closed';
     final room = aClass.classroom;
     final schedule = aClass.schedule.toString(is24hr: false);
     final profs = aClass.getInstructors();
-    final credits = aClass.course.creditsMax == aClass.course.creditsMin
-        ? '${aClass.course.creditsMax}'
-        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
+    final credits =
+        aClass.course.creditsMax == aClass.course.creditsMin
+            ? '${aClass.course.creditsMax}'
+            : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     final enroll = [
       aClass.currEnrollment.toString(),
       aClass.maxEnrollment.toString(),
@@ -103,9 +99,7 @@ class LargeViewState extends AbstractViewState {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         DecoratedBox(
-          decoration: BoxDecoration(
-            color: Color(color[0]),
-          ),
+          decoration: BoxDecoration(color: Color(color[0])),
           child: IntrinsicHeight(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -122,11 +116,11 @@ class LargeViewState extends AbstractViewState {
                 cell('Section', aClass.section, 40.0, color[0], 'c'),
                 aClass.course.isGeneralStudies
                     ? Tooltip(
-                        // Show the General Studies category on hover
-                        message: gsCategory ??
-                            '(General Studies category not found)',
-                        child: cell('General Studies', 'GS', 30.0, color[0]),
-                      )
+                      // Show the General Studies category on hover
+                      message:
+                          gsCategory ?? '(General Studies category not found)',
+                      child: cell('General Studies', 'GS', 30.0, color[0]),
+                    )
                     : cell('General Studies', '', 30.0, color[0]),
                 cell('Cr', credits, 40.0, color[0]),
                 cell('Title', aClass.getTitle(), 300.0, color[0]),
@@ -195,10 +189,7 @@ class LargeViewState extends AbstractViewState {
       key: const Key('Results'),
       itemCount: data.length,
       itemBuilder: (context, index) {
-        return classRow(
-          data[index],
-          index,
-        );
+        return classRow(data[index], index);
       },
     );
   }

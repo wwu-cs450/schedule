@@ -67,10 +67,7 @@ class BulletinPdfViewState extends State<BulletinPdfView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bulletin Scanner'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Bulletin Scanner'), centerTitle: true),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -81,32 +78,31 @@ class BulletinPdfViewState extends State<BulletinPdfView> {
               ElevatedButton(
                 onPressed: getPdfText,
                 child: const Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                  child: Text(
-                    'Select PDF',
-                    style: TextStyle(fontSize: 18),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 12.0,
                   ),
+                  child: Text('Select PDF', style: TextStyle(fontSize: 18)),
                 ),
               ),
               const SizedBox(height: 20),
               _isLoading
                   ? const CircularProgressIndicator()
                   : Column(
-                      children: [
-                        Text(
-                          _courseDescription ?? '',
-                          style: const TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          _coursePrerequisite ?? '',
-                          style: const TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+                    children: [
+                      Text(
+                        _courseDescription ?? '',
+                        style: const TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        _coursePrerequisite ?? '',
+                        style: const TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
             ],
           ),
         ),

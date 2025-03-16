@@ -59,10 +59,11 @@ class Class implements Comparable {
   // new method get emptyclassrooms takes one arguement of day, hour and minute and returns classrooms that are empty at that time
   static List<String> getAvailableClassrooms(MeetingTime schedule) {
     final List<String> availableClassrooms = [];
-    final Set<String> occupiedClassrooms = instances
-        .where((classInstance) => classInstance.schedule.overlaps(schedule))
-        .map((classInstance) => classInstance.classroom)
-        .toSet();
+    final Set<String> occupiedClassrooms =
+        instances
+            .where((classInstance) => classInstance.schedule.overlaps(schedule))
+            .map((classInstance) => classInstance.classroom)
+            .toSet();
     for (final classroom in getAllClassrooms()) {
       if (!occupiedClassrooms.contains(classroom)) {
         availableClassrooms.add(classroom);
@@ -130,7 +131,8 @@ class Class implements Comparable {
     Course.getAllCourses();
     final classData = DataHandler.data;
     for (final listing in classData) {
-      final courseNumber = '${listing[8].trim()}'
+      final courseNumber =
+          '${listing[8].trim()}'
           '${listing[9].trim()}'
           '${listing[10].trim()}'
           '${listing[11].trim()}'
@@ -139,18 +141,21 @@ class Class implements Comparable {
         (each) =>
             each.subject.code == listing[7] && each.number == courseNumber,
       );
-      final Set<Instructor> currInstructors = Instructor.instances
-          .where((each) => listing[23].contains(each.name))
-          .toSet();
+      final Set<Instructor> currInstructors =
+          Instructor.instances
+              .where((each) => listing[23].contains(each.name))
+              .toSet();
       late final Campus currCampus;
       try {
-        currCampus =
-            Campus.instances.firstWhere((each) => each.code == listing[1]);
+        currCampus = Campus.instances.firstWhere(
+          (each) => each.code == listing[1],
+        );
       } catch (e) {
         // print('Campus not found: "${listing[1]}"');
         rethrow;
       }
-      var termYear = (int.parse(listing[2]) / 1000).truncate().toString() +
+      var termYear =
+          (int.parse(listing[2]) / 1000).truncate().toString() +
           (int.parse(listing[2]) % 2000).toString();
       var termMonth = '';
       var termFound = '';
@@ -206,8 +211,9 @@ class Class implements Comparable {
       }
       final termCode = int.parse(termYear + termMonth);
       final int classNumber = int.parse(listing[5]);
-      final Term currTerm =
-          Term.instances.firstWhere((each) => each.code == termCode);
+      final Term currTerm = Term.instances.firstWhere(
+        (each) => each.code == termCode,
+      );
       _instances.add(
         Class(
           currCourse,
@@ -356,14 +362,8 @@ class Class implements Comparable {
 
   int getLineHeight() {
     return max(
-      max(
-        schedule.toString().split('\n').length,
-        classroom.split('\n').length,
-      ),
-      max(
-        getInstructors().split('\n').length,
-        1,
-      ),
+      max(schedule.toString().split('\n').length, classroom.split('\n').length),
+      max(getInstructors().split('\n').length, 1),
     );
   }
 
@@ -371,8 +371,8 @@ class Class implements Comparable {
   int compareTo(dynamic other) {
     return '${course.subject.code} ${course.number} ${term.code} $section'
         .compareTo(
-      '${other.course.subject.code} ${other.course.number} ${other.term.code} ${other.section}',
-    );
+          '${other.course.subject.code} ${other.course.number} ${other.term.code} ${other.section}',
+        );
   }
 
   @override

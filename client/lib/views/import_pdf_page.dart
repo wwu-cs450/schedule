@@ -47,10 +47,7 @@ class ImportPDFPageState extends State<ImportPDFPage> {
             const SizedBox(height: 10),
             const Text(
               'Browse your device to import a PDF file and preview it here.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.black54),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
@@ -61,10 +58,7 @@ class ImportPDFPageState extends State<ImportPDFPage> {
                 // Placeholder functionality
               },
               icon: const Icon(Icons.file_open, color: Colors.white),
-              label: const Text(
-                'Select PDF',
-                style: TextStyle(fontSize: 18),
-              ),
+              label: const Text('Select PDF', style: TextStyle(fontSize: 18)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
                 padding: const EdgeInsets.symmetric(
@@ -98,10 +92,7 @@ class ImportPDFPageState extends State<ImportPDFPage> {
               child: const Center(
                 child: Text(
                   'PDF Preview Will Appear Here',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black45,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.black45),
                   textAlign: TextAlign.center,
                 ),
               ),
