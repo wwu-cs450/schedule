@@ -2,6 +2,7 @@ import 'package:client/domain/class.dart';
 import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/filters.dart';
 import 'package:client/domain/prefs.dart';
+import 'package:client/domain/term.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,6 +11,7 @@ import 'test_functions.dart';
 
 void main() async {
   setUp(() async {
+    Term.defaultTermIndex = 1; // 2024-2025
     AbstractPrefs.instance = MockPrefs();
     WidgetsFlutterBinding.ensureInitialized();
     await Filters().load(); // Load filters from local storage

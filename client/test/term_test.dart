@@ -2,6 +2,7 @@ import 'package:client/domain/term.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  Term.defaultTermIndex = 1; // 2024-2025
   test('constructor and accessors', () {
     final term = Term(2239, 'Fall 2023');
     assert(term.code == 2239);
@@ -10,8 +11,8 @@ void main() {
 
   test('instances', () {
     final terms = Term.instances;
-    assert(Term.allTerms().name == 'All Terms');
-    assert(terms.length == 10);
+    assert(Term.defaultTerm().name == '2024-2025');
+    assert(terms.length == 20);
     assert(terms.any((element) => element.code == 2239));
   });
   test('test cached Tests', () {

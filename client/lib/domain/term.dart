@@ -6,9 +6,10 @@ class Term implements Comparable {
   final String name;
 
   static var _instances = <Term>{};
+  static int defaultTermIndex = 0; // Tests want 2024-2025
 
-  static Term allTerms() {
-    return instances.first;
+  static Term defaultTerm() {
+    return instances.elementAt(defaultTermIndex);
   }
 
   @override
@@ -23,8 +24,12 @@ class Term implements Comparable {
     return foundTerm;
   }
 
-  static Term fromCode(int code) {
-    return instances.firstWhere((term) => term.code == code);
+  static Term? fromCode(int code) {
+    try {
+      return _instances.firstWhere((term) => term.code == code);
+    } catch (e) {
+      return null;
+    }
   }
 
   bool includesClass(Class classInstance) {
@@ -32,26 +37,41 @@ class Term implements Comparable {
   }
 
   //These will need to change with time
-  static Set<Term> _initialize() {
-    final Set<Term> instances = {};
-    instances
-      ..add(Term(2236, 'Summer 2023'))
-      ..add(Term(2239, 'Fall 2023'))
-      ..add(Term(2241, 'Winter 2024'))
-      ..add(Term(2243, 'Spring 2024'))
-      ..add(Term(2246, 'Summer 2024'))
-      ..add(Term(2249, 'Fall 2024'))
-      ..add(Term(2251, 'Winter 2025'))
-      ..add(Term(2253, 'Spring 2025'))
-      ..add(Term(2256, 'Summer 2025'));
-    return instances;
+  static void _initialize() {
+    _instances = {
+      Year(2026),
+      Year(2025),
+      Year(2024),
+      Term(2226, 'Summer 2022'),
+      Term(2229, 'Fall 2022'),
+      Term(2231, 'Winter 2023'),
+      Term(2233, 'Spring 2023'),
+      Term(2236, 'Summer 2023'),
+      Term(2239, 'Fall 2023'),
+      Term(2241, 'Winter 2024'),
+      Term(2243, 'Spring 2024'),
+      Term(2246, 'Summer 2024'),
+      Term(2249, 'Fall 2024'),
+      Term(2251, 'Winter 2025'),
+      Term(2253, 'Spring 2025'),
+      Term(2256, 'Summer 2025'),
+      Term(2259, 'Fall 2025'),
+      Term(2261, 'Winter 2026'),
+      Term(2263, 'Spring 2026'),
+      Term(2266, 'Summer 2026'),
+    };
   }
 
   static Set<Term> get instances {
     if (_instances.isEmpty) {
-      _instances = {AllTerms(), ..._initialize()};
+      _initialize();
     }
     return _instances;
+  }
+
+  int startYear() {
+    final int year = code % 1000 ~/ 10 + 2000;
+    return code % 10 < 9 ? year - 1 : year;
   }
 
   @override
@@ -60,11 +80,17 @@ class Term implements Comparable {
   }
 }
 
-class AllTerms extends Term {
-  AllTerms() : super(0, 'All Terms');
+class Year extends Term {
+  Year(int year) : super(year, '${year - 1}-$year');
 
   @override
   bool includesClass(Class classInstance) {
-    return true;
+    final int startTerm = int.parse('2${(code - 1) % 100}6');
+    final int endTerm = int.parse('2${code % 100}9');
+    return classInstance.term.code >= startTerm &&
+        classInstance.term.code <= endTerm;
   }
+
+  @override
+  int startYear() => code - 1;
 }

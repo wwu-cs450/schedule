@@ -1,10 +1,23 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:csv/csv.dart';
+import 'package:server/bulletin.dart';
 import 'package:server/html_handler.dart';
 
-void main() async {
+void main(List<String> arguments) async {
+  final parser = ArgParser();
+  parser.addOption(
+    'bulletin',
+    callback: (String? value) async {
+      if (value != null) {
+        await bulletin(value);
+        exit(0);
+      }
+    },
+  );
+  parser.parse(arguments);
   final File dataFile;
   final File dateTimeFile;
   // Change path based on hostname

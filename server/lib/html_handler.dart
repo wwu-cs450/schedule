@@ -8,17 +8,11 @@ class HTMLHandler {
     return _instance;
   }
   // Singleton pattern
-  HTMLHandler._privateConstructor();
-  static final HTMLHandler _instance = HTMLHandler._privateConstructor();
+  HTMLHandler._();
+  static final HTMLHandler _instance = HTMLHandler._();
   late String year;
 
-  Future<String> fetchHtml() async {
-    final currentTime = DateTime.now();
-    if (currentTime.month > 0 && currentTime.month < 7) {
-      year = currentTime.year.toString();
-    } else {
-      year = (currentTime.year + 1).toString();
-    }
+  Future<String> fetchHtml(int year) async {
     final response = await http.get(
       Uri.https('classopen.wallawalla.edu', '/classopenps.php', {
         'strm': 'f$year',
@@ -29,8 +23,17 @@ class HTMLHandler {
   }
 
   Future<List<List<String>>> listFromHtml() async {
+    final allData = <List<String>>[];
+    for (final year in [2023, 2024, 2025, 2026]) {
+      final data = await _listFromHtml(year);
+      allData.addAll(data);
+    }
+    return allData;
+  }
+
+  Future<List<List<String>>> _listFromHtml(int year) async {
     final data = <List<String>>[];
-    final document = await fetchHtml();
+    final document = await fetchHtml(year);
     final htmlDoc = parseHtmlDocument(
       document.replaceAll(RegExp(r'(<br \/>|<br>)+'), '/'),
     );
@@ -50,7 +53,7 @@ class HTMLHandler {
       // CAMPUS, =CP   CP
       row[1] = nodes[38].text?.trim() ?? '';
       // ACAD_YEAR, =2024    2024
-      row[2] = year;
+      row[2] = year.toString();
       // ACAD_ORG,     BIOL
       try {
         row[3] = _subjDept[nodes[2].text!]?.trim();
@@ -129,8 +132,6 @@ class HTMLHandler {
   }
 
   // Hard-coded maps for subject and department
-  // TODO: Dynamically generate these?
-
   final Map _subjDept = {
     'ACCT': 'BUSI',
     'ACDM': 'ACDM',
@@ -139,6 +140,13 @@ class HTMLHandler {
     'AUTO': 'TECH',
     'AVIA': 'TECH',
     'BIOL': 'BIOL',
+    'BUAC': 'BUSI',
+    'BUAI': 'BUSI',
+    'BUAN': 'BUSI',
+    'BUCS': 'BUSI',
+    'BUEC': 'BUSI',
+    'BUFI': 'BUSI',
+    'BUMT': 'BUSI',
     'CDEV': 'NDEP',
     'CHPL': 'RELB',
     'CHEM': 'CHEM',
@@ -174,9 +182,12 @@ class HTMLHandler {
     'HLTH': 'HLTH',
     'HMNT': 'HIST',
     'HONR': 'HONR',
+    'ILL': 'ART',
     'ITLN': 'MDLG',
     'JOUR': 'COMM',
+    'LAFS': 'COMM',
     'LANG': 'ENGL',
+    'LATN': 'MDLG',
     'LAW': 'HIST',
     'MATH': 'MATH',
     'MDEV': 'MATH',
