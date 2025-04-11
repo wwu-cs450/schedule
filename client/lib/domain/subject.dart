@@ -19,7 +19,8 @@ class Subject implements Comparable {
     try {
       return Subject.instances.firstWhere((instance) => instance.code == code);
     } catch (e) {
-      // print('Subject with code "$code" not found');
+      // ignore: avoid_print
+      print('Subject with code "$code" not found');
       rethrow;
     }
   }

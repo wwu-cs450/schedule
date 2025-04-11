@@ -1,4 +1,5 @@
 import 'package:client/domain/class.dart';
+import 'package:client/domain/term.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,8 +20,8 @@ class AbstractViewState extends State<AbstractView> {
     'grey-brown': 0xFF877465,
     'brick-red': 0xFF961400,
   };
-  late final List<String> qtrs;
-  int startYear = 2024;
+  late List<String> qtrs;
+  int startYear = 2025;
 
   @override
   Widget build(BuildContext context) {
@@ -151,10 +152,8 @@ class AbstractViewState extends State<AbstractView> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // Perform any necessary initializations here
+  void setTerm(Term term) {
+    startYear = term.startYear();
     qtrs = [
       'Sum $startYear',
       'Fal $startYear',

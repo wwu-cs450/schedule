@@ -73,21 +73,11 @@ class Course implements Comparable {
     for (final classData in scheduleData) {
       final int courseNumberOnly;
       // Class number is not specified in one spot, it is specified based on the quarter, Summer, Fall, Winter, Spring, or Summer2
-      var courseNumber = '';
-      if (classData[8] != '') {
-        courseNumber = classData[8].toString();
-      } else if (classData[9] != '') {
-        courseNumber = classData[9].toString();
-      } else if (classData[10] != '') {
-        courseNumber = classData[10].toString();
-      } else if (classData[11] != '') {
-        courseNumber = classData[11].toString();
-      } else if (classData[12] != '') {
-        courseNumber = classData[12].toString();
-      } else {
+      var courseNumber =
+          '${classData[8]}${classData[9]}${classData[10]}${classData[11]}${classData[12]}';
+      if (courseNumber == '') {
         courseNumber = '0';
       }
-
       courseNumber = courseNumber.replaceAll(' ', '');
       courseNumberOnly = int.parse(
         courseNumber.replaceAll(RegExp('[^0-9]'), ''),
@@ -100,7 +90,6 @@ class Course implements Comparable {
       } else {
         level = 'Upper';
       }
-
       final department = Department.departmentWithCode(classData[3]);
       final subject = Subject.fromCode(classData[7]);
       _instances.add(

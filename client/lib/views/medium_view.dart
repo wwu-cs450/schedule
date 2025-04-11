@@ -23,6 +23,7 @@ class MediumViewState extends AbstractViewState {
   Widget build(BuildContext context) {
     return Consumer<Filters>(
       builder: (context, filters, child) {
+        setTerm(filters.term);
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -181,24 +182,23 @@ class MediumViewState extends AbstractViewState {
   Widget _termCell(Class aClass, List<int> colors) {
     late int color;
     String term = aClass.term.name;
-    final cellKey = term.split(' ')[0];
-    if (term == 'Summer $startYear') {
-      term = 'Sum $startYear';
+    final pieces = term.split(' ');
+    final quarter = pieces[0];
+    final year = pieces[1];
+    if (quarter == 'Summer') {
+      term = 'Sum $year';
       color = colors[1];
-    } else if (term == 'Fall $startYear') {
-      term = 'Fal $startYear';
+    } else if (quarter == 'Fall') {
+      term = 'Fal $year';
       color = colors[2];
-    } else if (term == 'Winter ${startYear + 1}') {
-      term = 'Wtr ${startYear + 1}';
+    } else if (quarter == 'Winter') {
+      term = 'Wtr $year';
       color = colors[3];
-    } else if (term == 'Spring ${startYear + 1}') {
-      term = 'Spr ${startYear + 1}';
+    } else if (quarter == 'Spring') {
+      term = 'Spr $year';
       color = colors[4];
-    } else if (term == 'Summer ${startYear + 1}') {
-      term = 'Sum ${startYear + 1}';
-      color = colors[1];
     }
-    return cell(cellKey, term, 70.0, color);
+    return cell(quarter, term, 70.0, color);
   }
 
   void _onItemTapped(int index) {

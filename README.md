@@ -23,3 +23,7 @@ cd client
 flutter test
 flutter run -d chrome
 ```
+
+## Design
+
+The class list can change often (particularly regarding the number of students enrolled), so is read from the server. Other things, such as the course descriptions come from the bulletin so rarely change. These are generated once and then built into the client.

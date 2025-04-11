@@ -19,6 +19,7 @@ void main() {
   final searchCriteria = Filters();
 
   setUp(() async {
+    Term.defaultTermIndex = 1; // 2024-2025
     AbstractPrefs.instance = MockPrefs();
     await searchCriteria.reset();
     await DataHandler.fetchData(test: true);
@@ -56,7 +57,7 @@ void main() {
     await searchCriteria.reset();
     await searchCriteria.setCampus(campus);
     final cCount = Query().results().length;
-    expect(cCount < all, isTrue);
+    expect(cCount, lessThan(all));
   });
 
   test('query finds CPTR', () async {

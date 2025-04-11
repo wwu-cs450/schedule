@@ -24,6 +24,7 @@ class LargeViewState extends AbstractViewState {
   Widget build(BuildContext context) {
     return Consumer<Filters>(
       builder: (context, filters, child) {
+        setTerm(filters.term);
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary,

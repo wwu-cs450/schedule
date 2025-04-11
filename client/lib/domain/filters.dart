@@ -170,7 +170,7 @@ class Filters extends ChangeNotifier {
     _campus = Campus.allCampuses();
     _department = Department.allDepartments();
     _subject = Subject.allSubjects();
-    _term = Term.allTerms();
+    _term = Term.defaultTerm();
     _classNumber = 0;
     _level = 'Any';
     _credits = 'Any';
@@ -218,7 +218,7 @@ class Filters extends ChangeNotifier {
     _campus = Campus.fromCode(loadedCriteria['Campus']);
     _department = Department.fromCode(loadedCriteria['Department']);
     _subject = Subject.fromCode(loadedCriteria['Subject']);
-    _term = Term.fromCode(loadedCriteria['Term']);
+    _term = Term.fromCode(loadedCriteria['Term']) ?? Term.defaultTerm();
     _classNumber = loadedCriteria['Class Number'];
     _level = loadedCriteria['Level'];
     _credits = loadedCriteria['Credits'];

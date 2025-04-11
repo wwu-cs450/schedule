@@ -1,3 +1,0 @@
-This file exists to cause git to create the directory.
-The server app will put `class_data.csv` here but we 
-don't want to commit it.
