@@ -64,25 +64,12 @@ test_client:
     - flutter test  $PUB_VARS --machine --coverage --concurrency=1
     - lcov --summary coverage/lcov.info
     - genhtml coverage/lcov.info --output=coverage
-  coverage: '/lines\.*: \d+\.\d+\%/'
-  artifacts:
-    name: coverage
-    paths:
-      - $CI_PROJECT_DIR/coverage
-    reports:
-      junit: report.xml
 
 test_server:
   stage: test
   script:
     - cd server
     - dart test $PUB_VARS
-  artifacts:
-    name: coverage
-    paths:
-      - $CI_PROJECT_DIR/coverage
-    reports:
-      junit: report.xml
 
 deploy:
   stage: deploy
