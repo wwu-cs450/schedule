@@ -1,4 +1,4 @@
-image: "ghcr.io/cirruslabs/flutter:3.29.2"
+image: "ghcr.io/cirruslabs/flutter:3.29.3"
 # https://github.com/cirruslabs/docker-images-flutter/pkgs/container/flutter
 
 variables:
@@ -13,6 +13,9 @@ build_client:
     - flutter config --enable-web
     - flutter pub get --precompile
     - flutter build web --release
+    # set ownership to `gitlab-runner` user on schedule-vm server
+    # https://gitlab.cs.wallawalla.edu/wwu/schedule/-/issues/106
+    - chown 998:998 -R build/web
   artifacts:
     paths:
       - client/build/web/
@@ -24,6 +27,9 @@ build_server:
     - cd server
     - dart pub get
     - dart compile exe -o api_server --target-os linux bin/server.dart
+    # set ownership to `gitlab-runner` user on schedule-vm server
+    # https://gitlab.cs.wallawalla.edu/wwu/schedule/-/issues/106
+    - chown 998:998 /builds/wwu/schedule/server/api_server
   artifacts:
     paths:
       - server/api_server
