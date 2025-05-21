@@ -8,6 +8,7 @@ import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/instructor.dart';
 import 'package:client/domain/meeting_time.dart';
 import 'package:client/domain/term.dart';
+import 'package:flutter/foundation.dart';
 
 class Class implements Comparable {
   Class(
@@ -151,7 +152,7 @@ class Class implements Comparable {
           (each) => each.code == listing[1],
         );
       } catch (e) {
-        // print('Campus not found: "${listing[1]}"');
+        debugPrint('Campus not found: "${listing[1]}"');
         rethrow;
       }
       var termYear =

@@ -73,10 +73,10 @@ class PdfViewState extends State<PdfView> {
           content: const Text('Is this PDF your Audit or Transcript?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
                 // Navigate to AuditPage
-                Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
@@ -87,10 +87,10 @@ class PdfViewState extends State<PdfView> {
               child: const Text('Audit'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
                 // Navigate to TranscriptPage
-                Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
