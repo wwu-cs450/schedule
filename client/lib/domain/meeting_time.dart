@@ -47,6 +47,10 @@ class MeetingTime {
         isARR = true;
         continue;
       }
+      if (time == 'ASYNC') {
+        isAsync = true;
+        continue;
+      }
       // format string
       // replaces space between
       splitTime = time
@@ -100,6 +104,7 @@ class MeetingTime {
 
   // public instance variables
   bool isARR = false;
+  bool isAsync = false;
 
   // Add the overlaps method
   bool overlaps(MeetingTime other) {
@@ -391,6 +396,11 @@ class MeetingTime {
       returnString += 'ARR\n';
     }
 
+    // check if Async
+    if (isAsync) {
+      returnString += 'Async\n';
+    }
+
     return returnString.trimRight();
   }
 
@@ -406,6 +416,10 @@ class MeetingTime {
     // check if ARR
     if (isARR) {
       returnString += 'ARR\n';
+    }
+    // check if Async
+    if (isAsync) {
+      returnString += 'Async\n';
     }
 
     return returnString.trimRight();
@@ -440,6 +454,9 @@ class MeetingTime {
     }
 
     if (isARR != other.isARR) {
+      return false;
+    }
+    if (isAsync != other.isAsync) {
       return false;
     }
 
