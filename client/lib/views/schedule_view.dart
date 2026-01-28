@@ -106,7 +106,7 @@ class ScheduleView {
         color: count > 1
             ? const Color.fromARGB(255, 255, 130, 121)
             : Colors.white,
-        border: Border.all(color: Colors.black, width: 1.0),
+        border: Border.all(color: Colors.grey.shade300, width: 0.5),
       ),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
