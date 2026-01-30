@@ -517,7 +517,9 @@ Future<void> mediumTermTest(WidgetTester tester) async {
 Future<void> pdfUploadPageTest(WidgetTester tester, double width) async {
   await buildTestEnvironment(tester, width: width);
 
-  final pdfUploadButton = find.byKey(const Key('Pdf Page')).hitTestable();
+  final pdfUploadButton = find
+      .byKey(const Key('MyClassHistoryPage'))
+      .hitTestable();
   await doTap(tester, pdfUploadButton);
 
   final selectPdfButton = find.byKey(const Key('Select PDF Button'));

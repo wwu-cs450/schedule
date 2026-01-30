@@ -1,33 +1,29 @@
 import 'dart:typed_data';
-import 'package:client/domain/class_storage.dart';
-import 'package:client/domain/pdf_helper.dart'; // Import the Dart helper
-import 'package:client/views/audit_view.dart';
-import 'package:client/views/transcript_page.dart';
+import 'package:client/domain/models/completed_course.dart';
+import 'package:client/domain/pdf_helper.dart';
+import 'package:dotted_border/dotted_border.dart';
 
 import 'package:flutter/material.dart';
 
-class PdfView extends StatefulWidget {
-  const PdfView({super.key});
+class PdfUploadPage extends StatefulWidget {
+  const PdfUploadPage({required this.onCoursesParsed, super.key});
+
+  final void Function(List<CompletedCourse>) onCoursesParsed;
 
   @override
-  PdfViewState createState() => PdfViewState();
+  PdfUploadPageState createState() => PdfUploadPageState();
 }
 
-class PdfViewState extends State<PdfView> {
-  String? _parsedText;
+class PdfUploadPageState extends State<PdfUploadPage> {
   bool _isLoading = false;
-
-  Future<Uint8List> selectPdf() async {
-    return PdfHelper.selectPdf();
-  }
+  String _selectedTab = 'Transcript'; // 'Transcript' or 'Audit'
 
   Future<void> extractPdfText(Uint8List pdfBytes) async {
     try {
       // Extract text from PDF using JavaScript interop
       final String extractedText = await PdfHelper.extractTextFromPDF(pdfBytes);
-      setState(() {
-        _parsedText = extractedText;
-      });
+      final classes = PdfHelper.parseTranscriptPdfText(extractedText);
+      widget.onCoursesParsed(classes);
     } catch (e) {
       throw Exception('Error extracting text from PDF: $e');
     }
@@ -37,123 +33,156 @@ class PdfViewState extends State<PdfView> {
     try {
       setState(() {
         _isLoading = true;
-        _parsedText = null; // Clear previous text
       });
-
-      final Uint8List pdfBytes = await selectPdf();
+      final Uint8List pdfBytes = await PdfHelper.selectPdf();
       await extractPdfText(pdfBytes);
 
       setState(() {
         _isLoading = false;
       });
-
-      // After extracting text, prompt the user for categorization
-      if (_parsedText != null && _parsedText!.isNotEmpty) {
-        await _showCategoryDialog(_parsedText!);
-      } else {
-        setState(() {
-          _parsedText = 'No text found in the PDF.';
-        });
-      }
     } catch (e) {
       setState(() {
-        // Display only the exception message
-        _parsedText = e.toString();
         _isLoading = false;
       });
     }
   }
 
-  Future<void> _showCategoryDialog(String extractedText) async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Categorize PDF'),
-          content: const Text('Is this PDF your Audit or Transcript?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
-                // Navigate to AuditPage
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AuditPage(extractedText: extractedText),
-                  ),
-                );
-              },
-              child: const Text('Audit'),
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        width: 500,
+        height: 350,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 12,
+          children: [
+            Row(spacing: 8, children: [tab('Transcript'), tab('Audit')]),
+            UploadBox(
+              isLoading: _isLoading,
+              onClick: _isLoading ? null : getPdfText,
             ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
-                // Navigate to TranscriptPage
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        TranscriptPage(extractedText: extractedText),
-                  ),
-                );
-              },
-              child: const Text('Transcript'),
+            Row(
+              children: const [
+                Icon(Icons.attach_file, size: 16, color: Colors.grey),
+                SizedBox(width: 4),
+                Text(
+                  'No file added',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
             ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // Optional: Add an AppBar for better navigation and aesthetics
-      appBar: AppBar(title: const Text('PDF Upload'), centerTitle: true),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), // Add padding for better UI
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                key: const Key('Select PDF Button'),
-                onPressed: getPdfText,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                    vertical: 12.0,
-                  ),
-                  child: Text('Select PDF', style: TextStyle(fontSize: 18)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('Submit Audit or Transcript to proceed'),
-            ],
+  Widget tab(String label) {
+    final isSelected = _selectedTab == label;
+    const tabColor = Colors.blue;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedTab = label;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? tabColor.withValues(alpha: 0.1)
+              : Colors.transparent,
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? tabColor : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            color: isSelected ? tabColor : Colors.grey[700],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        key: const Key('Clear Transcript Button'),
-        onPressed: () {
-          // Define the action here
-          final notEmpty = ClassStorage().clearTranscript();
-          if (!notEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No Transcript Stored')),
-            );
-          } else {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Transcript Cleared')));
-          }
-        },
-        tooltip: 'Clear Transcript',
-        child: const Icon(Icons.clear), // Tooltip for accessibility
+    );
+  }
+}
+
+class UploadBox extends StatelessWidget {
+  const UploadBox({required this.onClick, required bool isLoading, super.key})
+    : _isLoading = isLoading;
+
+  final bool _isLoading;
+  final VoidCallback? onClick;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onClick,
+        behavior: HitTestBehavior.translucent,
+        child: DottedBorder(
+          options: RoundedRectDottedBorderOptions(
+            color: Colors.grey.withValues(alpha: 0.4),
+            strokeWidth: 1,
+            dashPattern: const [3, 2],
+            radius: Radius.circular(8),
+          ),
+          child: SizedBox(
+            width: double.infinity,
+            height: 210,
+            child: _isLoading
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text(
+                        'Uploading PDF...',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.upload_file,
+                        size: 48,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(height: 16),
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                          children: [
+                            const TextSpan(text: 'Drag a file or '),
+                            TextSpan(
+                              text: 'click to upload',
+                              style: TextStyle(color: Colors.blue[600]),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        ),
       ),
     );
   }
