@@ -2,8 +2,8 @@ import 'package:client/domain/class.dart';
 import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/filters.dart';
 import 'package:client/domain/general_studies.dart';
-import 'package:client/views/abstract_view.dart';
-import 'package:client/views/pdf_upload_page.dart';
+import 'package:client/views/base_views/abstract_view.dart';
+import 'package:client/views/class_history_page.dart';
 import 'package:client/views/schedule_view.dart';
 import 'package:client/views/search_drawer.dart';
 import 'package:flutter/material.dart';
@@ -51,9 +51,9 @@ class LargeViewState extends AbstractViewState {
                 label: 'Schedule',
               ),
               NavigationDestination(
-                key: Key('Pdf Page'),
-                icon: Icon(Icons.file_upload),
-                label: 'PDF Upload',
+                key: Key('MyClassHistoryPage'),
+                icon: Icon(Icons.school_outlined),
+                label: 'My Class History',
               ),
             ],
           ),
@@ -212,7 +212,7 @@ class LargeViewState extends AbstractViewState {
     } else if (_selectedIndex == 1) {
       return _scheduleView();
     } else if (_selectedIndex == 2) {
-      return const PdfView();
+      return const ClassHistoryPage();
     } else {
       return Center(child: Text('Tab $_selectedIndex not found'));
     }

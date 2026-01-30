@@ -5,7 +5,7 @@ import 'package:client/domain/campus.dart';
 import 'package:client/domain/class.dart';
 import 'package:client/domain/department.dart';
 import 'package:client/domain/hourminute.dart';
-import 'package:client/domain/prefs.dart';
+import 'package:client/domain/persister.dart';
 import 'package:client/domain/query.dart';
 import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
@@ -206,11 +206,11 @@ class Filters extends ChangeNotifier {
       // 'Not Taken': false,
       // 'Free Classrooms': false,
     };
-    await AbstractPrefs.instance.writePrefs(jsonEncode(toSave));
+    await AbstractPersister.instance.writePrefs(jsonEncode(toSave));
   }
 
   Future<void> load() async {
-    final String? savedCriteria = await AbstractPrefs.instance.readPrefs();
+    final String? savedCriteria = await AbstractPersister.instance.readPrefs();
     if (savedCriteria == null) {
       return;
     }
