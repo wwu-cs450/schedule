@@ -89,10 +89,9 @@ Future<void> levelTest(
   double width, {
   required Matcher requirement,
 }) async {
-  final List<String> keys =
-      width >= 2000
-          ? ['Summer1', 'Fall', 'Winter', 'Spring', 'Summer2']
-          : ['Subject'];
+  final List<String> keys = width >= 2000
+      ? ['Summer1', 'Fall', 'Winter', 'Spring', 'Summer2']
+      : ['Subject'];
   await dropdownTester(
     tester,
     menu: 'Level',
@@ -221,10 +220,10 @@ Future<void> instructorTest(
       ? multiExpect(textOpts, findsAtLeast(1))
       : type == 'Medium'
       ? hoverExpect(
-        tester,
-        find.byKey(const Key('Hover Cell')),
-        find.textContaining('Brian'),
-      )
+          tester,
+          find.byKey(const Key('Hover Cell')),
+          find.textContaining('Brian'),
+        )
       : expectInResults(['Instructor'], contains('Brian'), type: type);
 }
 
@@ -290,17 +289,16 @@ Future<void> scheduleViewTest(
   await doTap(tester, options['9:00AM']!);
   await closeDrawer(tester);
   int fall2024 = 0, winter2025 = 0, spring2025 = 0;
-  final rows =
-      find
-          .byWidgetPredicate(
-            (Widget widget) =>
-                widget.key is ValueKey<String> &&
-                RegExp(
-                  r'^Class \d{0,4}',
-                ).hasMatch((widget.key as ValueKey<String>).value) &&
-                widget is Row,
-          )
-          .evaluate();
+  final rows = find
+      .byWidgetPredicate(
+        (Widget widget) =>
+            widget.key is ValueKey<String> &&
+            RegExp(
+              r'^Class \d{0,4}',
+            ).hasMatch((widget.key as ValueKey<String>).value) &&
+            widget is Row,
+      )
+      .evaluate();
 
   // Qualifies as Save Box test.
   for (final row in rows) {
@@ -329,16 +327,15 @@ Future<void> scheduleViewTest(
 
   // Qualifies as Schedule View test.
   // Also qualifies as download button test.
-  final redBox =
-      find
-          .byWidgetPredicate(
-            (Widget widget) =>
-                widget is DecoratedBox &&
-                widget.decoration is BoxDecoration &&
-                (widget.decoration as BoxDecoration).color ==
-                    const Color.fromARGB(255, 255, 130, 121),
-          )
-          .hitTestable();
+  final redBox = find
+      .byWidgetPredicate(
+        (Widget widget) =>
+            widget is DecoratedBox &&
+            widget.decoration is BoxDecoration &&
+            (widget.decoration as BoxDecoration).color ==
+                const Color.fromARGB(255, 255, 130, 121),
+      )
+      .hitTestable();
   final termDropdown = find.byKey(const Key('Schedule View Term Dropdown'));
   final downloadButton = find.byKey(const Key('Download Button'));
 

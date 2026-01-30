@@ -79,8 +79,8 @@ class PdfViewState extends State<PdfView> {
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => AuditPage(extractedText: extractedText),
+                    builder: (context) =>
+                        AuditPage(extractedText: extractedText),
                   ),
                 );
               },
@@ -93,9 +93,8 @@ class PdfViewState extends State<PdfView> {
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            TranscriptPage(extractedText: extractedText),
+                    builder: (context) =>
+                        TranscriptPage(extractedText: extractedText),
                   ),
                 );
               },

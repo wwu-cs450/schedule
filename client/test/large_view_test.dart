@@ -113,10 +113,12 @@ void main() async {
 
   testWidgets('Clear Filters Button', (WidgetTester tester) async {
     await buildTestEnvironment(tester, width: 2000, height: 1500);
-    final Finder clearFiltersButton =
-        find.byKey(const Key('Clear Filters Button')).hitTestable();
-    final Finder department =
-        find.byKey(const Key('Department Dropdown')).hitTestable();
+    final Finder clearFiltersButton = find
+        .byKey(const Key('Clear Filters Button'))
+        .hitTestable();
+    final Finder department = find
+        .byKey(const Key('Department Dropdown'))
+        .hitTestable();
     final Finder cs = find.text('CPTR Computer Science').hitTestable();
     final Finder classCount = find.byKey(const Key('Class Count'));
     Text textWidget = tester.widget<Text>(classCount);

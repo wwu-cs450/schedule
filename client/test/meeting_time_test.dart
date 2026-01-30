@@ -305,8 +305,8 @@ void main() {
     expect(test3.equals(test4), isTrue);
     expect(test4.equals(test3), isTrue);
     // same content
-    test4 =
-        MeetingTime()..add(day: DateTime.thursday, start: time1, end: time2);
+    test4 = MeetingTime()
+      ..add(day: DateTime.thursday, start: time1, end: time2);
     expect(identical(test3, test4), isFalse);
     expect(test3.equals(test4), isTrue);
     expect(test4.equals(test3), isTrue);

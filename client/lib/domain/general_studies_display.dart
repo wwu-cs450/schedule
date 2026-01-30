@@ -13,8 +13,9 @@ class CourseItem extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Tooltip(
-        message:
-            gsCategory != null ? 'GS Category: $gsCategory' : 'No GS Category',
+        message: gsCategory != null
+            ? 'GS Category: $gsCategory'
+            : 'No GS Category',
         child: Container(
           padding: const EdgeInsets.all(8.0),
           child: Text(

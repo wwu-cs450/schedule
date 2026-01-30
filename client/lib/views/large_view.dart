@@ -87,10 +87,9 @@ class LargeViewState extends AbstractViewState {
     final room = aClass.classroom;
     final schedule = aClass.schedule.toString(is24hr: false);
     final profs = aClass.getInstructors();
-    final credits =
-        aClass.course.creditsMax == aClass.course.creditsMin
-            ? '${aClass.course.creditsMax}'
-            : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
+    final credits = aClass.course.creditsMax == aClass.course.creditsMin
+        ? '${aClass.course.creditsMax}'
+        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     final enroll = [
       aClass.currEnrollment.toString(),
       aClass.maxEnrollment.toString(),
@@ -117,11 +116,12 @@ class LargeViewState extends AbstractViewState {
                 cell('Section', aClass.section, 40.0, color[0], 'c'),
                 aClass.course.isGeneralStudies
                     ? Tooltip(
-                      // Show the General Studies category on hover
-                      message:
-                          gsCategory ?? '(General Studies category not found)',
-                      child: cell('General Studies', 'GS', 30.0, color[0]),
-                    )
+                        // Show the General Studies category on hover
+                        message:
+                            gsCategory ??
+                            '(General Studies category not found)',
+                        child: cell('General Studies', 'GS', 30.0, color[0]),
+                      )
                     : cell('General Studies', '', 30.0, color[0]),
                 cell('Cr', credits, 40.0, color[0]),
                 cell('Title', aClass.getTitle(), 300.0, color[0]),

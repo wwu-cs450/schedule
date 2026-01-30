@@ -32,10 +32,9 @@ class AuditPage extends StatelessWidget {
       final header = headers[i];
       final nextHeader = i + 1 < headers.length ? headers[i + 1] : null;
       final headerIndex = extractedText.indexOf(header);
-      final nextHeaderIndex =
-          nextHeader != null
-              ? extractedText.indexOf(nextHeader)
-              : extractedText.length;
+      final nextHeaderIndex = nextHeader != null
+          ? extractedText.indexOf(nextHeader)
+          : extractedText.length;
 
       final content = cleanContent(
         extractedText.substring(headerIndex, nextHeaderIndex).trim(),
@@ -105,11 +104,13 @@ class AuditPage extends StatelessWidget {
     for (final match in matches) {
       final description = match.group(1)!.trim();
       final status = match.group(2)!.trim() == 'Satisfied';
-      final unitsRequired =
-          match.group(3) != null ? double.parse(match.group(4)!.trim()) : 0.0;
+      final unitsRequired = match.group(3) != null
+          ? double.parse(match.group(4)!.trim())
+          : 0.0;
       final unitsCompleted = double.parse(match.group(5)!.trim());
-      final unitsNeeded =
-          match.group(6) != null ? double.parse(match.group(7)!.trim()) : 0.0;
+      final unitsNeeded = match.group(6) != null
+          ? double.parse(match.group(7)!.trim())
+          : 0.0;
 
       final requirementDetail = RequirementDetail(
         description: description,
@@ -155,15 +156,14 @@ class AuditPage extends StatelessWidget {
       final start = match.end;
 
       // Extract the content between the last match end and the current match start
-      final sectionContent =
-          content
-              .substring(
-                start,
-                i + 1 < matches.length
-                    ? matches.elementAt(i + 1).start
-                    : content.length,
-              )
-              .trim();
+      final sectionContent = content
+          .substring(
+            start,
+            i + 1 < matches.length
+                ? matches.elementAt(i + 1).start
+                : content.length,
+          )
+          .trim();
 
       sections.add(SimpleSection(header: header, content: sectionContent));
     }
@@ -194,10 +194,9 @@ class AuditPage extends StatelessWidget {
       final start = match.end;
 
       // Determine the end index for the substring
-      final end =
-          i + 1 < matches.length
-              ? matches.elementAt(i + 1).start
-              : content.length;
+      final end = i + 1 < matches.length
+          ? matches.elementAt(i + 1).start
+          : content.length;
 
       final sectionContent = content.substring(start, end).trim();
       sections.add(SimpleSection(header: header, content: sectionContent));
@@ -231,8 +230,9 @@ class AuditPage extends StatelessWidget {
     if (index != -1) {
       final generalStudiesSection = sections[index];
 
-      final int wordCount =
-          generalStudiesSection.content.split(RegExp(r'\s+')).length;
+      final int wordCount = generalStudiesSection.content
+          .split(RegExp(r'\s+'))
+          .length;
 
       if (wordCount > 50) {
         final List<SimpleSection> newSections = parseNewGSFormat(
