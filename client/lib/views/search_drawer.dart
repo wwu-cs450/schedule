@@ -182,8 +182,7 @@ class SearchDrawer extends StatelessWidget {
           label: entry.key,
           labelWidget: Row(
             children: [
-              SizedBox(
-                width: 176,
+              Expanded(
                 child: Text(entry.key, style: const TextStyle(fontSize: 14)),
               ),
             ],
@@ -449,16 +448,15 @@ class SearchDrawer extends StatelessWidget {
         child: SizedBox(
           key: const Key('Schedule Dropdown'),
           height: 50,
-          child:
-              MultiSelectDropdown(
-                context: context,
-                width: 200,
-                allItems: inputList.keys.toList(),
-                selectedItems: Filters().schedule,
-                onChanged: () {
-                  // doSearch();
-                },
-              ).build(),
+          child: MultiSelectDropdown(
+            context: context,
+            width: 200,
+            allItems: inputList.keys.toList(),
+            selectedItems: Filters().schedule,
+            onChanged: () {
+              // doSearch();
+            },
+          ).build(),
         ),
       ),
     );

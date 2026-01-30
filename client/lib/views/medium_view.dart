@@ -90,10 +90,9 @@ class MediumViewState extends AbstractViewState {
     final schedule = aClass.schedule.toString(is24hr: false);
     final profs = aClass.getInstructors();
 
-    final credits =
-        aClass.course.creditsMax == aClass.course.creditsMin
-            ? '${aClass.course.creditsMax}'
-            : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
+    final credits = aClass.course.creditsMax == aClass.course.creditsMin
+        ? '${aClass.course.creditsMax}'
+        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     final enroll = [
       aClass.currEnrollment.toString(),
       aClass.maxEnrollment.toString(),

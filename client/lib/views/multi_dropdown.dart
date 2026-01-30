@@ -44,16 +44,21 @@ class MultiSelectDropdown {
                   onChanged?.call();
                 },
               ),
-              GestureDetector(
-                onTap: () {
-                  if (selectedItems.contains(item)) {
-                    selectedItems.remove(item);
-                  } else {
-                    selectedItems.add(item);
-                  }
-                  onChanged?.call();
-                },
-                child: Text(item, style: const TextStyle(color: Colors.black)),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (selectedItems.contains(item)) {
+                      selectedItems.remove(item);
+                    } else {
+                      selectedItems.add(item);
+                    }
+                    onChanged?.call();
+                  },
+                  child: Text(
+                    item,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                ),
               ),
             ],
           ),

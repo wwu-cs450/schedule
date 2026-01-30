@@ -90,10 +90,9 @@ class SmallViewState extends AbstractViewState {
     final room = aClass.classroom;
     final schedule = aClass.schedule.toString(is24hr: false);
     final profs = aClass.getInstructors();
-    final credits =
-        aClass.course.creditsMax == aClass.course.creditsMin
-            ? '${aClass.course.creditsMax}'
-            : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
+    final credits = aClass.course.creditsMax == aClass.course.creditsMin
+        ? '${aClass.course.creditsMax}'
+        : '${aClass.course.creditsMin}-${aClass.course.creditsMax}';
     return Row(
       key: Key('Class $index'),
       children: [
@@ -112,9 +111,9 @@ class SmallViewState extends AbstractViewState {
             ),
             aClass == detailsForClass
                 ? Align(
-                  alignment: Alignment.center, // Center the details container
-                  child: _detailsView(index, room, schedule, profs, aClass),
-                )
+                    alignment: Alignment.center, // Center the details container
+                    child: _detailsView(index, room, schedule, profs, aClass),
+                  )
                 : Align(alignment: Alignment.center, child: Container()),
           ],
         ),

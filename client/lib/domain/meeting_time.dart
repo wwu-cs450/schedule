@@ -178,15 +178,13 @@ class MeetingTime {
       day: day,
     );
     final bool contains = _meetingTimes.contains(newTime);
-    final bool conflicts =
-        _meetingTimes
-            .where(
-              (e) =>
-                  e.isWithin(newTime) ||
-                  (e.day == day &&
-                      (e.occursDuring(start) || e.occursDuring(end))),
-            )
-            .isNotEmpty;
+    final bool conflicts = _meetingTimes
+        .where(
+          (e) =>
+              e.isWithin(newTime) ||
+              (e.day == day && (e.occursDuring(start) || e.occursDuring(end))),
+        )
+        .isNotEmpty;
     if (!(contains || conflicts)) {
       _meetingTimes.add(newTime);
     }
@@ -284,11 +282,10 @@ class MeetingTime {
   }
 
   // get set of days (int) that meet during time.
-  Set<int> getDaysAtTime(HourMinute time) =>
-      _meetingTimes
-          .where((e) => e.occursDuring(time))
-          .map((e) => e.day)
-          .toSet();
+  Set<int> getDaysAtTime(HourMinute time) => _meetingTimes
+      .where((e) => e.occursDuring(time))
+      .map((e) => e.day)
+      .toSet();
 
   // get start/end of period that contains time on day.
   // returns (null, null) if no period exists.

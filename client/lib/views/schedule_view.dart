@@ -56,12 +56,9 @@ class ScheduleView {
 
   Widget _creditAmount() {
     final classes = Filters().savedClassesForScheduleTerm();
-    final credits =
-        classes.isEmpty
-            ? 0
-            : classes
-                .map((aClass) => aClass.getCredits())
-                .reduce((a, b) => a + b);
+    final credits = classes.isEmpty
+        ? 0
+        : classes.map((aClass) => aClass.getCredits()).reduce((a, b) => a + b);
     return Semantics(
       label: 'Credit amount.',
       hint: 'Displays the total number of credits.',
@@ -106,8 +103,9 @@ class ScheduleView {
     final count = string.split('\n').length;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color:
-            count > 1 ? const Color.fromARGB(255, 255, 130, 121) : Colors.white,
+        color: count > 1
+            ? const Color.fromARGB(255, 255, 130, 121)
+            : Colors.white,
         border: Border.all(color: Colors.black, width: 1.0),
       ),
       child: Padding(

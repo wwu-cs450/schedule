@@ -21,10 +21,9 @@ class TranscriptPage extends StatelessWidget {
       final subject = match.namedGroup('subject')?.trim();
       final classNumber = match.namedGroup('number')?.trim();
       final course = match.namedGroup('course')?.trim();
-      final credits =
-          match.namedGroup('credits') != null
-              ? double.tryParse(match.namedGroup('credits')!)
-              : 0.0;
+      final credits = match.namedGroup('credits') != null
+          ? double.tryParse(match.namedGroup('credits')!)
+          : 0.0;
       final term = match.namedGroup('term')?.trim();
       final grade = match.namedGroup('grade')?.trim() ?? 'N/A';
 
@@ -57,32 +56,31 @@ class TranscriptPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Transcript Page')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child:
-            classes.isNotEmpty
-                ? ListView.builder(
-                  itemCount: classes.length,
-                  itemBuilder: (context, index) {
-                    final course = classes[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListTile(
-                        title: Text(
-                          '${course.subject} ${course.classNumber}: ${course.course}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          'Credits: ${course.credits} | Term: ${course.term} | Status: ${course.status}',
-                        ),
+        child: classes.isNotEmpty
+            ? ListView.builder(
+                itemCount: classes.length,
+                itemBuilder: (context, index) {
+                  final course = classes[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                      title: Text(
+                        '${course.subject} ${course.classNumber}: ${course.course}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    );
-                  },
-                )
-                : const Center(
-                  child: Text(
-                    'No courses found in transcript data.',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                      subtitle: Text(
+                        'Credits: ${course.credits} | Term: ${course.term} | Status: ${course.status}',
+                      ),
+                    ),
+                  );
+                },
+              )
+            : const Center(
+                child: Text(
+                  'No courses found in transcript data.',
+                  style: TextStyle(fontSize: 16),
                 ),
+              ),
       ),
     );
   }
