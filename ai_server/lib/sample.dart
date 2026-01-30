@@ -24,14 +24,14 @@ void main() async {
   while (true) {
     final response = await client.generateChatCompletion(
       request: GenerateChatCompletionRequest(
-        model: 'qwen3',
+        model: 'qwen3:0.6b',
         messages: messages,
         tools: [
           Tool(
             type: ToolType.function,
             function: ToolFunction(
               name: 'add',
-              description: 'Add two numbers',
+              description: 'Add two numbers. Use the tools provided.',
               parameters: {
                 'type': 'object',
                 'properties': {
