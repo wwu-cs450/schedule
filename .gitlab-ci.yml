@@ -2,10 +2,41 @@ image: "ghcr.io/cirruslabs/flutter:3.38.9"
 # https://github.com/cirruslabs/docker-images-flutter/pkgs/container/flutter
 
 variables:
-  PUB_VARS: "--timeout 30s --concurrency=1 --test-randomize-ordering-seed=random --reporter=expanded"
+  PUB_VARS: "--timeout 30s --concurrency=6 --test-randomize-ordering-seed=random --reporter=expanded"
+  PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
+  FLUTTER_ROOT: "/sdks/flutter"
+
+# Global cache configuration - shares dependencies across all jobs
+cache:
+  key:
+    files:
+      - client/pubspec.lock
+      - server/pubspec.lock
+  paths:
+    - .pub-cache/
+    - client/.dart_tool/
+    - server/.dart_tool/
+  policy: pull
+
+prepare_dependencies:
+  stage: .pre
+  cache:
+    key:
+      files:
+        - client/pubspec.lock
+        - server/pubspec.lock
+    paths:
+      - .pub-cache/
+      - client/.dart_tool/
+      - server/.dart_tool/
+    policy: pull-push
+  script:
+    - cd client && flutter pub get --precompile
+    - cd ../server && dart pub get
 
 build_client:
   stage: build
+  needs: [prepare_dependencies]
   script:
     - set -e
     - cd client
@@ -22,6 +53,7 @@ build_client:
 
 build_server:
   stage: build
+  needs: [prepare_dependencies]
   script:
     - set -e
     - cd server
@@ -36,35 +68,24 @@ build_server:
 
 lint_client:
   stage: test
+  needs: [prepare_dependencies]
   script:
     - cd client
-    - flutter clean
-    - flutter pub get
-    - dart analyze --fatal-infos
+    - dart format --output=none --set-exit-if-changed .
+    - flutter analyze
 
 lint_server:
   stage: test
+  needs: [prepare_dependencies]
   script:
     - cd server
-    - flutter clean
-    - flutter pub get
-    - dart analyze --fatal-infos
-
-format_client:
-  stage: test
-  script:
-    - cd client
-    - flutter pub get
-    - dart format --set-exit-if-changed lib/ test/
-
-format_server:
-  stage: test
-  script:
-    - cd server
-    - dart format --set-exit-if-changed lib/ test/
+    - dart pub get
+    - dart format --output=none --set-exit-if-changed .
+    - dart analyze
 
 test_client:
   stage: test
+  needs: [prepare_dependencies]
   script:
     - cd client
     - flutter --version
@@ -74,6 +95,7 @@ test_client:
 
 test_server:
   stage: test
+  needs: [prepare_dependencies]
   script:
     - cd server
     - dart test $PUB_VARS
