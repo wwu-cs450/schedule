@@ -3,7 +3,7 @@ enum CompletionStatus {
   failed,
   withdrew,
   incomplete,
-  planned;
+  registered;
 
   String toDisplayString() {
     switch (this) {
@@ -14,9 +14,9 @@ enum CompletionStatus {
       case CompletionStatus.withdrew:
         return 'Withdrew';
       case CompletionStatus.incomplete:
-        return 'Incomplete / In Progress';
-      case CompletionStatus.planned:
-        return 'Planned';
+        return 'Incomplete';
+      case CompletionStatus.registered:
+        return 'Registered';
     }
   }
 }
@@ -49,6 +49,7 @@ class CompletedCourse {
       'grade': grade,
       'credits': credits,
       'term': term,
+      'status': status.toDisplayString(),
     };
   }
 
@@ -68,7 +69,7 @@ class CompletedCourse {
     } else if (grade == 'NC' || grade == 'F' || grade == 'D-') {
       return .failed;
     } else if (grade == 'NR') {
-      return .planned;
+      return .registered;
     } else {
       return .passed;
     }
