@@ -1,0 +1,74 @@
+[
+    {
+        "course": "CPTR 308",
+        "courseTitle": "Ethical Issues for Computing",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "CPTR 430",
+        "courseTitle": "Artificial Intelligence",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "CPTR 454",
+        "courseTitle": "Design & Analy of Algorithms",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "DRMA 101",
+        "courseTitle": "Introduction to Theatre",
+        "grade": "NR",
+        "credits": 3.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "DRMA 252",
+        "courseTitle": "Performance",
+        "grade": "NR",
+        "credits": 0.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "PEAC 164",
+        "courseTitle": "Downhill Skiing/Snowboarding",
+        "grade": "NR",
+        "credits": 1.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "CPTR 352",
+        "courseTitle": "Operating Systems",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Spring, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "MATH 315",
+        "courseTitle": "Probability & Statistics",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Spring, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "RELT 202",
+        "courseTitle": "Christian Beliefs",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Spring, 2026",
+        "status": "Registered"
+    }
+]
