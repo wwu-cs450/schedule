@@ -1,0 +1,386 @@
+[
+    {
+        "course": "CHEM 141",
+        "courseTitle": "General Chemistry",
+        "grade": "A",
+        "credits": 3.0,
+        "term": "Fall, 2023",
+        "status": "Passed"
+    },
+    {
+        "course": "CHEM 144",
+        "courseTitle": "General Chemistry Lab",
+        "grade": "A",
+        "credits": 1.0,
+        "term": "Fall, 2023",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 141",
+        "courseTitle": "Fundamentals of Programming I",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Fall, 2023",
+        "status": "Passed"
+    },
+    {
+        "course": "ENGR 121",
+        "courseTitle": "Intro to Profession of Engr",
+        "grade": "A",
+        "credits": 2.0,
+        "term": "Fall, 2023",
+        "status": "Passed"
+    },
+    {
+        "course": "GNRL 101",
+        "courseTitle": "University Experience",
+        "grade": "S",
+        "credits": 1.0,
+        "term": "Fall, 2023",
+        "status": "Passed"
+    },
+    {
+        "course": "MATH 171",
+        "courseTitle": "Calculus I",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Fall, 2023",
+        "status": "Passed"
+    },
+    {
+        "course": "RELB 105",
+        "courseTitle": "Sermon on the Mount",
+        "grade": "A",
+        "credits": 2.0,
+        "term": "Fall, 2023",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 142",
+        "courseTitle": "Fundamentals of Programming II",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Winter, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "ENGL 121",
+        "courseTitle": "College Writing I",
+        "grade": "A",
+        "credits": 3.0,
+        "term": "Winter, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "ENGR 122",
+        "courseTitle": "Intro to CAD",
+        "grade": "A",
+        "credits": 2.0,
+        "term": "Winter, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "MATH 172",
+        "courseTitle": "Calculus II",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Winter, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "MATH 250",
+        "courseTitle": "Discrete Mathematics",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Winter, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 242",
+        "courseTitle": "Seq & Parllel Dat Struct & Alg",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Spring, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "ENGL 122",
+        "courseTitle": "College Writing II",
+        "grade": "A",
+        "credits": 3.0,
+        "term": "Spring, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "ENGR 123",
+        "courseTitle": "Intro to Engineering Design",
+        "grade": "A-",
+        "credits": 2.0,
+        "term": "Spring, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "GBUS 270",
+        "courseTitle": "Business Communication",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Spring, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "MATH 273",
+        "courseTitle": "Calculus III",
+        "grade": "A-",
+        "credits": 4.0,
+        "term": "Spring, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 280",
+        "courseTitle": "Cptr Org & Assembly Language",
+        "grade": "A-",
+        "credits": 3.0,
+        "term": "Fall, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 396",
+        "courseTitle": "Internship & Career Readiness",
+        "grade": "A",
+        "credits": 1.0,
+        "term": "Fall, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "ENGL 223",
+        "courseTitle": "Research Writing (WD)",
+        "grade": "A",
+        "credits": 3.0,
+        "term": "Fall, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "MATH 239",
+        "courseTitle": "Introduction to Linear Algebra",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Fall, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "PHYS 251",
+        "courseTitle": "Prin of Physics",
+        "grade": "A-",
+        "credits": 3.0,
+        "term": "Fall, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "PHYS 254",
+        "courseTitle": "Prin of Physics Lab",
+        "grade": "A",
+        "credits": 1.0,
+        "term": "Fall, 2024",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 245",
+        "courseTitle": "Software Development",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Winter, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "MATH 215",
+        "courseTitle": "Data Analysis",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Winter, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "PHYS 252",
+        "courseTitle": "Prin of Physics",
+        "grade": "B+",
+        "credits": 3.0,
+        "term": "Winter, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "PHYS 255",
+        "courseTitle": "Prin of Physics Lab",
+        "grade": "A",
+        "credits": 1.0,
+        "term": "Winter, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "SPCH 101",
+        "courseTitle": "Fundamentals of Speech Comm",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Winter, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 320",
+        "courseTitle": "Web Services & Cloud Computing",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Spring, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 479",
+        "courseTitle": "Dir Rsrch: Client/Server Web A",
+        "grade": "A-",
+        "credits": 1.0,
+        "term": "Spring, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "MATH 274",
+        "courseTitle": "Calculus IV",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Spring, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "PEAC 157",
+        "courseTitle": "Backpacking",
+        "grade": "A",
+        "credits": 1.0,
+        "term": "Spring, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "RELB 104",
+        "courseTitle": "Ministry of Jesus",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Spring, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "RELB 106",
+        "courseTitle": "Parables of Jesus",
+        "grade": "A",
+        "credits": 2.0,
+        "term": "Spring, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 354",
+        "courseTitle": "Compilers and Languages",
+        "grade": "A-",
+        "credits": 4.0,
+        "term": "Fall, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 420",
+        "courseTitle": "Intro to Database Systems",
+        "grade": "A-",
+        "credits": 4.0,
+        "term": "Fall, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "ENGR 354",
+        "courseTitle": "Digital Logic",
+        "grade": "A",
+        "credits": 3.0,
+        "term": "Fall, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "GBUS 190",
+        "courseTitle": "Free Enterprise Practicum",
+        "grade": "S",
+        "credits": 0.0,
+        "term": "Fall, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "PSYC 140",
+        "courseTitle": "Intro to Psyc:Social Foundatns",
+        "grade": "A",
+        "credits": 4.0,
+        "term": "Fall, 2025",
+        "status": "Passed"
+    },
+    {
+        "course": "CPTR 308",
+        "courseTitle": "Ethical Issues for Computing",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "CPTR 430",
+        "courseTitle": "Artificial Intelligence",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "CPTR 454",
+        "courseTitle": "Design & Analy of Algorithms",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "DRMA 101",
+        "courseTitle": "Introduction to Theatre",
+        "grade": "NR",
+        "credits": 3.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "DRMA 252",
+        "courseTitle": "Performance",
+        "grade": "NR",
+        "credits": 0.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "PEAC 164",
+        "courseTitle": "Downhill Skiing/Snowboarding",
+        "grade": "NR",
+        "credits": 1.0,
+        "term": "Winter, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "CPTR 352",
+        "courseTitle": "Operating Systems",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Spring, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "MATH 315",
+        "courseTitle": "Probability & Statistics",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Spring, 2026",
+        "status": "Registered"
+    },
+    {
+        "course": "RELT 202",
+        "courseTitle": "Christian Beliefs",
+        "grade": "NR",
+        "credits": 4.0,
+        "term": "Spring, 2026",
+        "status": "Registered"
+    }
+]
