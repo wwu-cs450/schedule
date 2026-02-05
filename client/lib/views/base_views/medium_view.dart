@@ -4,6 +4,7 @@ import 'package:client/views/class_history_page.dart';
 import 'package:client/views/class_list/class_list.dart';
 import 'package:client/views/class_list/class_list_page.dart';
 import 'package:client/views/schedule_view.dart';
+import 'package:client/views/shared_components/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -33,26 +34,9 @@ class MediumViewState extends AbstractViewState {
             ),
           ),
           body: _selectedTab(),
-          bottomNavigationBar: NavigationBar(
+          bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
-            destinations: const <Widget>[
-              NavigationDestination(
-                key: Key('Main Page'),
-                icon: Icon(Icons.list),
-                label: 'All Classes',
-              ),
-              NavigationDestination(
-                key: Key('Schedule Page'),
-                icon: Icon(Icons.schedule),
-                label: 'Schedule',
-              ),
-              NavigationDestination(
-                key: Key('MyClassHistoryPage'),
-                icon: Icon(Icons.school_outlined),
-                label: 'My Class History',
-              ),
-            ],
           ),
         );
       },
