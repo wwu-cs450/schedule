@@ -4,6 +4,7 @@ import 'package:client/domain/filters.dart';
 import 'package:client/views/base_views/abstract_view.dart';
 import 'package:client/views/schedule_view.dart';
 import 'package:client/views/search_drawer.dart';
+import 'package:client/views/shared_components/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -35,21 +36,10 @@ class SmallViewState extends AbstractViewState {
           ),
           body: _selectedTab(),
           drawer: _drawer(),
-          bottomNavigationBar: NavigationBar(
+          bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
-            destinations: const <Widget>[
-              NavigationDestination(
-                key: Key('Main Page'),
-                icon: Icon(Icons.list),
-                label: 'All Classes',
-              ),
-              NavigationDestination(
-                key: Key('Schedule Page'),
-                icon: Icon(Icons.schedule),
-                label: 'Schedule',
-              ),
-            ],
+            smallView: true,
           ),
         );
       },
