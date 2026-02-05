@@ -1,4 +1,4 @@
-import 'package:client/domain/csv_handler.dart';
+import 'package:client/domain/handlers/csv_handler.dart';
 
 class DataHandler {
   // cache

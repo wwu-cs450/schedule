@@ -1,4 +1,4 @@
-import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 
 class Instructor implements Comparable {
   Instructor(this.name);

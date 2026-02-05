@@ -1,5 +1,5 @@
-import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/filters.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:client/domain/persister.dart';
 import 'package:client/domain/term.dart';
 import 'package:flutter_test/flutter_test.dart';
