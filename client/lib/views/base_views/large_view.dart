@@ -3,7 +3,6 @@ import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/filters.dart';
 import 'package:client/domain/general_studies.dart';
 import 'package:client/views/base_views/abstract_view.dart';
-import 'package:client/views/class_history_page.dart';
 import 'package:client/views/schedule_view.dart';
 import 'package:client/views/search_drawer.dart';
 import 'package:client/views/shared_components/navigation_bar.dart';
@@ -35,7 +34,7 @@ class LargeViewState extends AbstractViewState {
               style: GoogleFonts.getFont('Playfair'),
             ),
           ),
-          body: _selectedTab(),
+          body: selectedTab(_selectedIndex, _classListView(), _scheduleView()),
           drawer: _drawer(),
           bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
@@ -188,17 +187,5 @@ class LargeViewState extends AbstractViewState {
         Expanded(child: rowBuilder(Filters().savedClasses())),
       ],
     );
-  }
-
-  Widget _selectedTab() {
-    if (_selectedIndex == 0) {
-      return _classListView();
-    } else if (_selectedIndex == 1) {
-      return _scheduleView();
-    } else if (_selectedIndex == 2) {
-      return const ClassHistoryPage();
-    } else {
-      return Center(child: Text('Tab $_selectedIndex not found'));
-    }
   }
 }

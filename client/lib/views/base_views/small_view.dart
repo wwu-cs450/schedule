@@ -34,7 +34,11 @@ class SmallViewState extends AbstractViewState {
               style: GoogleFonts.getFont('Playfair'),
             ),
           ),
-          body: _selectedTab(),
+          body: selectedTab(
+            _selectedIndex,
+            _classListView(Filters().classes),
+            _scheduleView(),
+          ),
           drawer: _drawer(),
           bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
@@ -307,16 +311,6 @@ class SmallViewState extends AbstractViewState {
         ),
       ],
     );
-  }
-
-  Widget _selectedTab() {
-    if (_selectedIndex == 0) {
-      return _classListView(Filters().classes);
-    } else if (_selectedIndex == 1) {
-      return _scheduleView();
-    } else {
-      return Center(child: Text('Tab $_selectedIndex not found'));
-    }
   }
 
   SizedBox _summaryView(
