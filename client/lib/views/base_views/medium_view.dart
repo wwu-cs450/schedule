@@ -1,6 +1,5 @@
 import 'package:client/domain/filters.dart';
 import 'package:client/views/base_views/abstract_view.dart';
-import 'package:client/views/class_history_page.dart';
 import 'package:client/views/class_list/class_list.dart';
 import 'package:client/views/class_list/class_list_page.dart';
 import 'package:client/views/schedule_view.dart';
@@ -33,7 +32,11 @@ class MediumViewState extends AbstractViewState {
               style: GoogleFonts.getFont('Playfair'),
             ),
           ),
-          body: _selectedTab(),
+          body: selectedTab(
+            _selectedIndex,
+            ClassListPage(size: .medium, quarters: qtrs),
+            _scheduleView(),
+          ),
           bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
@@ -97,21 +100,5 @@ class MediumViewState extends AbstractViewState {
         ),
       ],
     );
-  }
-
-  Widget _selectedTab() {
-    if (_selectedIndex == 0) {
-      return ClassListPage(
-        header: headerRow(),
-        size: ClassListSize.medium,
-        quarters: qtrs,
-      );
-    } else if (_selectedIndex == 1) {
-      return _scheduleView();
-    } else if (_selectedIndex == 2) {
-      return const ClassHistoryPage();
-    } else {
-      return Center(child: Text('Tab $_selectedIndex not found'));
-    }
   }
 }
