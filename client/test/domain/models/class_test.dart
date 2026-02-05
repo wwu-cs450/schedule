@@ -1,8 +1,8 @@
 import 'package:client/domain/campus.dart';
 import 'package:client/domain/class.dart';
 import 'package:client/domain/course.dart';
-import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/department.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:client/domain/instructor.dart';
 import 'package:client/domain/meeting_time.dart';
 import 'package:client/domain/subject.dart';

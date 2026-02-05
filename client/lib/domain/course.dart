@@ -1,5 +1,5 @@
-import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/department.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:client/domain/subject.dart';
 
 class Course implements Comparable {

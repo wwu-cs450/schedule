@@ -1,9 +1,9 @@
 import 'package:client/domain/filters.dart';
-import 'package:client/views/base_views/abstract_view.dart';
+import 'package:client/views/_base_views/abstract_view.dart';
+import 'package:client/views/_shared_components/navigation_bar.dart';
 import 'package:client/views/class_list/class_list.dart';
 import 'package:client/views/class_list/class_list_page.dart';
 import 'package:client/views/schedule_view.dart';
-import 'package:client/views/shared_components/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';

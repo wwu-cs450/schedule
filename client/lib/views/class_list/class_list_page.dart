@@ -1,5 +1,5 @@
-import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/filters.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:client/views/class_list/class_list.dart';
 import 'package:client/views/class_list/filtering/filter_button.dart';
 import 'package:flutter/material.dart';

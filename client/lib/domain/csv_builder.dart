@@ -1,5 +1,5 @@
 import 'package:client/domain/class.dart';
-import 'package:client/domain/csv_handler.dart';
+import 'package:client/domain/handlers/csv_handler.dart';
 import 'package:csv/csv.dart';
 
 String createCSV() {
