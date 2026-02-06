@@ -1,5 +1,6 @@
 import 'package:client/domain/handlers/ai_handler.dart';
 import 'package:client/views/ai_advisor_page/ai_welcome_view.dart';
+import 'package:client/views/ai_advisor_page/loading_animation.dart';
 import 'package:client/views/ai_advisor_page/message_text_box.dart';
 import 'package:flutter/material.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
@@ -14,6 +15,7 @@ class AiAdvisorPage extends StatefulWidget {
 class _AiAdvisorPageState extends State<AiAdvisorPage> {
   final AiHandler aiHandler = MockAiHandler();
   bool welcomeState = true;
+  bool _isLoading = false;
 
   Future<void> _sendMessage(String message) async {
     if (welcomeState) {
@@ -23,9 +25,15 @@ class _AiAdvisorPageState extends State<AiAdvisorPage> {
     }
 
     final responseFuture = aiHandler.sendMessage(message);
-    setState(() {}); // Refresh UI to show user message immediately
+    setState(() {
+      // Refresh UI to show user message immediately
+      _isLoading = true;
+    });
     await responseFuture;
-    setState(() {}); // Refresh UI to show AI response
+    setState(() {
+      // Refresh UI to show AI response
+      _isLoading = false;
+    });
   }
 
   @override
@@ -42,8 +50,16 @@ class _AiAdvisorPageState extends State<AiAdvisorPage> {
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.all(8),
-                  itemCount: aiHandler.messageHistory.length,
+                  itemCount:
+                      aiHandler.messageHistory.length + (_isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (_isLoading &&
+                        index == aiHandler.messageHistory.length) {
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: LoadingAnimation(),
+                      );
+                    }
                     final message = aiHandler.messageHistory[index];
                     if (message['role'] == 'assistant') {
                       return AiMessage(message: message['content'] ?? '');

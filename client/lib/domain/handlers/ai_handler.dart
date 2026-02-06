@@ -11,7 +11,7 @@ class MockAiHandler extends AiHandler {
   Future<String> sendMessage(String message) async {
     messageHistory.add({'role': 'user', 'content': message});
 
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 4));
     final response = 'This is a mock response to: "$message"';
 
     messageHistory.add({'role': 'assistant', 'content': response});
