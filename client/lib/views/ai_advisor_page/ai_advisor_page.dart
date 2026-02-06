@@ -105,7 +105,7 @@ class UserMessage extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
           ),
           constraints: const BoxConstraints(maxWidth: 600),
-          child: Text(message, style: const TextStyle(fontSize: 16)),
+          child: SelectableText(message, style: const TextStyle(fontSize: 16)),
         ),
       ),
     );
@@ -121,7 +121,9 @@ class AiMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 40),
-      child: GptMarkdown(message, style: const TextStyle(fontSize: 16)),
+      child: SelectionArea(
+        child: GptMarkdown(message, style: const TextStyle(fontSize: 16)),
+      ),
     );
   }
 }
