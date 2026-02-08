@@ -1,7 +1,8 @@
 import 'package:client/domain/class.dart';
-import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/filters.dart';
-import 'package:client/views/base_views/abstract_view.dart';
+import 'package:client/domain/handlers/data_handler.dart';
+import 'package:client/views/_base_views/abstract_view.dart';
+import 'package:client/views/_shared_components/navigation_bar.dart';
 import 'package:client/views/schedule_view.dart';
 import 'package:client/views/search_drawer.dart';
 import 'package:flutter/material.dart';
@@ -33,23 +34,16 @@ class SmallViewState extends AbstractViewState {
               style: GoogleFonts.getFont('Playfair'),
             ),
           ),
-          body: _selectedTab(),
+          body: selectedTab(
+            _selectedIndex,
+            _classListView(Filters().classes),
+            _scheduleView(),
+          ),
           drawer: _drawer(),
-          bottomNavigationBar: NavigationBar(
+          bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
-            destinations: const <Widget>[
-              NavigationDestination(
-                key: Key('Main Page'),
-                icon: Icon(Icons.list),
-                label: 'All Classes',
-              ),
-              NavigationDestination(
-                key: Key('Schedule Page'),
-                icon: Icon(Icons.schedule),
-                label: 'Schedule',
-              ),
-            ],
+            smallView: true,
           ),
         );
       },
@@ -317,16 +311,6 @@ class SmallViewState extends AbstractViewState {
         ),
       ],
     );
-  }
-
-  Widget _selectedTab() {
-    if (_selectedIndex == 0) {
-      return _classListView(Filters().classes);
-    } else if (_selectedIndex == 1) {
-      return _scheduleView();
-    } else {
-      return Center(child: Text('Tab $_selectedIndex not found'));
-    }
   }
 
   SizedBox _summaryView(

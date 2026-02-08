@@ -1,4 +1,4 @@
-import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:client/domain/requirement_class.dart';
 import 'package:client/views/audit_view.dart';
 import 'package:flutter_test/flutter_test.dart';

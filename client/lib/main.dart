@@ -1,10 +1,10 @@
 import 'package:client/domain/class.dart';
-import 'package:client/domain/class_storage.dart';
-import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/filters.dart';
-import 'package:client/views/base_views/large_view.dart';
-import 'package:client/views/base_views/medium_view.dart';
-import 'package:client/views/base_views/small_view.dart';
+import 'package:client/domain/handlers/class_storage.dart';
+import 'package:client/domain/handlers/data_handler.dart';
+import 'package:client/views/_base_views/large_view.dart';
+import 'package:client/views/_base_views/medium_view.dart';
+import 'package:client/views/_base_views/small_view.dart';
 import 'package:client/views/error_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

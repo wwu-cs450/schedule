@@ -1,4 +1,4 @@
-import 'package:client/domain/class_storage.dart';
+import 'package:client/domain/handlers/class_storage.dart';
 import 'package:client/views/pdf_upload_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
