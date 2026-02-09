@@ -1,18 +1,28 @@
 import 'dart:io';
-
 import 'package:ollama_dart/ollama_dart.dart';
+import 'package:path/path.dart' as p;
 
 class AiTools {
   static String getUserClassHistory() {
     final file = File(
-      '/Users/anna/Documents/Programming/WWU/schedule/ai_server/test/data/sample_class_history.json',
+      p.join(
+        Directory.current.path,
+        'test',
+        'data',
+        'sample_class_history.json',
+      ),
     );
     return file.readAsStringSync();
   }
 
   static String getUserRegisteredClasses() {
     final file = File(
-      '/Users/anna/Documents/Programming/WWU/schedule/ai_server/test/data/sample_registered_classes.json',
+      p.join(
+        Directory.current.path,
+        'test',
+        'data',
+        'sample_registered_classes.json',
+      ),
     );
     return file.readAsStringSync();
   }

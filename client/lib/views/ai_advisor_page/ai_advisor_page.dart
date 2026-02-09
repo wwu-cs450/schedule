@@ -13,7 +13,7 @@ class AiAdvisorPage extends StatefulWidget {
 }
 
 class _AiAdvisorPageState extends State<AiAdvisorPage> {
-  final AiHandler aiHandler = MockAiHandler();
+  final AiHandler aiHandler = ServerAiHandler();
   bool welcomeState = true;
   bool _isLoading = false;
 
