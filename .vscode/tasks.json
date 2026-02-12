@@ -12,9 +12,20 @@
             "problemMatcher": []
         },
         {
+            "label": "Start Server",
+            "type": "shell",
+            "command": "dart run bin/server.dart",
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
             "label": "Start All",
             "dependsOn": [
-                "Start Client"
+                "Start Client",
+                "Start Server"
             ],
             "dependsOrder": "parallel",
             "problemMatcher": []
