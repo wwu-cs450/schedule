@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:client/domain/host.dart';
 import 'package:http/http.dart' as http;
 
 abstract class AiHandler {
@@ -24,15 +25,14 @@ class MockAiHandler extends AiHandler {
 }
 
 class ServerAiHandler extends AiHandler {
-  ServerAiHandler({this.baseUrl = 'http://localhost:8080'});
-
-  final String baseUrl;
+  final _host = host();
 
   @override
   Future<String> sendMessage(String message) async {
+    print('Sending message to server: $message');
     messageHistory.add({'role': 'user', 'content': message});
 
-    final uri = Uri.parse('$baseUrl/api/chat');
+    final uri = Uri.parse('$_host/api/chat');
     final body = jsonEncode({'messages': messageHistory});
 
     final httpResponse = await http.post(
