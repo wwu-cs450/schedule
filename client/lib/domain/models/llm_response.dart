@@ -1,5 +1,5 @@
 class LLMResponse {
-  LLMResponse({required this.think, required this.mainMessage});
+  LLMResponse({required this.mainMessage, this.think});
 
   /// Parses the raw response from the LLM, separating out any `<think>...<think>` content from the main message.
   factory LLMResponse.parse(String message) {
@@ -21,9 +21,13 @@ class LLMResponse {
     // Combine all think parts with newlines
     final think = thinkParts.join('\n\n');
 
-    return LLMResponse(think: think, mainMessage: mainMessage);
+    if (think.isEmpty) {
+      return LLMResponse(mainMessage: mainMessage);
+    } else {
+      return LLMResponse(think: think, mainMessage: mainMessage);
+    }
   }
 
-  final String think;
+  final String? think;
   final String mainMessage;
 }
