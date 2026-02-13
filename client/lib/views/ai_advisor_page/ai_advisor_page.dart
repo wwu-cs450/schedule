@@ -1,4 +1,5 @@
 import 'package:client/domain/handlers/ai_handler.dart';
+import 'package:client/domain/models/llm_response.dart';
 import 'package:client/views/ai_advisor_page/ai_welcome_view.dart';
 import 'package:client/views/ai_advisor_page/loading_animation.dart';
 import 'package:client/views/ai_advisor_page/message_text_box.dart';
@@ -14,6 +15,7 @@ class AiAdvisorPage extends StatefulWidget {
 
 class _AiAdvisorPageState extends State<AiAdvisorPage> {
   final AiHandler aiHandler = ServerAiHandler();
+
   bool welcomeState = true;
   bool _isLoading = false;
 
@@ -62,7 +64,9 @@ class _AiAdvisorPageState extends State<AiAdvisorPage> {
                     }
                     final message = aiHandler.messageHistory[index];
                     if (message['role'] == 'assistant') {
-                      return AiMessage(message: message['content'] ?? '');
+                      return AiMessage(
+                        message: LLMResponse.parse(message['content'] ?? ''),
+                      );
                     } else {
                       return UserMessage(message: message['content'] ?? '');
                     }

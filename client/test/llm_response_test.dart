@@ -10,7 +10,7 @@ void main() {
         final result = LLMResponse.parse(sampleLLMResponseText);
 
         // Think content should contain the reasoning
-        expect(result.think.isNotEmpty, true);
+        expect(result.think!.isNotEmpty, true);
         expect(
           result.think,
           contains("Okay, let me process the user's question"),
@@ -38,7 +38,7 @@ void main() {
       const message = 'This is a simple message without think tags.';
       final result = LLMResponse.parse(message);
 
-      expect(result.think, isEmpty);
+      expect(result.think, isNull);
       expect(
         result.mainMessage,
         equals('This is a simple message without think tags.'),
@@ -65,7 +65,7 @@ More content.
       const message = '<think></think>Hello world';
       final result = LLMResponse.parse(message);
 
-      expect(result.think, isEmpty);
+      expect(result.think, isNull);
       expect(result.mainMessage, equals('Hello world'));
     });
   });
