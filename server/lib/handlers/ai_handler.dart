@@ -19,7 +19,11 @@ class AiHandler {
           )
           .toList();
 
-      final response = await AiChatClient().chat(messages);
+      final courseHistory = json['courseHistory'] as String?;
+
+      final response = await AiChatClient().chat(
+        messages,
+        courseHistory: courseHistory);
 
       return Response.ok(
         jsonEncode({'response': response}),

@@ -11,11 +11,38 @@ class AiChatClient {
   final String baseUrl;
   final String model;
 
-  Future<String> chat(List<Map<String, String>> conversationHistory) async {
+  static const String _baseSystemPrompt =
+      'You are a helpful assistant that helps students with their class schedules. '
+      'You have access to tools that can provide information about the user\'s '
+      'currently registered classes. Use these tools as needed to answer the '
+      'user\'s questions about their schedule.';
+
+  String _buildSystemPrompt(String? courseHistory) {
+    if (courseHistory == null || courseHistory.isEmpty) {
+      return _baseSystemPrompt;
+    }
+    return '$_baseSystemPrompt\n\n'
+        'The student has uploaded their class transcript. '
+        'Here is their course history:\n'
+        '$courseHistory\n\n'
+        'Use this transcript data to help the student understand what classes '
+        'they have already taken, what requirements they may have fulfilled, '
+        'and what classes they still need to take.';
+  }
+
+  Future<String> chat(
+    List<Map<String, String>> conversationHistory, {
+    String? courseHistory,
+  }) async {
     final client = OllamaClient(baseUrl: baseUrl);
 
-    // Convert the incoming conversation history to Ollama Message objects.
     final messages = <Message>[
+      Message(
+        role: MessageRole.system,
+        content: _buildSystemPrompt(courseHistory),
+      ),
+
+      // Convert the incoming conversation history to Ollama Message objects.
       for (final entry in conversationHistory)
         Message(
           role: _parseRole(entry['role']!),
