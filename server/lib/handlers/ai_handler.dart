@@ -43,37 +43,9 @@ class AiHandler {
     }
   }
 
-  // Future<Response> uploadTranscript(Request request) async {
-  //   try {
-  //     final body = await request.readAsString();
-  //     // Validate it's proper JSON
-  //     final json = jsonDecode(body);
-  //     final file = File('test/data/sample_class_history.json');
-  //     await file.writeAsString(
-  //       const JsonEncoder.withIndent('    ').convert(json),
-  //     );
-  //     return Response.ok(
-  //       jsonEncode({'status': 'saved'}),
-  //       headers: {'Content-Type': 'application/json'},
-  //     );
-  //   } on FormatException {
-  //     return Response(
-  //       HttpStatus.badRequest,
-  //       body: jsonEncode({'error': 'Invalid JSON in request body'}),
-  //       headers: {'Content-Type': 'application/json'},
-  //     );
-  //   } catch (e) {
-  //     return Response.internalServerError(
-  //       body: jsonEncode({'error': e.toString()}),
-  //       headers: {'Content-Type': 'application/json'},
-  //     );
-  //   }
-  // }
-
   Handler get handler {
     final router = Router();
     router.post('/api/chat', handleChat);
-    // router.post('/api/upload-transcript', uploadTranscript);
     return router.call;
   }
 }

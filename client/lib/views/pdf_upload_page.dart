@@ -23,7 +23,6 @@ class PdfUploadPageState extends State<PdfUploadPage> {
       // Extract text from PDF using JavaScript interop
       final String extractedText = await PdfHelper.extractTextFromPDF(pdfBytes);
       final classes = PdfHelper.parseTranscriptPdfText(extractedText);
-      await PdfHelper.uploadTranscript(classes);
       widget.onCoursesParsed(classes);
     } catch (e) {
       throw Exception('Error extracting text from PDF: $e');

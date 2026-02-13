@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:client/domain/models/completed_course.dart';
 import 'package:file_picker/file_picker.dart';
-// import 'package:http/http.dart' as http;
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class PdfHelper {
@@ -99,26 +98,8 @@ class PdfHelper {
 
   /// Converts a list of [CompletedCourse] to a formatted JSON string.
   static String coursesToJson(List<CompletedCourse> courses) {
-    return const JsonEncoder.withIndent('    ')
-        .convert(courses.map((c) => c.toJson()).toList());
+    return const JsonEncoder.withIndent(
+      '    ',
+    ).convert(courses.map((c) => c.toJson()).toList());
   }
-
-  // /// Uploads parsed transcript courses to the server for saving.
-  // static Future<void> uploadTranscript(
-  //   List<CompletedCourse> courses, {
-  //   String baseUrl = 'http://localhost:8080',
-  // }) async {
-  //   final uri = Uri.parse('$baseUrl/api/transcript');
-  //   final body = coursesToJson(courses);
-
-  //   final response = await http.post(
-  //     uri,
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: body,
-  //   );
-
-  //   if (response.statusCode != 200) {
-  //     throw 'Failed to save transcript: ${response.statusCode}';
-  //   }
-  // }
 }
