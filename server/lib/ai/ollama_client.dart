@@ -1,5 +1,5 @@
 import 'package:ollama_dart/ollama_dart.dart';
-import 'package:server/ai_tools.dart';
+import 'package:server/ai/ai_tools.dart';
 
 /// Client wrapper for interacting with the Ollama LLM server.
 class AiChatClient {
