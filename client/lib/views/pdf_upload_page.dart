@@ -1,6 +1,6 @@
 import 'dart:typed_data';
-import 'package:client/domain/models/completed_course.dart';
 import 'package:client/domain/pdf_helper.dart';
+import 'package:common/completed_course.dart';
 import 'package:dotted_border/dotted_border.dart';
 
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:client/domain/course.dart';
-import 'package:client/domain/models/completed_course.dart';
 import 'package:client/domain/persister.dart';
+import 'package:common/completed_course.dart';
 import 'package:flutter/material.dart';
 
 class ClassStorage extends ChangeNotifier {
