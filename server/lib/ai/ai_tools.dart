@@ -1,51 +1,26 @@
-import 'dart:io';
+import 'package:common/graduation_requirements.dart';
 import 'package:ollama_dart/ollama_dart.dart';
-import 'package:path/path.dart' as p;
 
 class AiTools {
-  static String getUserClassHistory() {
-    final file = File(
-      p.join(
-        Directory.current.path,
-        'test',
-        'data',
-        'sample_class_history.json',
-      ),
+  static List<Map> getUserGraduationRequirements() {
+    final graduationRequirements = GraduationRequirements(
+      majorRequirements: [computerScienceBS_2023_2024],
     );
-    return file.readAsStringSync();
-  }
-
-  static String getUserRegisteredClasses() {
-    final file = File(
-      p.join(
-        Directory.current.path,
-        'test',
-        'data',
-        'sample_registered_classes.json',
-      ),
-    );
-    return file.readAsStringSync();
+    return graduationRequirements.allRequiredCourses
+        .map((course) => course.toJson())
+        .toList();
   }
 }
 
 final availableFunctions = {
-  'getUserClassHistory': AiTools.getUserClassHistory,
-  'getUserRegisteredClasses': AiTools.getUserRegisteredClasses,
+  'getUserGraduationRequirements': AiTools.getUserGraduationRequirements,
 };
 
 final List<Tool> tools = [
   Tool(
     function: ToolFunction(
-      name: 'getUserClassHistory',
-      description: 'Get the user\'s past class history as JSON file.',
-      parameters: {'type': 'object', 'properties': {}, 'required': []},
-    ),
-  ),
-  Tool(
-    function: ToolFunction(
-      name: 'getUserRegisteredClasses',
-      description:
-          'Get the classes the user is registered for in this quarter and future quarters.',
+      name: 'getUserGraduationRequirements',
+      description: 'Get the user\'s graduation requirements.',
       parameters: {'type': 'object', 'properties': {}, 'required': []},
     ),
   ),
