@@ -1,6 +1,8 @@
+import 'package:client/domain/handlers/class_storage.dart';
 import 'package:client/views/ai_advisor_page/message_text_box.dart';
 import 'package:client/views/ai_advisor_page/suggestion_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AiWelcomeView extends StatelessWidget {
   const AiWelcomeView({required this.onSendMessage, super.key});
@@ -9,29 +11,44 @@ class AiWelcomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 800,
-        child: Column(
-          mainAxisSize: .min,
-          children: [
-            welcomeMessage(context),
-            MessageTextBox(onSend: onSendMessage),
-            questionSuggestions(),
-          ],
-        ),
-      ),
+    return Consumer<ClassStorage>(
+      builder: (context, storage, child) {
+        return Center(
+          child: SizedBox(
+            width: 800,
+            child: Column(
+              mainAxisSize: .min,
+              children: [
+                welcomeMessage(context, storage.classes.isNotEmpty),
+                MessageTextBox(onSend: onSendMessage),
+                questionSuggestions(),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget welcomeMessage(BuildContext context) {
+  Widget welcomeMessage(BuildContext context, bool transcriptUploaded) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
-      child: Text(
-        'How can I help?',
-        style: Theme.of(
-          context,
-        ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w500),
+      child: Column(
+        spacing: 16,
+        children: [
+          Text(
+            'How can I help?',
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w500),
+          ),
+
+          if (!transcriptUploaded)
+            Text(
+              'To get personalized advice, upload your transcript in the Class History tab',
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+            ),
+        ],
       ),
     );
   }
