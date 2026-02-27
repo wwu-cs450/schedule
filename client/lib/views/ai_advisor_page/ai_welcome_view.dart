@@ -72,9 +72,9 @@ class AiWelcomeView extends StatelessWidget {
             onTap: () => onSendMessage('Help me plan my schedule'),
           ),
           SuggestionChip(
-            label: 'Find classes for me',
-            icon: Icons.search,
-            onTap: () => onSendMessage('Find classes for me'),
+            label: 'What classes do I still need to take?',
+            icon: Icons.list_alt,
+            onTap: () => onSendMessage('What classes do I still need to take?'),
           ),
           SuggestionChip(
             label: 'Explain prerequisites',
