@@ -3,8 +3,15 @@ import 'package:client/views/pdf_upload_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ClassHistoryPage extends StatelessWidget {
+class ClassHistoryPage extends StatefulWidget {
   const ClassHistoryPage({super.key});
+
+  @override
+  State<ClassHistoryPage> createState() => _ClassHistoryPageState();
+}
+
+class _ClassHistoryPageState extends State<ClassHistoryPage> {
+  String? selectedTerm;
 
   Future<dynamic> showUploadDialog(BuildContext context) {
     return showDialog(
@@ -50,6 +57,17 @@ class ClassHistoryPage extends StatelessWidget {
             },
           );
         } else {
+          // Get unique terms from the classes
+          final availableTerms = storage.classes
+              .map((c) => c.term)
+              .toSet()
+              .toList();
+
+          // Filter classes based on selected term
+          final filteredClasses = selectedTerm == null
+              ? storage.classes
+              : storage.classes.where((c) => c.term == selectedTerm).toList();
+
           return Scaffold(
             body: Padding(
               padding: const EdgeInsets.all(32),
@@ -57,7 +75,7 @@ class ClassHistoryPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 16,
                 children: [
-                  _header(context),
+                  _header(context, availableTerms),
                   Expanded(
                     child: DecoratedBox(
                       decoration: BoxDecoration(
@@ -65,9 +83,9 @@ class ClassHistoryPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: ListView.builder(
-                        itemCount: storage.classes.length,
+                        itemCount: filteredClasses.length,
                         itemBuilder: (context, index) {
-                          final course = storage.classes[index];
+                          final course = filteredClasses[index];
                           return ListTile(
                             title: Text(
                               '${course.course}: ${course.courseTitle}',
@@ -89,7 +107,7 @@ class ClassHistoryPage extends StatelessWidget {
     );
   }
 
-  Widget _header(BuildContext context) {
+  Widget _header(BuildContext context, List<String> availableTerms) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 12,
@@ -105,20 +123,26 @@ class ClassHistoryPage extends StatelessWidget {
           ],
         ),
         Row(
+          spacing: 8,
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.calendar_today, size: 16),
-                  SizedBox(width: 8),
-                  Text('All Terms'),
-                ],
+            FilterChip(
+              label: 'All Terms',
+              isSelected: selectedTerm == null,
+              onTap: () {
+                setState(() {
+                  selectedTerm = null;
+                });
+              },
+            ),
+            ...availableTerms.map(
+              (term) => FilterChip(
+                label: term,
+                isSelected: selectedTerm == term,
+                onTap: () {
+                  setState(() {
+                    selectedTerm = term;
+                  });
+                },
               ),
             ),
           ],
@@ -135,6 +159,41 @@ class ClassHistoryPage extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       onPressed: () => showUploadDialog(context),
+    );
+  }
+}
+
+class FilterChip extends StatelessWidget {
+  const FilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    super.key,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? Color(0xFFF0EEE2) : Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected ? Color(0xFF656950) : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: Text(label),
+        ),
+      ),
     );
   }
 }
