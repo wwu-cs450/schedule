@@ -20,7 +20,7 @@ final List<Tool> tools = [
   Tool(
     function: ToolFunction(
       name: 'getUserGraduationRequirements',
-      description: 'Get the user\'s graduation requirements.',
+      description: 'Get all the user\'s graduation requirements.',
       parameters: {'type': 'object', 'properties': {}, 'required': []},
     ),
   ),

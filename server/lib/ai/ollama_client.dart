@@ -12,22 +12,20 @@ class AiChatClient {
   final String model;
 
   static const String _baseSystemPrompt =
-      'You are a helpful assistant that helps students with their class schedules. '
-      'You have access to tools that can provide information about the user\'s '
-      'currently registered classes. Use these tools as needed to answer the '
-      'user\'s questions about their schedule.';
+      'You are a helpful academic advisor assistant that helps students with their class schedules. ';
 
   String _buildSystemPrompt(String? courseHistory) {
     if (courseHistory == null || courseHistory.isEmpty) {
-      return _baseSystemPrompt;
+      return '$_baseSystemPrompt\n\n'
+          'The student has not uploaded their class transcript. '
+          'You will not have specific information about their course history, but you can still provide general advice.';
     }
     return '$_baseSystemPrompt\n\n'
         'The student has uploaded their class transcript. '
         'Here is their course history:\n'
         '$courseHistory\n\n'
-        'Use this transcript data to help the student understand what classes '
-        'they have already taken, what requirements they may have fulfilled, '
-        'and what classes they still need to take.';
+        'Use this transcript data to understand what classes '
+        'they have already taken and what requirements they may have fulfilled.';
   }
 
   Future<String> chat(
