@@ -11,21 +11,27 @@ class AiChatClient {
   final String baseUrl;
   final String model;
 
-  static const String _baseSystemPrompt =
-      'You are a helpful academic advisor assistant that helps students with their class schedules. ';
-
   String _buildSystemPrompt(String? courseHistory) {
+    String systemPrompt =
+        'You are a helpful academic advisor assistant that helps students with their class schedules. '
+        'It is currently the Winter 2026 term. ';
+
+    // Insert user's graduation requirements
+    systemPrompt +=
+        '\n\nThe student needs to take the following courses to fulfill their graduation requirements:\n'
+        '${AiTools.getUserGraduationRequirements()}\n\n';
+
+    // Insert user's course history
     if (courseHistory == null || courseHistory.isEmpty) {
-      return '$_baseSystemPrompt\n\n'
+      return '$systemPrompt\n\n'
           'The student has not uploaded their class transcript. '
           'You will not have specific information about their course history, but you can still provide general advice.';
     }
-    return '$_baseSystemPrompt\n\n'
+    return '$systemPrompt\n\n'
         'The student has uploaded their class transcript. '
         'Here is their course history:\n'
         '$courseHistory\n\n'
-        'Use this transcript data to understand what classes '
-        'they have already taken and what requirements they may have fulfilled.';
+        'Use this transcript data to understand what classes they have already taken and what requirements they may have fulfilled.';
   }
 
   Future<String> chat(
@@ -53,7 +59,7 @@ class AiChatClient {
         request: GenerateChatCompletionRequest(
           model: model,
           messages: messages,
-          tools: tools,
+          // tools: tools,
           options: RequestOptions(numPredict: -1),
         ),
       );
