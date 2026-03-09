@@ -54,7 +54,11 @@ class AiChatClient {
         ),
     ];
 
+    print('[DEBUG] Starting chat with ${messages.length} initial messages');
+    print('[DEBUG] System message: ${messages.first.content}');
+
     while (true) {
+      print('[DEBUG] Requesting chat completion from model: $model');
       final response = await client.generateChatCompletion(
         request: GenerateChatCompletionRequest(
           model: model,
@@ -64,21 +68,33 @@ class AiChatClient {
         ),
       );
 
+      print(
+        '[DEBUG] Received response with ${response.message.toolCalls?.length ?? 0} tool calls',
+      );
       messages.add(response.message);
 
       if (response.message.toolCalls != null &&
           response.message.toolCalls!.isNotEmpty) {
+        print(
+          '[DEBUG] Processing ${response.message.toolCalls!.length} tool call(s)',
+        );
         for (final toolCall in response.message.toolCalls!) {
           final functionName = toolCall.function?.name;
+          print('[DEBUG] Tool call: $functionName');
           if (functionName != null &&
               availableFunctions.containsKey(functionName)) {
+            print('[DEBUG] Executing function: $functionName');
             final result = availableFunctions[functionName]!();
             messages.add(
               Message(role: MessageRole.tool, content: result.toString()),
             );
+          } else {
+            print('[DEBUG] Function not found or invalid: $functionName');
           }
         }
       } else {
+        print('[DEBUG] No tool calls, returning final response');
+        print('[DEBUG] Response content: ${response.message.content}');
         return response.message.content;
       }
     }
