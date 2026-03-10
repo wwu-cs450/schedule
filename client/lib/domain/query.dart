@@ -29,19 +29,29 @@ class Query {
     return Class.instances
         .where(
           (each) =>
-              _searchCriteria.department.includesCourse(
-                each.course,
-              ) && //department
-              _searchCriteria.subject.includesCourse(each.course) && // course
+              (_searchCriteria.departments.isEmpty ||
+                  _searchCriteria.departments.any(
+                    (dept) => dept.includesCourse(each.course),
+                  )) && //department
+              (_searchCriteria.subjects.isEmpty ||
+                  _searchCriteria.subjects.any(
+                    (subj) => subj.includesCourse(each.course),
+                  )) && // subject
               _searchCriteria.term.includesClass(each) && // term
-              _searchCriteria.campus.includesClass(each) && // campus
-              each.includesLevel(_searchCriteria.level) && // level
-              each.includesCredits(_searchCriteria.credits) &&
+              (_searchCriteria.campuses.isEmpty ||
+                  _searchCriteria.campuses.any(
+                    (campus) => campus.includesClass(each),
+                  )) && // campus
+              each.includesLevels(_searchCriteria.levels) && // level
+              each.includesCreditsFromList(_searchCriteria.credits) &&
               each.includesGS(_searchCriteria.isGS) &&
               each.includesOpen(_searchCriteria.isOpen) &&
               each.includesNotTaken(_searchCriteria.isNotTaken) &&
               each.includesInstructor(_searchCriteria.instructor) &&
-              each.includesDays(_scheduledDays) &&
+              each.includesDays(
+                _scheduledDays,
+                logic: _searchCriteria.scheduleLogic,
+              ) &&
               each.includesStartTime(_searchCriteria.startTime) &&
               each.includesEndTime(_searchCriteria.endTime) &&
               (_searchCriteria.classNumber == 0 ||

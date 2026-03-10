@@ -18,13 +18,18 @@ void main() {
       4,
       4,
     );
-    assert(course.department.code == 'CPTR');
-    assert(course.subject.code == 'CPTR');
-    assert(course.title == 'Fundamentals of Programming I');
-    assert(course.number == '141');
-    assert(course.level == 'lower');
-    assert(course.creditsMin == 4);
-    assert(!course.isGeneralStudies);
+    expect(course.department.code, 'CPTR');
+    expect(course.subject.code, 'CPTR');
+    expect(course.title, 'Fundamentals of Programming I');
+    expect(course.number, '141');
+    expect(course.level, 'lower');
+    expect(course.creditsMin, 4);
+    expect(course.isGeneralStudies, false);
+    expect(course.title, 'Fundamentals of Programming I');
+    expect(course.number, '141');
+    expect(course.level, 'lower');
+    expect(course.creditsMin, 4);
+    expect(course.isGeneralStudies, false);
   });
   test('constructor and accessors on lab', () {
     final course = Course(
@@ -36,25 +41,33 @@ void main() {
       0,
       0,
     );
-    assert(course.number == '253SN');
+    expect(course.number, '253SN');
   });
   test('course credit numbers from CSV', () {
     final courses = Course.instances;
-    assert(courses.any((element) => element.creditsMin == 4.5));
-    assert(
+    expect(courses.any((element) => element.creditsMin == 4.5), true);
+    expect(
       courses.any(
         (element) =>
             element.creditsMin == 1 &&
             element.creditsMax == 4, // Test for NRSG494 Internship
       ),
+      true,
     );
-    assert(courses.any((element) => element.creditsMin != element.creditsMax));
-    assert(courses.any((element) => element.creditsMin == element.creditsMax));
+    expect(
+      courses.any((element) => element.creditsMin != element.creditsMax),
+      true,
+    );
+    expect(
+      courses.any((element) => element.creditsMin == element.creditsMax),
+      true,
+    );
   });
   test('course titles from HTML', () {
     final courses = Course.instances;
-    assert(
+    expect(
       courses.any((element) => element.title == 'Introduction to Printmaking'),
+      true,
     );
   });
 }

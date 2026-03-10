@@ -8,7 +8,7 @@ void main() {
   });
   test('constructor and accessors', () {
     final instructor = Instructor('James Foster');
-    assert(instructor.name == 'James Foster');
+    expect(instructor.name, 'James Foster');
   });
 
   test('instances', () {

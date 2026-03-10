@@ -4,15 +4,15 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('constructor and accessors', () {
     final department = Department('CPTR', 'Computer Science');
-    assert(department.code == 'CPTR');
-    assert(department.name == 'Computer Science');
+    expect(department.code, 'CPTR');
+    expect(department.name, 'Computer Science');
   });
 
   test('instances', () {
     final departments = Department.instances;
-    assert(Department.allDepartments().name == 'All Departments');
-    assert(departments.length == 30);
-    assert(departments.any((element) => element.code == 'CPTR'));
+    expect(Department.allDepartments().name, 'All Departments');
+    expect(departments.length, 30);
+    expect(departments.any((element) => element.code == 'CPTR'), true);
   });
 
   test(
