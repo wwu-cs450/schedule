@@ -38,7 +38,27 @@ class ClassStorage extends ChangeNotifier {
   }
 
   bool haveTaken(Course course) {
-    return _classes.any((each) => each.course == course.subject.code);
+    final normalizedCourse = _normalizeCourseCode(
+      '${course.subject.code} ${course.number}',
+    );
+    final normalizedCourseNoSuffix = _normalizeCourseCode(
+      '${course.subject.code} ${_numericPrefix(course.number)}',
+    );
+
+    return _classes.any((each) {
+      final completed = _normalizeCourseCode(each.course);
+      return completed == normalizedCourse ||
+          completed == normalizedCourseNoSuffix;
+    });
+  }
+
+  static String _normalizeCourseCode(String value) {
+    return value.toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '');
+  }
+
+  static String _numericPrefix(String courseNumber) {
+    final match = RegExp(r'^\d+').firstMatch(courseNumber);
+    return match?.group(0) ?? courseNumber;
   }
 
   // Save completed courses to persistent storage
