@@ -243,6 +243,8 @@ class _FilterMenuState extends State<FilterMenu> {
             child: TextButton(
               onPressed: () async {
                 await widget.filters.reset();
+                _classNumberController.clear();
+                _instructorController.clear();
                 setState(() {});
               },
               child: const Text('Reset all'),
