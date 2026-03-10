@@ -71,8 +71,8 @@ void main() {
       final classrooms = Class.getAllClassrooms();
 
       // Assert
-      assert(classrooms.contains('KRH 210'));
-      assert(classrooms.length == 1);
+      expect(classrooms, contains('KRH 210'));
+      expect(classrooms.length, 1);
     });
   });
 }

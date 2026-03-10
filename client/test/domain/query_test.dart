@@ -35,7 +35,7 @@ void main() {
     final csDepartment = Department.instances.firstWhere(
       (each) => each.code == 'CPTR',
     );
-    await searchCriteria.setDepartment(csDepartment);
+    await searchCriteria.setDepartments([csDepartment]);
     final dCount = Query().results().length;
     expect(dCount < all, isTrue);
 
@@ -43,7 +43,7 @@ void main() {
       (each) => each.code == 'CPTR',
     );
     await searchCriteria.reset();
-    await searchCriteria.setSubject(csSubject);
+    await searchCriteria.setSubjects([csSubject]);
     final sCount = Query().results().length;
     expect(sCount < all, isTrue);
 
@@ -55,7 +55,7 @@ void main() {
 
     final campus = Campus.instances.firstWhere((each) => each.code == 'CP');
     await searchCriteria.reset();
-    await searchCriteria.setCampus(campus);
+    await searchCriteria.setCampuses([campus]);
     final cCount = Query().results().length;
     expect(cCount, lessThan(all));
   });
@@ -65,8 +65,8 @@ void main() {
       (each) => each.code == 'CPTR',
     );
     final subject = Subject.instances.firstWhere((each) => each.code == 'CPTR');
-    await searchCriteria.setDepartment(department);
-    await searchCriteria.setSubject(subject);
+    await searchCriteria.setDepartments([department]);
+    await searchCriteria.setSubjects([subject]);
     final list = Query().results();
     expect(
       list.every((element) => element.course.department.code == 'CPTR'),
@@ -82,7 +82,7 @@ void main() {
     final department = Department.instances.firstWhere(
       (each) => each.code == 'RELB',
     );
-    await searchCriteria.setDepartment(department);
+    await searchCriteria.setDepartments([department]);
     final codes = Query().results();
     expect(
       codes.any((element) => element.course.subject.code == 'RELB'),
@@ -130,7 +130,7 @@ void main() {
     final campus = Campus.instances.firstWhere(
       (each) => each.name == 'College Place',
     );
-    await searchCriteria.setCampus(campus);
+    await searchCriteria.setCampuses([campus]);
     final list = Query().results();
     expect(list.every((element) => element.campus.code == 'CP'), isTrue);
   });

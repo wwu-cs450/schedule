@@ -269,7 +269,27 @@ class Class implements Comparable {
     return schedule.endsAt(time: endTime);
   }
 
-  bool includesDays(List<String> sList) {
+  bool includesDays(List<String> sList, {String logic = 'Any'}) {
+    // If no days are selected, show all classes
+    if (sList.isEmpty) {
+      return true;
+    }
+
+    // If all days are selected with Any logic, show all classes
+    final allDays = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+    ];
+    if (logic == 'Any' &&
+        sList.length == allDays.length &&
+        sList.toSet().containsAll(allDays)) {
+      return true;
+    }
+
     final List<String> scheduleValues = [
       'Monday',
       'Tuesday',
@@ -280,30 +300,45 @@ class Class implements Comparable {
       'Sunday',
     ];
     final List<int> dayValues = [];
-    final List<int> dayIndices = [1, 2, 3, 4, 5, 6, 7];
     for (final day in sList) {
       dayValues.add(scheduleValues.indexWhere((item) => item == day) + 1);
     }
-    for (final index in dayValues) {
-      if (!schedule.isAt(day: index)) {
-        // if the listing does not include the day
-        return false;
+
+    if (logic == 'Any') {
+      // Any: class must meet on at least one of the selected days
+      for (final index in dayValues) {
+        if (schedule.isAt(day: index)) {
+          return true;
+        }
       }
-      for (final mainIndex in dayIndices) {
-        // Checking if the listing includes a day that is not in the search
-        if (!dayValues.contains(mainIndex) && schedule.isAt(day: mainIndex)) {
+      return false;
+    } else if (logic == 'All') {
+      // All: class must meet on all selected days (can also meet on other days)
+      for (final index in dayValues) {
+        if (!schedule.isAt(day: index)) {
+          // if the listing does not include the day
           return false;
         }
       }
+      return true;
+    } else {
+      // Exclude: class must NOT meet on any of the selected days
+      for (final index in dayValues) {
+        if (schedule.isAt(day: index)) {
+          return false;
+        }
+      }
+      return true;
     }
-    return true;
   }
 
   bool includesInstructor(String instructor) {
     if (instructor == '') {
       return true;
     } else {
-      return instructors.any((each) => each.name.startsWith(instructor));
+      return instructors.any(
+        (each) => each.name.toLowerCase().contains(instructor.toLowerCase()),
+      );
     }
   }
 
@@ -320,30 +355,112 @@ class Class implements Comparable {
   }
 
   bool includesLevel(String level) {
-    if (level == '' || level == 'Any') {
+    if (level.isEmpty || level == 'Any' || level == 'Lower,Upper,Grad') {
       return true;
     }
-    return course.level == level;
+    // Handle comma-separated multi-select
+    final selectedLevels = level.split(',');
+    return selectedLevels.contains(course.level);
+  }
+
+  bool includesLevels(List<String> levels) {
+    if (levels.isEmpty ||
+        (levels.length == 3 &&
+            levels.contains('Lower') &&
+            levels.contains('Upper') &&
+            levels.contains('Grad'))) {
+      return true;
+    }
+    return levels.contains(course.level);
   }
 
   bool includesCredits(String creditString) {
     final credits = getCredits();
-    switch (creditString) {
-      case '0':
-        return credits == 0;
-      case '1':
-        return credits == 1;
-      case '2':
-        return credits == 2;
-      case '3':
-        return credits == 3;
-      case '4':
-        return credits == 4;
-      case '>4':
-        return credits > 4;
-      default:
-        return true;
+
+    // Handle default/all cases
+    if (creditString.isEmpty ||
+        creditString == 'Any' ||
+        creditString == '0,1,2,3,4,>4') {
+      return true;
     }
+
+    // Handle comma-separated multi-select
+    final selectedCredits = creditString.split(',');
+
+    for (final selected in selectedCredits) {
+      switch (selected) {
+        case '0':
+          if (credits == 0) {
+            return true;
+          }
+        case '1':
+          if (credits == 1) {
+            return true;
+          }
+        case '2':
+          if (credits == 2) {
+            return true;
+          }
+        case '3':
+          if (credits == 3) {
+            return true;
+          }
+        case '4':
+          if (credits == 4) {
+            return true;
+          }
+        case '>4':
+          if (credits > 4) {
+            return true;
+          }
+      }
+    }
+    return false;
+  }
+
+  bool includesCreditsFromList(List<String> creditsList) {
+    if (creditsList.isEmpty ||
+        (creditsList.length == 6 &&
+            creditsList.contains('0') &&
+            creditsList.contains('1') &&
+            creditsList.contains('2') &&
+            creditsList.contains('3') &&
+            creditsList.contains('4') &&
+            creditsList.contains('>4'))) {
+      return true;
+    }
+
+    final credits = getCredits();
+
+    for (final selected in creditsList) {
+      switch (selected) {
+        case '0':
+          if (credits == 0) {
+            return true;
+          }
+        case '1':
+          if (credits == 1) {
+            return true;
+          }
+        case '2':
+          if (credits == 2) {
+            return true;
+          }
+        case '3':
+          if (credits == 3) {
+            return true;
+          }
+        case '4':
+          if (credits == 4) {
+            return true;
+          }
+        case '>4':
+          if (credits > 4) {
+            return true;
+          }
+      }
+    }
+    return false;
   }
 
   String getWList() {

@@ -6,14 +6,15 @@ import 'package:client/domain/term.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'feature_test_functions.dart';
-import 'test_functions.dart';
+import '../feature_test_functions.dart';
+import '../test_functions.dart';
 
 void main() async {
   setUp(() async {
     Term.defaultTermIndex = 1; // 2024-2025
     AbstractPersister.instance = MockPersister();
     WidgetsFlutterBinding.ensureInitialized();
+    await Filters().reset(); // Reset filters to defaults
     await Filters().load(); // Load filters from local storage
     await DataHandler.fetchData(test: true); // Fetch class data from server
     Class.instances; // Initialize the class list
@@ -113,33 +114,56 @@ void main() async {
 
   testWidgets('Clear Filters Button', (WidgetTester tester) async {
     await buildTestEnvironment(tester, width: 2000, height: 1500);
-    final Finder clearFiltersButton = find
-        .byKey(const Key('Clear Filters Button'))
-        .hitTestable();
-    final Finder department = find
-        .byKey(const Key('Department Dropdown'))
-        .hitTestable();
-    final Finder cs = find.text('CPTR Computer Science').hitTestable();
+    final Finder resetAllButton = find.text('Reset all').hitTestable();
     final Finder classCount = find.byKey(const Key('Class Count'));
     Text textWidget = tester.widget<Text>(classCount);
     expect(textWidget.data, '2370 classes (from 2024-12-13 09:11)');
-    expect(department, findsNothing);
-    expect(clearFiltersButton, findsNothing);
-    expect(cs, findsNothing);
+    expect(resetAllButton, findsNothing);
     expect(classCount, findsOneWidget);
-    await openDrawer(tester);
-    expect(clearFiltersButton, findsOneWidget);
-    expect(department, findsOneWidget);
-    expect(cs, findsNothing);
-    await tester.tap(department);
+
+    // Open filter menu
+    await openFilterMenu(tester);
+    expect(resetAllButton, findsOneWidget);
+
+    // Expand Department section
+    final departmentSection = find.text('Department').hitTestable();
+    await tester.tap(departmentSection);
     await tester.pumpAndSettle();
+
+    // Scroll to find CPTR if needed
+    final scrollable = find.descendant(
+      of: find.byType(SingleChildScrollView),
+      matching: find.byType(Scrollable),
+    );
+
+    if (scrollable.evaluate().isNotEmpty) {
+      await tester.scrollUntilVisible(
+        find.text('CPTR - Computer Science'),
+        100,
+        scrollable: scrollable.first,
+      );
+    }
+
+    // Find and tap on CPTR Computer Science
+    final cs = find.text('CPTR - Computer Science').hitTestable();
     expect(cs, findsOneWidget);
-    await tester.tap(cs.last);
+    await tester.tap(cs);
     await tester.pumpAndSettle();
+
+    // Close filter menu to see results
+    await closeFilterMenu(tester);
+    await tester.pumpAndSettle();
+
     textWidget = tester.widget<Text>(classCount);
     expect(textWidget.data, '41 classes (from 2024-12-13 09:11)');
-    await tester.tap(clearFiltersButton);
+
+    // Reopen and reset filters
+    await openFilterMenu(tester);
+    await tester.tap(resetAllButton);
     await tester.pumpAndSettle();
+    await closeFilterMenu(tester);
+    await tester.pumpAndSettle();
+
     textWidget = tester.widget<Text>(classCount);
     expect(textWidget.data, '2370 classes (from 2024-12-13 09:11)');
   });

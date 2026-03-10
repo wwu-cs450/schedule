@@ -11,6 +11,15 @@ import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
 import 'package:flutter/material.dart';
 
+final allClassDays = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+];
+
 class Filters extends ChangeNotifier {
   // Factory constructor to return the singleton instance
   factory Filters() {
@@ -28,38 +37,95 @@ class Filters extends ChangeNotifier {
   final classes = <Class>[];
   Term? _scheduleTerm;
 
-  late Campus _campus;
-  late Department _department;
-  late Subject _subject;
+  late List<Campus> _campuses;
+  late List<Department> _departments;
+  late List<Subject> _subjects;
   late Term _term;
   late int _classNumber;
-  late String _level;
-  late String _credits;
+  late List<String> _levels;
+  late List<String> _credits;
   late bool _isGS;
   late bool _isOpen;
   late String _instructor;
   late List<String> _schedule;
+  late String _scheduleLogic;
   late HourMinute? _startTime;
   late HourMinute? _endTime;
   late bool _isNotTaken;
   late bool _isFreeClassrooms;
 
   // Getters
-  Campus get campus => _campus;
-  Department get department => _department;
-  Subject get subject => _subject;
+  List<Campus> get campuses => _campuses;
+  List<Department> get departments => _departments;
+  List<Subject> get subjects => _subjects;
   Term get term => _term;
   int get classNumber => _classNumber;
-  String get level => _level;
-  String get credits => _credits;
+  List<String> get levels => _levels;
+  List<String> get credits => _credits;
   bool get isGS => _isGS;
   bool get isOpen => _isOpen;
   String get instructor => _instructor;
   List<String> get schedule => _schedule;
+  String get scheduleLogic => _scheduleLogic;
   HourMinute? get startTime => _startTime;
   HourMinute? get endTime => _endTime;
   bool get isNotTaken => _isNotTaken;
   bool get isFreeClassrooms => _isFreeClassrooms;
+
+  int get activeFilterCount {
+    int count = 0;
+
+    // Check each filter against its default value
+    if (_campuses.isNotEmpty) {
+      count++;
+    }
+    if (_departments.isNotEmpty) {
+      count++;
+    }
+    if (_subjects.isNotEmpty) {
+      count++;
+    }
+    if (_term != Term.defaultTerm()) {
+      count++;
+    }
+    if (_classNumber != 0) {
+      count++;
+    }
+    if (_levels.length != 3 ||
+        !['Lower', 'Upper', 'Grad'].every(_levels.contains)) {
+      count++;
+    }
+    if (_credits.length != 6 ||
+        !['0', '1', '2', '3', '4', '>4'].every(_credits.contains)) {
+      count++;
+    }
+    if (_isGS) {
+      count++;
+    }
+    if (_isOpen) {
+      count++;
+    }
+    if (_instructor.isNotEmpty) {
+      count++;
+    }
+    if (_schedule.length != allClassDays.length || _scheduleLogic != 'Any') {
+      count++;
+    }
+    if (_startTime != null) {
+      count++;
+    }
+    if (_endTime != null) {
+      count++;
+    }
+    if (_isNotTaken) {
+      count++;
+    }
+    if (_isFreeClassrooms) {
+      count++;
+    }
+
+    return count;
+  }
 
   Term get scheduleTerm {
     if (_scheduleTerm == null) {
@@ -86,18 +152,18 @@ class Filters extends ChangeNotifier {
   }
 
   // Setters
-  Future<void> setCampus(Campus value) async {
-    _campus = value;
+  Future<void> setCampuses(List<Campus> value) async {
+    _campuses = value;
     await update();
   }
 
-  Future<void> setDepartment(Department value) async {
-    _department = value;
+  Future<void> setDepartments(List<Department> value) async {
+    _departments = value;
     await update();
   }
 
-  Future<void> setSubject(Subject value) async {
-    _subject = value;
+  Future<void> setSubjects(List<Subject> value) async {
+    _subjects = value;
     await update();
   }
 
@@ -111,12 +177,12 @@ class Filters extends ChangeNotifier {
     await update();
   }
 
-  Future<void> setLevel(String value) async {
-    _level = value;
+  Future<void> setLevels(List<String> value) async {
+    _levels = value;
     await update();
   }
 
-  Future<void> setCredits(String value) async {
+  Future<void> setCredits(List<String> value) async {
     _credits = value;
     await update();
   }
@@ -138,6 +204,11 @@ class Filters extends ChangeNotifier {
 
   Future<void> setSchedule(List<String> value) async {
     _schedule = value;
+    await update();
+  }
+
+  Future<void> setScheduleLogic(String value) async {
+    _scheduleLogic = value;
     await update();
   }
 
@@ -167,17 +238,18 @@ class Filters extends ChangeNotifier {
   }
 
   void _reset() {
-    _campus = Campus.allCampuses();
-    _department = Department.allDepartments();
-    _subject = Subject.allSubjects();
+    _campuses = [];
+    _departments = [];
+    _subjects = [];
     _term = Term.defaultTerm();
     _classNumber = 0;
-    _level = 'Any';
-    _credits = 'Any';
+    _levels = ['Lower', 'Upper', 'Grad'];
+    _credits = ['0', '1', '2', '3', '4', '>4'];
     _isGS = false;
     _isOpen = false;
     _instructor = '';
-    _schedule = <String>[];
+    _schedule = allClassDays;
+    _scheduleLogic = 'Any';
     _startTime = null;
     _endTime = null;
     _isNotTaken = false;
@@ -190,17 +262,18 @@ class Filters extends ChangeNotifier {
 
   Future<void> save() async {
     final Map<String, dynamic> toSave = {
-      'Campus': campus.code,
-      'Department': department.code,
-      'Subject': subject.code,
+      'Campuses': campuses.map((c) => c.code).toList(),
+      'Departments': departments.map((d) => d.code).toList(),
+      'Subjects': subjects.map((s) => s.code).toList(),
       'Term': term.code,
       'Class Number': classNumber,
-      'Level': level,
+      'Levels': levels,
       'Credits': credits,
       'GS': isGS,
       'IsOpen': isOpen,
       'Instructor': instructor,
-      // 'Schedule': <String>[],
+      'ScheduleLogic': scheduleLogic,
+      'Schedule': schedule,
       // 'Start Time': null,
       // 'End Time': null,
       // 'Not Taken': false,
@@ -215,20 +288,91 @@ class Filters extends ChangeNotifier {
       return;
     }
     final Map<String, dynamic> loadedCriteria = jsonDecode(savedCriteria);
-    _campus = Campus.fromCode(loadedCriteria['Campus']);
-    _department = Department.fromCode(loadedCriteria['Department']);
-    _subject = Subject.fromCode(loadedCriteria['Subject']);
+
+    // Load campuses (with backward compatibility for single Campus)
+    if (loadedCriteria.containsKey('Campuses')) {
+      _campuses = (loadedCriteria['Campuses'] as List)
+          .map((code) => Campus.fromCode(code))
+          .where((c) => c != Campus.allCampuses())
+          .toList();
+    } else if (loadedCriteria.containsKey('Campus')) {
+      final campus = Campus.fromCode(loadedCriteria['Campus']);
+      _campuses = campus == Campus.allCampuses() ? [] : [campus];
+    } else {
+      _campuses = [];
+    }
+
+    // Load departments (with backward compatibility)
+    if (loadedCriteria.containsKey('Departments')) {
+      _departments = (loadedCriteria['Departments'] as List)
+          .map((code) => Department.fromCode(code))
+          .where((d) => d != Department.allDepartments())
+          .toList();
+    } else if (loadedCriteria.containsKey('Department')) {
+      final dept = Department.fromCode(loadedCriteria['Department']);
+      _departments = dept == Department.allDepartments() ? [] : [dept];
+    } else {
+      _departments = [];
+    }
+
+    // Load subjects (with backward compatibility)
+    if (loadedCriteria.containsKey('Subjects')) {
+      _subjects = (loadedCriteria['Subjects'] as List)
+          .map((code) => Subject.fromCode(code))
+          .where((s) => s != Subject.allSubjects())
+          .toList();
+    } else if (loadedCriteria.containsKey('Subject')) {
+      final subj = Subject.fromCode(loadedCriteria['Subject']);
+      _subjects = subj == Subject.allSubjects() ? [] : [subj];
+    } else {
+      _subjects = [];
+    }
+
     _term = Term.fromCode(loadedCriteria['Term']) ?? Term.defaultTerm();
     _classNumber = loadedCriteria['Class Number'];
-    _level = loadedCriteria['Level'];
-    _credits = loadedCriteria['Credits'];
+
+    // Load levels (with backward compatibility)
+    if (loadedCriteria.containsKey('Levels')) {
+      final levelsData = loadedCriteria['Levels'];
+      if (levelsData is List) {
+        _levels = List<String>.from(levelsData);
+      } else if (levelsData is String) {
+        _levels = levelsData.split(',').where((l) => l.isNotEmpty).toList();
+      } else {
+        _levels = ['Lower', 'Upper', 'Grad'];
+      }
+    } else if (loadedCriteria.containsKey('Level')) {
+      final levelData = loadedCriteria['Level'];
+      if (levelData is String) {
+        _levels = levelData.split(',').where((l) => l.isNotEmpty).toList();
+      } else {
+        _levels = ['Lower', 'Upper', 'Grad'];
+      }
+    } else {
+      _levels = ['Lower', 'Upper', 'Grad'];
+    }
+
+    // Load credits (with backward compatibility)
+    if (loadedCriteria.containsKey('Credits')) {
+      final creditsData = loadedCriteria['Credits'];
+      if (creditsData is List) {
+        _credits = List<String>.from(creditsData);
+      } else if (creditsData is String) {
+        _credits = creditsData.split(',').where((c) => c.isNotEmpty).toList();
+      } else {
+        _credits = ['0', '1', '2', '3', '4', '>4'];
+      }
+    } else {
+      _credits = ['0', '1', '2', '3', '4', '>4'];
+    }
+
     _isGS = loadedCriteria['GS'];
     _isOpen = loadedCriteria['Status'] ?? loadedCriteria['IsOpen'];
     _instructor = loadedCriteria['Instructor'];
-    // schedule.clear();
-    // for (final each in loadedCriteria['Schedule']) {
-    //   schedule.add(each);
-    // }
+    _scheduleLogic = loadedCriteria['ScheduleLogic'] ?? 'Any';
+    _schedule = loadedCriteria['Schedule'] != null
+        ? List<String>.from(loadedCriteria['Schedule'])
+        : allClassDays;
     // startTime = null;
     // endTime = null;
     // notTaken = false;

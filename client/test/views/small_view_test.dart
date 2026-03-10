@@ -4,7 +4,7 @@ import 'package:client/domain/persister.dart';
 import 'package:client/domain/term.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'feature_test_functions.dart';
+import '../feature_test_functions.dart';
 
 void main() {
   setUp(() async {

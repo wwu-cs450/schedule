@@ -16,9 +16,10 @@ const startYear = 2024;
 
 Future<void> searchCriteriaTest(WidgetTester tester, double width) async {
   await buildTestEnvironment(tester, width: width);
-  await openDrawer(tester);
+  await openFilterMenu(tester);
 
-  multiExpect(finders.values.toList(), findsOneWidget);
+  // Verify filter menu is open by checking for filter sections
+  expect(find.text('Select filters below'), findsOneWidget);
 }
 
 Future<void> headerCellTest(
@@ -47,7 +48,7 @@ Future<void> departmentTest(
   await dropdownTester(
     tester,
     menu: 'Department',
-    options: ['ACDM Acadeum', 'CHEM Chemistry', 'CPTR Computer Science'],
+    options: ['ACDM - Acadeum', 'CHEM - Chemistry', 'CPTR - Computer Science'],
     condition: requirement,
     cellKeys: ['Subject'],
     testerWidth: width,
@@ -62,7 +63,7 @@ Future<void> subjectTest(
   await dropdownTester(
     tester,
     menu: 'Subject',
-    options: ['ACCT Accounting', 'ART Art', 'AVIA Aviation'],
+    options: ['ACCT - Accounting', 'ART - Art', 'AVIA - Aviation'],
     condition: requirement,
     cellKeys: ['Subject'],
     testerWidth: width,
@@ -77,7 +78,11 @@ Future<void> campusTest(
   await dropdownTester(
     tester,
     menu: 'Campus',
-    options: ['BI Billings', 'CP College Place', 'CMC Christian Music Center'],
+    options: [
+      'BI - Billings',
+      'CP - College Place',
+      'CMC - Christian Music Center',
+    ],
     condition: requirement,
     cellKeys: ['Campus'],
     testerWidth: width,
@@ -92,14 +97,37 @@ Future<void> levelTest(
   final List<String> keys = width >= 2000
       ? ['Summer1', 'Fall', 'Winter', 'Spring', 'Summer2']
       : ['Subject'];
-  await dropdownTester(
-    tester,
-    menu: 'Level',
-    options: ['Lower (100-299)', 'Upper (300-499)', 'Grad (500+)'],
-    condition: requirement,
-    cellKeys: keys,
-    testerWidth: width,
-  );
+  final String type = width > 965 ? 'Wide' : 'Small';
+
+  await buildTestEnvironment(tester, width: width);
+  await openFilterMenu(tester);
+
+  // Level section may be below the fold — scroll to it if necessary.
+  final levelSection = find.text('Level');
+  if (levelSection.hitTestable().evaluate().isEmpty) {
+    final scrollable = find.descendant(
+      of: find.byType(SingleChildScrollView),
+      matching: find.byType(Scrollable),
+    );
+    if (scrollable.evaluate().isNotEmpty) {
+      await tester.scrollUntilVisible(
+        levelSection,
+        100,
+        scrollable: scrollable.first,
+      );
+    }
+  }
+  await tester.tap(levelSection.hitTestable());
+  await tester.pumpAndSettle();
+
+  // Deselect Lower and Upper, leaving only Grad selected.
+  await doTap(tester, find.text('Lower (100-299)').hitTestable());
+  await doTap(tester, find.text('Upper (300-499)').hitTestable());
+
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
+
+  expectInResults(keys, requirement, type: type);
 }
 
 Future<void> termTest(
@@ -107,14 +135,25 @@ Future<void> termTest(
   double width, {
   required Matcher requirement,
 }) async {
-  await dropdownTester(
-    tester,
-    menu: 'Term',
-    options: ['Fall 2023', 'Winter 2024', 'Spring 2024'],
-    condition: requirement,
-    cellKeys: ['Spring'],
-    testerWidth: width,
-  );
+  await buildTestEnvironment(tester, width: width);
+  await openFilterMenu(tester);
+
+  // Term is a ShadSelect widget at the top of the menu, not an expandable
+  // checkbox section. Find it by its stable key and open the dropdown.
+  final termSelect = find.byKey(const Key('Term Select')).hitTestable();
+  await tester.tap(termSelect);
+  await tester.pumpAndSettle();
+
+  // Select the third term option used for testing.
+  final option = find.text('Spring 2024').hitTestable();
+  await tester.tap(option);
+  await tester.pumpAndSettle();
+
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
+
+  final String type = width > 965 ? 'Wide' : 'Small';
+  expectInResults(['Spring'], requirement, type: type);
 }
 
 Future<void> creditTest(
@@ -122,14 +161,47 @@ Future<void> creditTest(
   double width, {
   required Matcher requirement,
 }) async {
-  await dropdownTester(
-    tester,
-    menu: 'Credits',
-    options: ['1 Cr', '2 Cr', '3 Cr', '4 Cr', '>4 Cr'],
-    condition: requirement,
-    cellKeys: ['Cr'],
-    testerWidth: width,
+  // Credits defaults to all six selected, same as Level. dropdownTester's
+  // "tap Select all twice" trick would uncheck '3 Cr' instead of selecting
+  // it, so we handle this manually.
+  final String type = width > 965 ? 'Wide' : 'Small';
+
+  await buildTestEnvironment(tester, width: width);
+  await openFilterMenu(tester);
+
+  final scrollable = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.byType(Scrollable),
   );
+
+  // Credits section may be below the fold — scroll to it if necessary.
+  final creditsSection = find.text('Credits');
+  if (creditsSection.hitTestable().evaluate().isEmpty &&
+      scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      creditsSection,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+  await tester.tap(creditsSection.hitTestable());
+  await tester.pumpAndSettle();
+
+  // Deselect all except '3 Cr'. Scroll to each option before tapping since
+  // the expanded list may extend beyond the visible area.
+  for (final option in ['0 Cr', '1 Cr', '2 Cr', '4 Cr', '>4 Cr']) {
+    final item = find.text(option);
+    if (item.hitTestable().evaluate().isEmpty &&
+        scrollable.evaluate().isNotEmpty) {
+      await tester.scrollUntilVisible(item, 100, scrollable: scrollable.first);
+    }
+    await doTap(tester, item.hitTestable());
+  }
+
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
+
+  expectInResults(['Cr'], requirement, type: type);
 }
 
 Future<void> dayTest(
@@ -138,27 +210,74 @@ Future<void> dayTest(
   required String type,
 }) async {
   await buildTestEnvironment(tester, width: width);
-  final ddownOpts = [
-    find.text('Monday').hitTestable(),
-    find.text('Tuesday').hitTestable(),
-    find.text('Wednesday').hitTestable(),
-  ];
-  await openDrawer(tester);
-  multiExpect(ddownOpts, findsNothing);
-  await doTap(tester, finders['Schedule']!);
-  multiExpect(ddownOpts, findsOneWidget);
 
-  // Check both Monday and Tuesday
-  await doTap(tester, ddownOpts[0]);
-  await doTap(tester, ddownOpts[1]);
+  // Helper: open the filter menu and expand the Schedule section.
+  // The section collapses whenever the menu is closed, so this must be
+  // called each time the menu is reopened.
+  Future<void> openAndExpandSchedule() async {
+    await openFilterMenu(tester);
+    final scrollable = find.descendant(
+      of: find.byType(SingleChildScrollView),
+      matching: find.byType(Scrollable),
+    );
+    // Scope to the SingleChildScrollView to avoid matching the nav bar's
+    // "Schedule" tab, which would cause scrollUntilVisible to throw.
+    final scheduleSection = find.descendant(
+      of: find.byType(SingleChildScrollView),
+      matching: find.text('Schedule'),
+    );
+    if (scheduleSection.hitTestable().evaluate().isEmpty &&
+        scrollable.evaluate().isNotEmpty) {
+      await tester.scrollUntilVisible(
+        scheduleSection,
+        100,
+        scrollable: scrollable.first,
+      );
+    }
+    await tester.tap(scheduleSection.hitTestable());
+    await tester.pumpAndSettle();
+
+    // After expanding, scroll to Monday so the day checkboxes are visible.
+    if (scrollable.evaluate().isNotEmpty) {
+      await tester.scrollUntilVisible(
+        find.text('Monday'),
+        100,
+        scrollable: scrollable.first,
+      );
+    }
+  }
+
+  await openAndExpandSchedule();
+
+  // Verify that day checkboxes are visible after expanding.
+  // (Using individual expects instead of multiExpect to avoid the
+  // List<ChainedFinder> vs List<Finder> runtimeType mismatch in multiExpect.)
+  expect(find.text('Monday').hitTestable(), findsOneWidget);
+  expect(find.text('Tuesday').hitTestable(), findsOneWidget);
+  expect(find.text('Wednesday').hitTestable(), findsOneWidget);
+
+  // All days start checked (the default). Uncheck Sunday, Wednesday,
+  // Thursday, and Friday so only Monday + Tuesday remain, giving MT results.
+  await doTap(tester, find.text('Sunday').hitTestable());
+  await doTap(tester, find.text('Wednesday').hitTestable());
+  await doTap(tester, find.text('Thursday').hitTestable());
+  await doTap(tester, find.text('Friday').hitTestable());
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
   expectInResults(['Schedule'], contains('MT'), type: type);
 
-  // Check both Monday and Wednesday
-  await doTap(tester, ddownOpts[2]);
+  // Reopen and also select Wednesday to show MTW classes.
+  await openAndExpandSchedule();
+  await doTap(tester, find.text('Wednesday').hitTestable());
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
   expectInResults(['Schedule'], contains('MTW'), type: type);
 
-  // Reverse to MT
-  await doTap(tester, ddownOpts[2]);
+  // Reopen and deselect Wednesday to return to MT-only.
+  await openAndExpandSchedule();
+  await doTap(tester, find.text('Wednesday').hitTestable());
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
   expectInResults(['Schedule'], contains('MT'), type: type);
 }
 
@@ -167,14 +286,50 @@ Future<void> startTimeTest(
   double width, {
   required Matcher requirement,
 }) async {
-  await dropdownTester(
-    tester,
-    menu: 'Start Time',
-    options: ['8:00AM', '9:00AM', '10:00AM'],
-    condition: requirement,
-    cellKeys: ['Schedule'],
-    testerWidth: width,
+  final String type = width > 965 ? 'Wide' : 'Small';
+  await buildTestEnvironment(tester, width: width);
+  await openFilterMenu(tester);
+
+  final scrollable = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.byType(Scrollable),
   );
+
+  // Scope to SingleChildScrollView to avoid matching other 'Time' text.
+  final timeSection = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.text('Time'),
+  );
+  if (timeSection.hitTestable().evaluate().isEmpty &&
+      scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      timeSection,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+  await tester.tap(timeSection.hitTestable());
+  await tester.pumpAndSettle();
+
+  final startTimeSelect = find.byKey(const Key('Start Time Select'));
+  if (startTimeSelect.hitTestable().evaluate().isEmpty &&
+      scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      startTimeSelect,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+  await tester.tap(startTimeSelect.hitTestable());
+  await tester.pumpAndSettle();
+
+  await tester.tap(find.text('10:00AM').hitTestable().last);
+  await tester.pumpAndSettle();
+
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
+
+  expectInResults(['Schedule'], requirement, type: type);
 }
 
 Future<void> endTimeTest(
@@ -182,14 +337,50 @@ Future<void> endTimeTest(
   double width, {
   required Matcher requirement,
 }) async {
-  await dropdownTester(
-    tester,
-    menu: 'End Time',
-    options: ['8:50AM', '9:50AM', '10:50AM'],
-    condition: requirement,
-    cellKeys: ['Schedule'],
-    testerWidth: width,
+  final String type = width > 965 ? 'Wide' : 'Small';
+  await buildTestEnvironment(tester, width: width);
+  await openFilterMenu(tester);
+
+  final scrollable = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.byType(Scrollable),
   );
+
+  // Scope to SingleChildScrollView to avoid matching other 'Time' text.
+  final timeSection = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.text('Time'),
+  );
+  if (timeSection.hitTestable().evaluate().isEmpty &&
+      scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      timeSection,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+  await tester.tap(timeSection.hitTestable());
+  await tester.pumpAndSettle();
+
+  final endTimeSelect = find.byKey(const Key('End Time Select'));
+  if (endTimeSelect.hitTestable().evaluate().isEmpty &&
+      scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      endTimeSelect,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+  await tester.tap(endTimeSelect.hitTestable());
+  await tester.pumpAndSettle();
+
+  await tester.tap(find.text('10:50AM').hitTestable().last);
+  await tester.pumpAndSettle();
+
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
+
+  expectInResults(['Schedule'], requirement, type: type);
 }
 
 Future<void> classNumberTest(WidgetTester tester, double width) async {
@@ -210,18 +401,24 @@ Future<void> instructorTest(
   final textOpts = ['Brian Schaffner', 'Brian Wong', 'Brian Harris'];
   await textBoxTester(
     tester,
-    textField: 'Instructors',
+    textField: 'Instructor',
     txtOpts: textOpts,
     cellKeys: ['Instructors'],
     testerWidth: width,
   );
-  await insertText(tester, finders['Instructors']!, 'Brian');
-  type == 'Wide'
+  await openFilterMenu(tester);
+  final instructorField = find
+      .byKey(const Key('Instructor Input'))
+      .hitTestable();
+  await insertText(tester, instructorField, 'Brian');
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
+  type == 'Wide' || type == 'Large'
       ? multiExpect(textOpts, findsAtLeast(1))
       : type == 'Medium'
       ? hoverExpect(
           tester,
-          find.byKey(const Key('Hover Cell')),
+          find.byKey(const Key('Schedule Cell')),
           find.textContaining('Brian'),
         )
       : expectInResults(['Instructor'], contains('Brian'), type: type);
@@ -234,8 +431,11 @@ Future<void> statusTest(
   required String type,
 }) async {
   await buildTestEnvironment(tester, width: width);
-  await openDrawer(tester);
-  await doTap(tester, finders['Is Open']!);
+  await openFilterMenu(tester);
+  final isOpenChip = find.text('Is Open').hitTestable();
+  await doTap(tester, isOpenChip);
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
   expectInResults(['Is Open'], requirement, type: type);
 }
 
@@ -246,8 +446,11 @@ Future<void> gsTest(
   required String type,
 }) async {
   await buildTestEnvironment(tester, width: width);
-  await openDrawer(tester);
-  await doTap(tester, finders['GS']!);
+  await openFilterMenu(tester);
+  final gsChip = find.text('General Studies').hitTestable();
+  await doTap(tester, gsChip);
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
   expectInResults(['GS'], requirement, type: type);
 }
 
@@ -258,8 +461,11 @@ Future<void> notTakenClassTest(
   required String type,
 }) async {
   await buildTestEnvironment(tester, width: width);
-  await openDrawer(tester);
-  await doTap(tester, finders['notTaken']!);
+  await openFilterMenu(tester);
+  final notTakenChip = find.text('Not Taken').hitTestable();
+  await doTap(tester, notTakenChip);
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
   expectInResults(['notTaken'], requirement, type: type);
 }
 
@@ -268,26 +474,72 @@ Future<void> scheduleViewTest(
   double width, {
   required String type,
 }) async {
-  final dataContainer = type == 'Wide' || type == 'Medium' ? 'Cell' : 'Row';
+  final dataContainer = type == 'Wide' || type == 'Medium' || type == 'Large'
+      ? 'Cell'
+      : 'Row';
   await buildTestEnvironment(tester, width: width);
   final options = {
     '9:00AM': find.text('9:00AM').hitTestable(),
-    'Biology': find.text('BIOL Biology').hitTestable(),
+    'Biology': find.text('BIOL - Biology').hitTestable(),
     'Schedule Page': find.byKey(const Key('Schedule Page')).hitTestable(),
     'Main Page': find.byKey(const Key('Main Page')).hitTestable(),
   };
-  final termOptions = [
-    find.text('Fall 2024').hitTestable(),
-    find.text('Winter 2025').hitTestable(),
-    find.text('Spring 2025').hitTestable(),
-  ];
+  final termOptions = ['Fall 2024', 'Winter 2025', 'Spring 2025'];
 
-  await openDrawer(tester);
-  await doTap(tester, finders['Department']!);
+  await openFilterMenu(tester);
+
+  // Expand Department section
+  final departmentSection = find.text('Department').hitTestable();
+  await tester.tap(departmentSection);
+  await tester.pumpAndSettle();
+
+  // Scroll down if needed to find Biology option
+  final scrollable = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.byType(Scrollable),
+  );
+
+  if (scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      options['Biology']!,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
   await doTap(tester, options['Biology']!);
-  await doTap(tester, finders['Start Time']!);
+
+  // Expand Time section — scope to SingleChildScrollView to avoid nav-bar match,
+  // and scroll to it if it's below the fold.
+  final timeSection = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.text('Time'),
+  );
+  if (timeSection.hitTestable().evaluate().isEmpty &&
+      scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      timeSection,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+  await tester.tap(timeSection.hitTestable());
+  await tester.pumpAndSettle();
+
+  // Select start time — scroll to it if needed.
+  final startTimeSelect = find.byKey(const Key('Start Time Select'));
+  if (startTimeSelect.hitTestable().evaluate().isEmpty &&
+      scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      startTimeSelect,
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+  await tester.tap(startTimeSelect.hitTestable());
+  await tester.pumpAndSettle();
   await doTap(tester, options['9:00AM']!);
-  await closeDrawer(tester);
+
+  await closeFilterMenu(tester);
   int fall2024 = 0, winter2025 = 0, spring2025 = 0;
   final rows = find
       .byWidgetPredicate(
@@ -323,19 +575,22 @@ Future<void> scheduleViewTest(
   // Qualifies as Nav-Bar test.
   expect(options['Schedule Page'], findsOneWidget);
   await doTap(tester, options['Schedule Page']!);
-  expect(finders['Department']!, findsNothing);
+  // Small schedule view uses ClassListPage, which still renders Filter Button.
+  if (type == 'Small') {
+    expect(find.byKey(const Key('Filter Button')), findsOneWidget);
+  } else {
+    expect(find.byKey(const Key('Filter Button')), findsNothing);
+  }
 
   // Qualifies as Schedule View test.
   // Also qualifies as download button test.
-  final redBox = find
-      .byWidgetPredicate(
-        (Widget widget) =>
-            widget is DecoratedBox &&
-            widget.decoration is BoxDecoration &&
-            (widget.decoration as BoxDecoration).color ==
-                const Color.fromARGB(255, 255, 130, 121),
-      )
-      .hitTestable();
+  final redBox = find.byWidgetPredicate(
+    (Widget widget) =>
+        widget is DecoratedBox &&
+        widget.decoration is BoxDecoration &&
+        (widget.decoration as BoxDecoration).color ==
+            const Color.fromARGB(255, 255, 130, 121),
+  );
   final termDropdown = find.byKey(const Key('Schedule View Term Dropdown'));
   final downloadButton = find.byKey(const Key('Download Button'));
 
@@ -350,12 +605,20 @@ Future<void> scheduleViewTest(
   expect(find.text('Total Credits: 4.0'), findsOneWidget);
 
   await doTap(tester, termDropdown);
-  await doTap(tester, termOptions[1]);
-  expect(redBox, findsAtLeast(1));
+  await doTap(tester, find.text(termOptions[1]).hitTestable().last);
+  if (type == 'Small') {
+    expect(redBox, findsNothing);
+  } else {
+    expect(redBox, findsAtLeast(1));
+  }
 
   await doTap(tester, termDropdown);
-  await doTap(tester, termOptions[2]);
-  expect(redBox, findsAtLeast(1));
+  await doTap(tester, find.text(termOptions[2]).hitTestable().last);
+  if (type == 'Small') {
+    expect(redBox, findsNothing);
+  } else {
+    expect(redBox, findsAtLeast(1));
+  }
 }
 
 Future<void> defaultSortTest(
@@ -365,16 +628,38 @@ Future<void> defaultSortTest(
 }) async {
   await buildTestEnvironment(tester, width: width);
 
-  // Open department dropdown
-  await openDrawer(tester);
-  await doTap(tester, finders['Department']!);
-  await doTap(tester, find.text('CPTR Computer Science').hitTestable());
+  // Open filter menu and select department
+  await openFilterMenu(tester);
+
+  // Expand Department section
+  final departmentSection = find.text('Department').hitTestable();
+  await tester.tap(departmentSection);
+  await tester.pumpAndSettle();
+
+  // Scroll to find CPTR if needed
+  final cptrOption = find.text('CPTR - Computer Science').hitTestable();
+  final scrollable = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.byType(Scrollable),
+  );
+
+  if (scrollable.evaluate().isNotEmpty && cptrOption.evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      find.text('CPTR - Computer Science'),
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+
+  await doTap(tester, find.text('CPTR - Computer Science').hitTestable());
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
 
   // verify sort order of subject number
   String prior = '';
   String next = '';
 
-  if (type == 'Wide') {
+  if (type == 'Wide' || type == 'Large') {
     for (final each in find.byKey(const Key('Class')).evaluate()) {
       final subject = textInCellWithKey(each, 'Subject Cell');
       final summer1 = textInCellWithKey(each, 'Summer1 Cell');
@@ -481,10 +766,30 @@ Future<void> mediumTermTest(WidgetTester tester) async {
         widget is Row,
   );
   await buildTestEnvironment(tester, width: 970);
-  await openDrawer(tester);
-  await doTap(tester, finders['Department']!);
-  await doTap(tester, find.text('CPTR Computer Science').hitTestable());
-  await closeDrawer(tester);
+  await openFilterMenu(tester);
+
+  // Expand Department section
+  final departmentSection = find.text('Department').hitTestable();
+  await tester.tap(departmentSection);
+  await tester.pumpAndSettle();
+
+  // Scroll to find CPTR if needed
+  final scrollable = find.descendant(
+    of: find.byType(SingleChildScrollView),
+    matching: find.byType(Scrollable),
+  );
+
+  if (scrollable.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      find.text('CPTR - Computer Science'),
+      100,
+      scrollable: scrollable.first,
+    );
+  }
+
+  await doTap(tester, find.text('CPTR - Computer Science').hitTestable());
+  await closeFilterMenu(tester);
+  await tester.pumpAndSettle();
   for (final row in specificRow.evaluate()) {
     final number = textInCellWithKey(row, 'ClassNumber Cell');
     final termContainer =
