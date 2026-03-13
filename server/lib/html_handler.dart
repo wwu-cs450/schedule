@@ -13,7 +13,7 @@ class HTMLHandler {
   late String year;
 
   Future<String> fetchHtml(int year) async {
-    final response = await http.get(
+    final response = await http.post(
       Uri.https('classopen.wallawalla.edu', '/classopenps.php', {
         'strm': 'f$year',
         'submit': 'Search',
@@ -24,11 +24,12 @@ class HTMLHandler {
 
   Future<List<List<String>>> listFromHtml() async {
     final allData = <List<String>>[];
-    for (final year in [2023, 2024, 2025, 2026]) {
+    for (final year in [2024, 2025, 2026, 2027]) {
       final data = await _listFromHtml(year);
       allData.addAll(data);
     }
-    return allData;
+
+    return _eliminateDuplicates(allData);
   }
 
   Future<List<List<String>>> _listFromHtml(int year) async {
@@ -37,7 +38,7 @@ class HTMLHandler {
     final htmlDoc = parseHtmlDocument(
       document.replaceAll(RegExp(r'(<br \/>|<br>)+'), '/'),
     );
-    final classTable = htmlDoc.getElementById('resulttable');
+    final classTable = htmlDoc.querySelector('#resulttable');
 
     if (classTable == null) {
       throw Exception('Class Table is empty.');
@@ -129,6 +130,33 @@ class HTMLHandler {
       data.add(row);
     }
     return data;
+  }
+
+  /// Eliminate duplicate classes based on class number and term.
+  List<List<String>> _eliminateDuplicates(List<List<String>> data) {
+    final seen = <String>{};
+    final uniqueData = <List<String>>[];
+    for (final row in data) {
+      final key = '${row[5]}-${_determineTermKey(row)}';
+      if (!seen.contains(key)) {
+        seen.add(key);
+        uniqueData.add(row);
+      }
+    }
+    print('Total ${uniqueData.length} unique classes.');
+    return uniqueData;
+  }
+
+  /// Given a row of class data, determine a representation of the term.
+  String _determineTermKey(List<String> row) {
+    String termYear = row[2];
+    int termMonth = row.sublist(8, 14).indexWhere((e) => e.isNotEmpty);
+    if (termMonth == 0) {
+      // summer of previous year
+      termYear = (int.parse(termYear) - 1).toString();
+      termMonth = 4;
+    }
+    return termYear + termMonth.toString();
   }
 
   // Hard-coded maps for subject and department

@@ -5,8 +5,8 @@ class Term implements Comparable {
   final int code;
   final String name;
 
-  static var _instances = <Term>{};
-  static int defaultTermIndex = 0; // Tests want 2024-2025
+  static var _instances = <Term>[];
+  static int defaultTermIndex = 0;
 
   static Term defaultTerm() {
     return instances.elementAt(defaultTermIndex);
@@ -38,14 +38,11 @@ class Term implements Comparable {
 
   //These will need to change with time
   static void _initialize() {
-    _instances = {
+    _instances = [
+      Year(2027),
       Year(2026),
       Year(2025),
       Year(2024),
-      Term(2226, 'Summer 2022'),
-      Term(2229, 'Fall 2022'),
-      Term(2231, 'Winter 2023'),
-      Term(2233, 'Spring 2023'),
       Term(2236, 'Summer 2023'),
       Term(2239, 'Fall 2023'),
       Term(2241, 'Winter 2024'),
@@ -59,10 +56,14 @@ class Term implements Comparable {
       Term(2261, 'Winter 2026'),
       Term(2263, 'Spring 2026'),
       Term(2266, 'Summer 2026'),
-    };
+      Term(2269, 'Fall 2026'),
+      Term(2271, 'Winter 2027'),
+      Term(2273, 'Spring 2027'),
+      Term(2276, 'Summer 2027'),
+    ];
   }
 
-  static Set<Term> get instances {
+  static List<Term> get instances {
     if (_instances.isEmpty) {
       _initialize();
     }
@@ -86,7 +87,7 @@ class Year extends Term {
   @override
   bool includesClass(Class classInstance) {
     final int startTerm = int.parse('2${(code - 1) % 100}6');
-    final int endTerm = int.parse('2${code % 100}9');
+    final int endTerm = int.parse('2${code % 100}6');
     return classInstance.term.code >= startTerm &&
         classInstance.term.code <= endTerm;
   }
