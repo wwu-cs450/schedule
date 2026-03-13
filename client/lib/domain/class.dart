@@ -354,6 +354,22 @@ class Class implements Comparable {
     return !notTaken || !classStorage.haveTaken(course);
   }
 
+  bool includesNoConflict(bool hideConflicting) {
+    if (!hideConflicting) {
+      return true;
+    }
+    if (saved) {
+      return true;
+    }
+    final savedForTerm = Class.instances
+        .where((c) => c.saved && c != this && c.term == term)
+        .toList();
+    if (savedForTerm.isEmpty) {
+      return true;
+    }
+    return !savedForTerm.any((c) => schedule.overlaps(c.schedule));
+  }
+
   bool includesLevel(String level) {
     if (level.isEmpty || level == 'Any' || level == 'Lower,Upper,Grad') {
       return true;

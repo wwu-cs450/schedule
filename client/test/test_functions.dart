@@ -195,25 +195,43 @@ Future<void> dropdownTester(
   } else {
     // For checkbox-based filters
     // Expand the filter section by finding and tapping the section with the menu title
-    final sectionTitle = find.text(menu);
+    // First, find the filter menu's single child scroll view to scope our search
+    final singleChildScroll = find.byType(SingleChildScrollView);
+
+    // Find the Campus text specifically within the filter menu's scroll view
+    final sectionTitle = find.descendant(
+      of: singleChildScroll,
+      matching: find.text(menu),
+    );
+
     if (sectionTitle.evaluate().isEmpty) {
       throw StateError('Section title "$menu" not found in FilterMenu');
     }
-    if (sectionTitle.hitTestable().evaluate().isEmpty) {
+
+    var hitTestableTitle = sectionTitle.hitTestable();
+    if (hitTestableTitle.evaluate().isEmpty) {
       // Try scrolling to it first
       final scrollable = find.descendant(
-        of: find.byType(SingleChildScrollView),
+        of: singleChildScroll,
         matching: find.byType(Scrollable),
       );
       if (scrollable.evaluate().isNotEmpty) {
         await tester.scrollUntilVisible(
-          sectionTitle,
+          sectionTitle.first,
           100,
           scrollable: scrollable.first,
         );
       }
+      // Re-evaluate after scrolling
+      hitTestableTitle = sectionTitle.hitTestable();
     }
-    await tester.tap(sectionTitle.hitTestable());
+
+    if (hitTestableTitle.evaluate().isNotEmpty) {
+      await tester.tap(hitTestableTitle.first);
+    } else {
+      // Fallback to using doTap
+      await doTap(tester, sectionTitle.first);
+    }
     await tester.pumpAndSettle();
 
     // Clear any search box if it exists (e.g., for Department/Subject/Campus)
@@ -271,14 +289,20 @@ Future<void> dropdownTester(
         );
         if (scrollable.evaluate().isNotEmpty) {
           await tester.scrollUntilVisible(
-            thirdOption,
+            thirdOption.first,
             100,
             scrollable: scrollable.first,
           );
         }
       }
 
-      await doTap(tester, thirdOption.hitTestable());
+      // Re-evaluate hitTestable after potential scrolling
+      final hitTestableOption = thirdOption.hitTestable();
+      if (hitTestableOption.evaluate().isNotEmpty) {
+        await doTap(tester, hitTestableOption.first);
+      } else {
+        await doTap(tester, thirdOption.first);
+      }
     }
   }
 

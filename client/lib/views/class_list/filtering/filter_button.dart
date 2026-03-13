@@ -2,7 +2,6 @@ import 'package:client/domain/filters.dart';
 import 'package:client/views/class_list/filtering/filter_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
 class FilterButton extends StatelessWidget {
   const FilterButton({super.key});
@@ -28,13 +27,7 @@ class FilterButton extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: const EdgeInsets.all(8),
-                    child: ShadTheme(
-                      data: ShadThemeData(
-                        brightness: Brightness.light,
-                        colorScheme: const ShadNeutralColorScheme.light(),
-                      ),
-                      child: FilterMenu(filters: filters),
-                    ),
+                    child: FilterMenu(filters: filters),
                   ),
                 );
               },
