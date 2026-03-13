@@ -36,7 +36,7 @@ class ClassListPage extends StatelessWidget {
             ],
           ),
         ),
-        if (header != null) header!,
+        ?header,
         Expanded(
           child: ClassList(classes, size: size, quarters: quarters),
         ),

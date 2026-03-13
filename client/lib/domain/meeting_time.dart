@@ -23,9 +23,9 @@ class MeetingTime {
   // fromString constructor -- match data from schedule.dart
   // partially consistent with toString.
   MeetingTime.fromString(String meetingTimeString) {
-    meetingTimeString = meetingTimeString.trim().toUpperCase();
+    final meetingTimeString_ = meetingTimeString.trim().toUpperCase();
     // no time cases
-    if (meetingTimeString.isEmpty) {
+    if (meetingTimeString_.isEmpty) {
       return;
     }
 
@@ -33,12 +33,12 @@ class MeetingTime {
 
     // split up indivdual times
     late List<String> individualMeetingTimes, splitTime;
-    if (meetingTimeString.contains('\n')) {
+    if (meetingTimeString_.contains('\n')) {
       // split by newline
-      individualMeetingTimes = meetingTimeString.split('\n');
+      individualMeetingTimes = meetingTimeString_.split('\n');
     } else {
       // newline represented by "/" in csv
-      individualMeetingTimes = meetingTimeString.split('/');
+      individualMeetingTimes = meetingTimeString_.split('/');
     }
 
     for (final time in individualMeetingTimes) {

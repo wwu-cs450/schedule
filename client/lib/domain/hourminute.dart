@@ -26,11 +26,11 @@ class HourMinute implements Comparable<HourMinute> {
   // 24hr or 12hr. Split hour/minute by ':'.
   // throws FormatException on improper string.
   factory HourMinute.fromString(String string) {
-    string = string.trim().toUpperCase();
+    final string_ = string.trim().toUpperCase();
 
-    final List<String> hourMinuteStrings = string.split(':');
+    final List<String> hourMinuteStrings = string_.split(':');
     if (hourMinuteStrings.length != 2) {
-      throw FormatException("Not deliminated by ':'.", string);
+      throw FormatException("Not deliminated by ':'.", string_);
     }
 
     // hour parse -- possibly not padded
@@ -42,9 +42,9 @@ class HourMinute implements Comparable<HourMinute> {
           );
     int hour = int.parse(hourString);
     // 12hr check
-    if (string.contains('P') && hour != 12) {
+    if (string_.contains('P') && hour != 12) {
       hour += 12;
-    } else if (string.contains('A') && hour == 12) {
+    } else if (string_.contains('A') && hour == 12) {
       hour += 12;
     }
 
