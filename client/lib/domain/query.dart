@@ -47,6 +47,7 @@ class Query {
               each.includesGS(_searchCriteria.isGS) &&
               each.includesOpen(_searchCriteria.isOpen) &&
               each.includesNotTaken(_searchCriteria.isNotTaken) &&
+              each.includesNoConflict(_searchCriteria.isHideConflicting) &&
               each.includesInstructor(_searchCriteria.instructor) &&
               each.includesDays(
                 _scheduledDays,

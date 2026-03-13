@@ -6,85 +6,25 @@ import 'package:client/domain/filters.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/term.dart';
 import 'package:flutter/material.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:universal_html/html.dart' as html;
 
 class ScheduleView {
   ScheduleView() {
     _terms = _termEntries();
-    _terms.removeAt(0);
   }
-  late List<DropdownMenuEntry<Term>> _terms;
+  late List<ShadOption<Term>> _terms;
 
-  List<DropdownMenuEntry<Term>> _termEntries() {
-    final entries = <DropdownMenuEntry<Term>>[];
-    final Map<String, dynamic> map = {
-      for (final e in Term.instances) e.name: e,
-    };
-    for (final key in map.keys) {
-      entries.add(DropdownMenuEntry(value: map[key], label: key));
-    }
-    return entries;
-  }
-
-  Widget _termDropdown() {
-    return Semantics(
-      label: 'Schedule View Term Dropdown Menu',
-      hint: 'Select a term from the dropdown menu.',
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: DropdownMenu<Term>(
-          menuHeight: 500,
-          textStyle: const TextStyle(fontSize: 12),
-          inputDecorationTheme: const InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1),
-            ),
-            filled: true,
-            fillColor: Color.fromARGB(255, 247, 246, 246),
+  List<ShadOption<Term>> _termEntries() {
+    return Term.instances
+        .where((term) => term is! Year)
+        .map(
+          (term) => ShadOption<Term>(
+            value: term,
+            child: Text(term.name, style: const TextStyle(fontSize: 13)),
           ),
-          key: const Key('Schedule View Term Dropdown'),
-          label: const Text('Term', style: TextStyle(fontSize: 12)),
-          dropdownMenuEntries: _terms,
-          initialSelection: Filters().scheduleTerm,
-          onSelected: (value) {
-            Filters().scheduleTerm = value as Term;
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _creditAmount() {
-    final classes = Filters().savedClassesForScheduleTerm();
-    final credits = classes.isEmpty
-        ? 0
-        : classes.map((aClass) => aClass.getCredits()).reduce((a, b) => a + b);
-    return Semantics(
-      label: 'Credit amount.',
-      hint: 'Displays the total number of credits.',
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          'Total Credits: $credits',
-          key: const Key('totalCreditsText'),
-          style: const TextStyle(fontSize: 16),
-        ),
-      ),
-    );
-  }
-
-  Widget _saveData() {
-    return Semantics(
-      label: 'Save data button.',
-      hint: 'Click on this button to save your data.',
-      child: ElevatedButton(
-        key: const Key('Download Button'),
-        onPressed: () {
-          saveTextFile();
-        },
-        child: const Text('Download Schedule'),
-      ),
-    );
+        )
+        .toList();
   }
 
   void saveTextFile() {
@@ -188,20 +128,6 @@ class ScheduleView {
     return rows;
   }
 
-  Widget _deselectAllButton() {
-    return Semantics(
-      label: 'Remove all saved classes.',
-      hint: 'Click to remove all saved classes.',
-      child: ElevatedButton(
-        key: const Key('Deselect All Button'),
-        onPressed: () {
-          Filters().unsaveAll();
-        },
-        child: const Text('Remove All Saved Classes'),
-      ),
-    );
-  }
-
   Widget build() {
     final classes = Filters().savedClassesForScheduleTerm();
     return Column(
@@ -209,10 +135,10 @@ class ScheduleView {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(child: _termDropdown()),
+            _termDropdown(),
             Expanded(child: _creditAmount()),
-            Expanded(child: _saveData()),
-            Expanded(child: _deselectAllButton()),
+            _clearAllButton(),
+            _downloadButton(),
           ],
         ),
         Table(
@@ -229,6 +155,84 @@ class ScheduleView {
           children: [_scheduleHeader(), ..._scheduleRows(classes)],
         ),
       ],
+    );
+  }
+
+  Widget _termDropdown() {
+    return Semantics(
+      label: 'Schedule View Term Dropdown Menu',
+      hint: 'Select a term from the dropdown menu.',
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ShadSelect<Term>(
+          key: const Key('Schedule View Term Dropdown'),
+          initialValue: Filters().scheduleTerm,
+          placeholder: const Text(
+            'Select a term',
+            style: TextStyle(fontSize: 13),
+          ),
+          options: _terms,
+          selectedOptionBuilder: (context, value) =>
+              Text(value.name, style: const TextStyle(fontSize: 13)),
+          onChanged: (value) {
+            if (value != null) {
+              Filters().scheduleTerm = value;
+            }
+          },
+          decoration: const ShadDecoration(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _creditAmount() {
+    final classes = Filters().savedClassesForScheduleTerm();
+    final credits = classes.isEmpty
+        ? 0
+        : classes.map((aClass) => aClass.getCredits()).reduce((a, b) => a + b);
+    return Semantics(
+      label: 'Credit amount.',
+      hint: 'Displays the total number of credits.',
+      child: Text(
+        'Total Credits: $credits',
+        key: const Key('totalCreditsText'),
+        style: const TextStyle(fontSize: 16),
+      ),
+    );
+  }
+
+  Widget _clearAllButton() {
+    return Semantics(
+      label: 'Clear all saved classes.',
+      hint: 'Click to clear all saved classes.',
+      child: ShadButton.outline(
+        key: const Key('Deselect All Button'),
+        size: .sm,
+        backgroundColor: Colors.white,
+        hoverBackgroundColor: Color(0xFFF5F5F5),
+        pressedBackgroundColor: Colors.white,
+        onPressed: () {
+          Filters().unsaveAll();
+        },
+        child: const Text('Clear All', style: TextStyle(fontSize: 12)),
+      ),
+    );
+  }
+
+  Widget _downloadButton() {
+    return Semantics(
+      label: 'Download button',
+      hint: 'Click on this button to download your class schedule data.',
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: IconButton(
+          key: const Key('Download Button'),
+          onPressed: () {
+            saveTextFile();
+          },
+          icon: const Icon(Icons.download),
+        ),
+      ),
     );
   }
 }

@@ -53,6 +53,7 @@ class Filters extends ChangeNotifier {
   late HourMinute? _endTime;
   late bool _isNotTaken;
   late bool _isFreeClassrooms;
+  late bool _isHideConflicting;
 
   // Getters
   List<Campus> get campuses => _campuses;
@@ -71,6 +72,7 @@ class Filters extends ChangeNotifier {
   HourMinute? get endTime => _endTime;
   bool get isNotTaken => _isNotTaken;
   bool get isFreeClassrooms => _isFreeClassrooms;
+  bool get isHideConflicting => _isHideConflicting;
 
   int get activeFilterCount {
     int count = 0;
@@ -121,6 +123,9 @@ class Filters extends ChangeNotifier {
       count++;
     }
     if (_isFreeClassrooms) {
+      count++;
+    }
+    if (_isHideConflicting) {
       count++;
     }
 
@@ -232,6 +237,11 @@ class Filters extends ChangeNotifier {
     await update();
   }
 
+  Future<void> setIsHideConflicting(bool value) async {
+    _isHideConflicting = value;
+    await update();
+  }
+
   Future<void> reset() async {
     _reset();
     await update();
@@ -254,6 +264,7 @@ class Filters extends ChangeNotifier {
     _endTime = null;
     _isNotTaken = false;
     _isFreeClassrooms = false;
+    _isHideConflicting = false;
   }
 
   static void clearInstance() {
@@ -274,10 +285,6 @@ class Filters extends ChangeNotifier {
       'Instructor': instructor,
       'ScheduleLogic': scheduleLogic,
       'Schedule': schedule,
-      // 'Start Time': null,
-      // 'End Time': null,
-      // 'Not Taken': false,
-      // 'Free Classrooms': false,
     };
     await AbstractPersister.instance.writePrefs(jsonEncode(toSave));
   }

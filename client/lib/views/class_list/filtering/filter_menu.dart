@@ -1002,6 +1002,11 @@ class _FilterMenuState extends State<FilterMenu> {
           widget.filters.isFreeClassrooms,
           widget.filters.setIsFreeClassrooms,
         ),
+        _buildToggleChip(
+          'Hide Conflicting',
+          widget.filters.isHideConflicting,
+          widget.filters.setIsHideConflicting,
+        ),
       ],
     );
   }

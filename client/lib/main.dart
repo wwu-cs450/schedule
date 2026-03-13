@@ -8,6 +8,7 @@ import 'package:client/views/base_views/small_view.dart';
 import 'package:client/views/error_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,14 +36,20 @@ class Schedule extends StatelessWidget {
       primary: const Color(0xFF656950),
       surface: const Color(0xFFF8F6F2),
     );
-    return MaterialApp(
-      title: 'WWU Class Schedule',
-      theme: ThemeData(
-        tooltipTheme: const TooltipThemeData(preferBelow: false),
-        colorScheme: colorScheme,
-        useMaterial3: true,
+    return ShadApp.custom(
+      theme: ShadThemeData(
+        brightness: Brightness.light,
+        colorScheme: const ShadNeutralColorScheme.light(),
       ),
-      home: errorMessage != null ? _errorPage() : _homePage(),
+      appBuilder: (context) => MaterialApp(
+        title: 'WWU Class Schedule',
+        theme: ThemeData(
+          tooltipTheme: const TooltipThemeData(preferBelow: false),
+          colorScheme: colorScheme,
+          useMaterial3: true,
+        ),
+        home: errorMessage != null ? _errorPage() : _homePage(),
+      ),
     );
   }
 
