@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:csv/csv.dart';
+import 'package:server/ai/schedule_data.dart';
 import 'package:server/bulletin.dart';
 import 'package:server/handlers/ai_handler.dart';
 import 'package:server/html_handler.dart';
@@ -23,6 +24,9 @@ void main(List<String> arguments) async {
   parser.parse(arguments);
 
   final port = int.parse(parser.parse(arguments)['port'] as String);
+
+  // ── Load schedule + bulletin data for AI tools ─────────────────────────
+  await ScheduleData().load();
 
   // ── Start the HTTP API server ──────────────────────────────────────────
   final server = await shelf_io.serve(
