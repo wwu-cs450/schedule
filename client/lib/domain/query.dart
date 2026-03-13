@@ -56,17 +56,22 @@ class Query {
               each.includesEndTime(_searchCriteria.endTime) &&
               (_searchCriteria.classNumber == 0 ||
                   _searchCriteria.classNumber == each.classNumber) &&
-              ((_includeSpecialTimes &&
-                      (each.schedule.isEmpty || each.schedule.isARR)) ||
-                  each.schedule
-                      .checkConflict(
-                        MeetingTime()..addSeveralDays(
-                          days: _days,
-                          start: _times?.start,
-                          end: _times?.end,
-                        ),
-                      )
-                      .doesConflict),
+              ((_times == null &&
+                      _days == null &&
+                      (_includeSpecialTimes ||
+                          !(each.schedule.isEmpty || each.schedule.isARR))) ||
+                  ((_times != null || _days != null) &&
+                      ((_includeSpecialTimes &&
+                              (each.schedule.isEmpty || each.schedule.isARR)) ||
+                          each.schedule
+                              .checkConflict(
+                                MeetingTime()..addSeveralDays(
+                                  days: _days,
+                                  start: _times?.start,
+                                  end: _times?.end,
+                                ),
+                              )
+                              .doesConflict))),
         )
         .toSet();
   }

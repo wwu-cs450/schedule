@@ -8,7 +8,7 @@ import '../feature_test_functions.dart';
 
 void main() {
   setUp(() async {
-    Term.defaultTermIndex = 1; // 2024-2025
+    Term.defaultTermIndex = 2; // 2024-2025
     AbstractPersister.instance = MockPersister();
     await DataHandler.fetchData(test: true);
   });

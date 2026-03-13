@@ -11,7 +11,7 @@ import '../test_functions.dart';
 
 void main() async {
   setUp(() async {
-    Term.defaultTermIndex = 1; // 2024-2025
+    Term.defaultTermIndex = 2; // 2024-2025
     AbstractPersister.instance = MockPersister();
     WidgetsFlutterBinding.ensureInitialized();
     await Filters().reset(); // Reset filters to defaults

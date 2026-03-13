@@ -11,8 +11,8 @@ void main() {
 
   test('instances', () {
     final terms = Term.instances;
-    expect(Term.defaultTerm().name, '2024-2025');
-    expect(terms.length, 20);
+    expect(Term.defaultTerm().name, '2025-2026');
+    expect(terms.length, 21);
     expect(terms.any((element) => element.code == 2239), true);
   });
   test('test cached Tests', () {

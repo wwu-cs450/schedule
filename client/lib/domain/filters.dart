@@ -131,7 +131,7 @@ class Filters extends ChangeNotifier {
     if (_scheduleTerm == null) {
       Set terms = savedClasses().map((e) => e.term).toSet();
       if (terms.isEmpty) {
-        terms = Term.instances;
+        terms = Term.instances.toSet();
       }
       final sortedTerms = terms.toList()..sort();
       _scheduleTerm = sortedTerms.first;
