@@ -23,7 +23,8 @@ class AiHandler {
 
       final response = await AiChatClient().chat(
         messages,
-        courseHistory: courseHistory);
+        courseHistory: courseHistory,
+      );
 
       return Response.ok(
         jsonEncode({'response': response}),

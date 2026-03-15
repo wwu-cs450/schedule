@@ -1,4 +1,4 @@
-import 'package:client/views/ai_advisor_page.dart';
+import 'package:client/views/ai_advisor_page/ai_advisor_page.dart';
 import 'package:client/views/class_history_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
