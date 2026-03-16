@@ -3,7 +3,8 @@ enum CompletionStatus {
   failed,
   withdrew,
   incomplete,
-  registered;
+  registered
+  ;
 
   String toDisplayString() {
     switch (this) {

@@ -32,7 +32,11 @@ class LargeViewState extends AbstractViewState {
               style: GoogleFonts.getFont('Playfair'),
             ),
           ),
-          body: selectedTab(_selectedIndex, ClassListPage(size: .large, quarters: qtrs), _scheduleView()),
+          body: selectedTab(
+            _selectedIndex,
+            ClassListPage(size: .large, quarters: qtrs),
+            _scheduleView(),
+          ),
           bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
