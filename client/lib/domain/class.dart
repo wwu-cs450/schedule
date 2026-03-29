@@ -7,6 +7,7 @@ import 'package:client/domain/data_handler.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/instructor.dart';
 import 'package:client/domain/meeting_time.dart';
+import 'package:client/domain/models/general_requirements.dart';
 import 'package:client/domain/term.dart';
 
 class Class implements Comparable {
@@ -476,6 +477,26 @@ class Class implements Comparable {
           }
       }
     }
+    return false;
+  }
+
+  bool includesGeneralCategories(List<GeneralCategory> categories) {
+    // If no categories are selected, include all classes
+    if (categories.isEmpty) {
+      return true;
+    }
+
+    // Check if this course matches any of the selected categories
+    final courseCode = '${course.subject.code} ${course.number}';
+
+    for (final category in categories) {
+      for (final option in category.options) {
+        if (option.course == courseCode) {
+          return true;
+        }
+      }
+    }
+
     return false;
   }
 

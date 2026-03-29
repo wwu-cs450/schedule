@@ -5,6 +5,7 @@ import 'package:client/domain/campus.dart';
 import 'package:client/domain/class.dart';
 import 'package:client/domain/department.dart';
 import 'package:client/domain/hourminute.dart';
+import 'package:client/domain/models/general_requirements.dart';
 import 'package:client/domain/persister.dart';
 import 'package:client/domain/query.dart';
 import 'package:client/domain/subject.dart';
@@ -54,6 +55,8 @@ class Filters extends ChangeNotifier {
   late bool _isNotTaken;
   late bool _isFreeClassrooms;
   late bool _isHideConflicting;
+  late List<GeneralCategory> _generalCategories;
+  late String _generalTrack;
 
   // Getters
   List<Campus> get campuses => _campuses;
@@ -73,6 +76,8 @@ class Filters extends ChangeNotifier {
   bool get isNotTaken => _isNotTaken;
   bool get isFreeClassrooms => _isFreeClassrooms;
   bool get isHideConflicting => _isHideConflicting;
+  List<GeneralCategory> get generalCategories => _generalCategories;
+  String get generalTrack => _generalTrack;
 
   int get activeFilterCount {
     int count = 0;
@@ -126,6 +131,9 @@ class Filters extends ChangeNotifier {
       count++;
     }
     if (_isHideConflicting) {
+      count++;
+    }
+    if (_generalCategories.isNotEmpty) {
       count++;
     }
 
@@ -242,6 +250,17 @@ class Filters extends ChangeNotifier {
     await update();
   }
 
+  Future<void> setGeneralCategories(List<GeneralCategory> value) async {
+    _generalCategories = value;
+    await update();
+  }
+
+  Future<void> setGeneralTrack(String value) async {
+    _generalTrack = value;
+    _generalCategories = [];
+    await update();
+  }
+
   Future<void> reset() async {
     _reset();
     await update();
@@ -265,6 +284,8 @@ class Filters extends ChangeNotifier {
     _isNotTaken = false;
     _isFreeClassrooms = false;
     _isHideConflicting = false;
+    _generalCategories = [];
+    _generalTrack = 'Regular';
   }
 
   static void clearInstance() {
@@ -285,6 +306,8 @@ class Filters extends ChangeNotifier {
       'Instructor': instructor,
       'ScheduleLogic': scheduleLogic,
       'Schedule': schedule,
+      'GeneralCategories': generalCategories.map((c) => c.category).toList(),
+      'GeneralTrack': generalTrack,
     };
     await AbstractPersister.instance.writePrefs(jsonEncode(toSave));
   }
@@ -380,11 +403,29 @@ class Filters extends ChangeNotifier {
     _schedule = loadedCriteria['Schedule'] != null
         ? List<String>.from(loadedCriteria['Schedule'])
         : allClassDays;
+    _generalTrack = loadedCriteria['GeneralTrack'] ?? 'Regular';
+    _generalCategories = loadedCriteria['GeneralCategories'] != null
+        ? _loadGeneralCategories(
+            List<String>.from(loadedCriteria['GeneralCategories']),
+          )
+        : [];
     // startTime = null;
     // endTime = null;
     // notTaken = false;
     // freeClassrooms = false;
     return;
+  }
+
+  List<GeneralCategory> _loadGeneralCategories(List<String> categoryStrings) {
+    final allCategories = GeneralRequirements.getTrack(
+      _generalTrack,
+    ).expand((section) => section.requirements).toList();
+    return categoryStrings
+        .map(
+          (categoryString) =>
+              allCategories.firstWhere((cat) => cat.category == categoryString),
+        )
+        .toList();
   }
 
   List<Class> savedClasses() {

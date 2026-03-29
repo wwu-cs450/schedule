@@ -45,6 +45,9 @@ class Query {
               each.includesLevels(_searchCriteria.levels) && // level
               each.includesCreditsFromList(_searchCriteria.credits) &&
               each.includesGS(_searchCriteria.isGS) &&
+              each.includesGeneralCategories(
+                _searchCriteria.generalCategories,
+              ) &&
               each.includesOpen(_searchCriteria.isOpen) &&
               each.includesNotTaken(_searchCriteria.isNotTaken) &&
               each.includesNoConflict(_searchCriteria.isHideConflicting) &&

@@ -1,10 +1,13 @@
 import 'package:client/domain/campus.dart';
+import 'package:client/domain/class_storage.dart';
 import 'package:client/domain/department.dart';
 import 'package:client/domain/filters.dart';
 import 'package:client/domain/hourminute.dart';
+import 'package:client/domain/models/general_requirements.dart';
 import 'package:client/domain/subject.dart';
 import 'package:client/domain/term.dart';
 import 'package:client/views/class_list/filtering/search_input.dart';
+import 'package:client/views/class_list/filtering/segmented_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -31,6 +34,8 @@ class _FilterMenuState extends State<FilterMenu> {
   bool _creditsExpanded = false;
   bool _scheduleExpanded = false;
   bool _timeExpanded = false;
+  bool _generalsExpanded = false;
+  bool _onlyShowUnmetGenerals = false;
 
   @override
   void initState() {
@@ -51,6 +56,40 @@ class _FilterMenuState extends State<FilterMenu> {
     _classNumberController.dispose();
     _instructorController.dispose();
     super.dispose();
+  }
+
+  /// Checks if a general studies category has been met by the student.
+  /// Returns true if the student has taken at least one course from the category's options.
+  bool _isGeneralsCategoryMet(GeneralCategory category) {
+    final classStorage = ClassStorage();
+
+    // Check if any course in the category's options has been taken
+    for (final option in category.options) {
+      final courseParts = option.course.split(' ');
+      if (courseParts.length < 2) {
+        continue;
+      }
+
+      final courseCode = option.course.toUpperCase().replaceAll(
+        RegExp('[^A-Z0-9]'),
+        '',
+      );
+
+      // Check if this course has been taken
+      final hasTaken = classStorage.classes.any((completedCourse) {
+        final completed = completedCourse.course.toUpperCase().replaceAll(
+          RegExp('[^A-Z0-9]'),
+          '',
+        );
+        return completed == courseCode;
+      });
+
+      if (hasTaken) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @override
@@ -178,7 +217,6 @@ class _FilterMenuState extends State<FilterMenu> {
                         ]);
                         await widget.filters.setScheduleLogic('Any');
                         setState(() {});
-                        setState(() {});
                       },
                       child: _buildScheduleOptions(widget.filters),
                     ),
@@ -194,6 +232,20 @@ class _FilterMenuState extends State<FilterMenu> {
                         await widget.filters.setEndTime(null);
                       },
                       child: _buildTimeOptions(widget.filters),
+                    ),
+
+                    // Generals filter section
+                    _buildFilterSection(
+                      title: 'General Studies Categories',
+                      isExpanded: _generalsExpanded,
+                      onToggle: () => setState(
+                        () => _generalsExpanded = !_generalsExpanded,
+                      ),
+                      onReset: () async {
+                        await widget.filters.setGeneralTrack('Regular');
+                        setState(() {});
+                      },
+                      child: _buildGeneralsOptions(widget.filters),
                     ),
                   ],
                 ),
@@ -854,9 +906,25 @@ class _FilterMenuState extends State<FilterMenu> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _ScheduleLogicToggle(
-          filters: filters,
-          onChanged: () => setState(() {}),
+        SegmentedToggle(
+          options: [
+            SegmentedToggleOption(
+              value: 'Any',
+              tooltip: 'Show classes that meet on ANY of the selected days',
+            ),
+            SegmentedToggleOption(
+              value: 'All',
+              tooltip: 'Show classes that meet on ALL selected days',
+            ),
+            SegmentedToggleOption(
+              value: 'Exclude',
+              tooltip: 'Hide classes that meet on any of the selected days',
+            ),
+          ],
+          onSelected: (logic) async {
+            await filters.setScheduleLogic(logic);
+            setState(() {});
+          },
         ),
 
         const SizedBox(height: 12),
@@ -977,6 +1045,111 @@ class _FilterMenuState extends State<FilterMenu> {
     );
   }
 
+  Widget _buildGeneralsOptions(Filters filters) {
+    final selectedCategories = filters.generalCategories;
+    final trackNames = GeneralRequirements.tracks.keys.toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SegmentedToggle(
+          options: trackNames
+              .map((t) => SegmentedToggleOption(value: t, tooltip: '$t track'))
+              .toList(),
+          initialIndex: trackNames
+              .indexOf(filters.generalTrack)
+              .clamp(0, trackNames.length - 1),
+          onSelected: (value) async {
+            await filters.setGeneralTrack(value);
+            setState(() {});
+          },
+        ),
+        const SizedBox(height: 8),
+        SegmentedToggle(
+          options: [
+            SegmentedToggleOption(value: 'All', tooltip: 'Show all categories'),
+            SegmentedToggleOption(
+              value: 'Only Unmet',
+              tooltip: 'Show only categories you have not yet fulfilled',
+            ),
+          ],
+          onSelected: (value) {
+            setState(() {
+              _onlyShowUnmetGenerals = value == 'Only Unmet';
+            });
+          },
+        ),
+        ...GeneralRequirements.getTrack(filters.generalTrack).expand((section) {
+          final visibleRequirements = section.requirements.where((requirement) {
+            if (!_onlyShowUnmetGenerals) {
+              return true;
+            }
+            return !_isGeneralsCategoryMet(requirement);
+          }).toList();
+
+          if (visibleRequirements.isEmpty) {
+            return <Widget>[];
+          }
+
+          return [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Section header
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, bottom: 4),
+                  child: Text(
+                    section.name,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+
+                // Category checkboxes
+                ...visibleRequirements.map((requirement) {
+                  final isSelected = selectedCategories.any(
+                    (cat) => cat.category == requirement.category,
+                  );
+                  return CheckboxListTile(
+                    title: Text(
+                      requirement.category,
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    value: isSelected,
+                    onChanged: (value) async {
+                      final newCategories = List<GeneralCategory>.from(
+                        selectedCategories,
+                      );
+                      if (value == true) {
+                        if (!newCategories.any(
+                          (cat) => cat.category == requirement.category,
+                        )) {
+                          newCategories.add(requirement);
+                        }
+                      } else {
+                        newCategories.removeWhere(
+                          (cat) => cat.category == requirement.category,
+                        );
+                      }
+                      await filters.setGeneralCategories(newCategories);
+                      setState(() {});
+                    },
+                    dense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  );
+                }),
+              ],
+            ),
+          ];
+        }),
+      ],
+    );
+  }
+
   Widget filterToggles() {
     return Wrap(
       spacing: 8,
@@ -1056,72 +1229,6 @@ class _FilterMenuState extends State<FilterMenu> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ScheduleLogicToggle extends StatelessWidget {
-  const _ScheduleLogicToggle({required this.filters, required this.onChanged});
-
-  final Filters filters;
-  final VoidCallback onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        children: [
-          _buildOption(
-            value: 'Any',
-            tooltip: 'Show classes that meet on ANY of the selected days',
-          ),
-          _buildOption(
-            value: 'All',
-            tooltip: 'Show classes that meet on ALL selected days',
-          ),
-          _buildOption(
-            value: 'Exclude',
-            tooltip: 'Hide classes that meet on any of the selected days',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOption({required String value, required String tooltip}) {
-    final isSelected = filters.scheduleLogic == value;
-
-    return Expanded(
-      child: Tooltip(
-        message: tooltip,
-        waitDuration: const Duration(milliseconds: 500),
-        child: InkWell(
-          onTap: () async {
-            await filters.setScheduleLogic(value);
-            onChanged();
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              value,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
           ),
         ),
       ),
