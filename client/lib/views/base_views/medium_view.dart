@@ -101,12 +101,12 @@ class MediumViewState extends AbstractViewState {
   Column _scheduleView() {
     return Column(
       children: [
-        ScheduleView().build(),
+        ScheduleView().build(context),
         const SizedBox(height: 10),
         headerRow(),
         Expanded(
           child: ClassList(
-            Filters().savedClasses(),
+            Filters().savedClassesForScheduleTerm(),
             size: ClassListSize.medium,
             quarters: qtrs,
           ),
