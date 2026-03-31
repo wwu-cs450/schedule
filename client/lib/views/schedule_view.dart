@@ -23,7 +23,7 @@ class ScheduleView {
       ..click();
   }
 
-  Widget build() {
+  Widget build(BuildContext context) {
     final classes = Filters().savedClassesForScheduleTerm();
     return Column(
       children: [
@@ -32,7 +32,7 @@ class ScheduleView {
           children: [
             TermSelector(),
             Expanded(child: _creditAmount()),
-            _clearAllButton(),
+            _clearAllButton(context),
             _downloadButton(),
           ],
         ),
@@ -158,7 +158,7 @@ class ScheduleView {
     );
   }
 
-  Widget _clearAllButton() {
+  Widget _clearAllButton(BuildContext context) {
     return Semantics(
       label: 'Clear all saved classes.',
       hint: 'Click to clear all saved classes.',
@@ -168,10 +168,52 @@ class ScheduleView {
         backgroundColor: Colors.white,
         hoverBackgroundColor: Color(0xFFF5F5F5),
         pressedBackgroundColor: Colors.white,
-        onPressed: () {
-          unawaited(Filters().unsaveAll());
-        },
+        onPressed: () => _showClearAllDialog(context),
         child: const Text('Clear All', style: TextStyle(fontSize: 12)),
+      ),
+    );
+  }
+
+  void _showClearAllDialog(BuildContext context) {
+    final classes = Filters().savedClasses();
+    unawaited(
+      showShadDialog(
+        context: context,
+        builder: (dialogContext) => ShadDialog.alert(
+          title: const Text('Clear All Classes?'),
+          description: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                classes.isEmpty
+                    ? 'No saved classes to clear.'
+                    : 'The following classes will be removed from your schedule:',
+              ),
+              if (classes.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                ...classes.map(
+                  (c) => Text(
+                    '• ${c.getCode()} ${c.getCoN()} – ${c.course.title}',
+                  ),
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            ShadButton.outline(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Cancel'),
+            ),
+            if (classes.isNotEmpty)
+              ShadButton.destructive(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                  unawaited(Filters().unsaveAll());
+                },
+                child: const Text('Clear All'),
+              ),
+          ],
+        ),
       ),
     );
   }

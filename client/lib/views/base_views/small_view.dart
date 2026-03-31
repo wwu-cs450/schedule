@@ -62,7 +62,7 @@ class SmallViewState extends AbstractViewState {
   Column _scheduleView() {
     return Column(
       children: [
-        ScheduleView().build(),
+        ScheduleView().build(context),
         const SizedBox(height: 10),
         Expanded(
           child: ClassListPage(size: ClassListSize.small, quarters: qtrs),
