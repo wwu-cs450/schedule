@@ -18,6 +18,7 @@ Future<void> main() async {
     await ClassStorage().load(); // Load completed courses from local storage
     await DataHandler.fetchData(); // Fetch class data from server
     Class.instances; // Initialize the class list
+    await Filters().loadSavedClasses(); // Restore saved class selections
     await Filters().update();
   } catch (e) {
     errorMessage = e.toString();

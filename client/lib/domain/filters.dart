@@ -157,11 +157,39 @@ class Filters extends ChangeNotifier {
     notifyListeners();
   }
 
-  void unsaveAll() {
-    for (final each in classes) {
+  Future<void> unsaveAll() async {
+    for (final each in Class.instances) {
       each.saved = false;
     }
+    await saveSavedClasses();
     notifyListeners();
+  }
+
+  Future<void> saveSavedClasses() async {
+    final savedKeys = Class.instances
+        .where((c) => c.saved)
+        .map((c) => {'classNumber': c.classNumber, 'term': c.term.code})
+        .toList();
+    await AbstractPersister.instance.writeSavedClasses(jsonEncode(savedKeys));
+  }
+
+  Future<void> loadSavedClasses() async {
+    final String? stored = await AbstractPersister.instance.readSavedClasses();
+    if (stored == null) {
+      return;
+    }
+    final List<dynamic> savedKeys = jsonDecode(stored);
+    final savedSet = savedKeys
+        .map(
+          (e) => (classNumber: e['classNumber'] as int, term: e['term'] as int),
+        )
+        .toSet();
+    for (final c in Class.instances) {
+      c.saved = savedSet.contains((
+        classNumber: c.classNumber,
+        term: c.term.code,
+      ));
+    }
   }
 
   // Setters
@@ -429,7 +457,7 @@ class Filters extends ChangeNotifier {
   }
 
   List<Class> savedClasses() {
-    return classes.where((element) => element.saved).toList();
+    return Class.instances.where((element) => element.saved).toList();
   }
 
   List<Class> savedClassesForScheduleTerm() {

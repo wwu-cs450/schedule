@@ -15,6 +15,8 @@ abstract class AbstractPersister {
   Future<void> writePrefs(String value);
   Future<String?> readCourseHistory();
   Future<void> writeCourseHistory(String value);
+  Future<String?> readSavedClasses();
+  Future<void> writeSavedClasses(String value);
 }
 
 class BrowserPersister implements AbstractPersister {
@@ -41,11 +43,24 @@ class BrowserPersister implements AbstractPersister {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('courseHistory', value);
   }
+
+  @override
+  Future<String?> readSavedClasses() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('savedClasses');
+  }
+
+  @override
+  Future<void> writeSavedClasses(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('savedClasses', value);
+  }
 }
 
 class MockPersister implements AbstractPersister {
   String? prefs;
   String? courseHistory;
+  String? savedClasses;
 
   @override
   Future<String?> readPrefs() async {
@@ -65,5 +80,15 @@ class MockPersister implements AbstractPersister {
   @override
   Future<void> writeCourseHistory(String value) async {
     courseHistory = value;
+  }
+
+  @override
+  Future<String?> readSavedClasses() async {
+    return savedClasses;
+  }
+
+  @override
+  Future<void> writeSavedClasses(String value) async {
+    savedClasses = value;
   }
 }

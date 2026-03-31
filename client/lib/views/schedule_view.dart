@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:client/domain/class.dart';
@@ -168,7 +169,7 @@ class ScheduleView {
         hoverBackgroundColor: Color(0xFFF5F5F5),
         pressedBackgroundColor: Colors.white,
         onPressed: () {
-          Filters().unsaveAll();
+          unawaited(Filters().unsaveAll());
         },
         child: const Text('Clear All', style: TextStyle(fontSize: 12)),
       ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:client/domain/class.dart';
 import 'package:client/domain/filters.dart';
 import 'package:client/domain/general_studies.dart';
@@ -337,6 +339,7 @@ class _ClassListState extends State<ClassList> {
             setState(() {
               aClass.saved = value!;
             });
+            unawaited(Filters().saveSavedClasses());
           },
         ),
       ),
