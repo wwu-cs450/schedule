@@ -1,17 +1,21 @@
+---
 name: server
-description: Capture class open data and make it available to our client as a CSV file.
+description: Combined backend for WWU Schedule app - scrapes class data and serves an AI advisor API.
+publish_to: none
 version: 1.0.0
-# repository: https://gitlab.cs.wallawalla.edu/wwu/schedule
+repository: https://gitlab.cs.wallawalla.edu/wwu/schedule
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
 
-# Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
   args: ^2.3.0
+  common:
+    path: ../common
   csv: ^6.0.0
   http: ^1.2.2
+  ollama_dart: ^0.3.0+1
+  path: ^1.9.0
   shelf: ^1.4.0
   shelf_cors_headers: ^0.1.4
   shelf_router: ^1.1.0

@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:client/domain/campus.dart';
-import 'package:client/domain/class_storage.dart';
 import 'package:client/domain/course.dart';
-import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/handlers/class_storage.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:client/domain/hourminute.dart';
 import 'package:client/domain/instructor.dart';
 import 'package:client/domain/meeting_time.dart';

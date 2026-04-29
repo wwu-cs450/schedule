@@ -1,6 +1,6 @@
 import 'dart:typed_data';
-import 'package:client/domain/models/completed_course.dart';
 import 'package:client/domain/pdf_helper.dart';
+import 'package:common/completed_course.dart';
 import 'package:dotted_border/dotted_border.dart';
 
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ class PdfUploadPageState extends State<PdfUploadPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 32.0),
         width: 500,
-        height: 350,
+        height: 320,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -67,16 +67,6 @@ class PdfUploadPageState extends State<PdfUploadPage> {
             UploadBox(
               isLoading: _isLoading,
               onClick: _isLoading ? null : getPdfText,
-            ),
-            Row(
-              children: const [
-                Icon(Icons.attach_file, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
-                Text(
-                  'No file added',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-              ],
             ),
           ],
         ),

@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:client/domain/models/completed_course.dart';
+import 'package:common/completed_course.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
@@ -93,5 +94,12 @@ class PdfHelper {
     }
 
     return courses;
+  }
+
+  /// Converts a list of [CompletedCourse] to a formatted JSON string.
+  static String coursesToJson(List<CompletedCourse> courses) {
+    return const JsonEncoder.withIndent(
+      '    ',
+    ).convert(courses.map((c) => c.toJson()).toList());
   }
 }

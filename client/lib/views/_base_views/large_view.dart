@@ -1,6 +1,6 @@
 import 'package:client/domain/filters.dart';
-import 'package:client/views/base_views/abstract_view.dart';
-import 'package:client/views/class_history_page.dart';
+import 'package:client/views/_base_views/abstract_view.dart';
+import 'package:client/views/_shared_components/navigation_bar.dart';
 import 'package:client/views/class_list/class_list.dart';
 import 'package:client/views/class_list/class_list_page.dart';
 import 'package:client/views/schedule_view.dart';
@@ -32,27 +32,14 @@ class LargeViewState extends AbstractViewState {
               style: GoogleFonts.getFont('Playfair'),
             ),
           ),
-          body: _selectedTab(),
-          bottomNavigationBar: NavigationBar(
+          body: selectedTab(
+            _selectedIndex,
+            ClassListPage(size: .large, quarters: qtrs),
+            _scheduleView(),
+          ),
+          bottomNavigationBar: ScheduleNavigationBar(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
-            destinations: const <Widget>[
-              NavigationDestination(
-                key: Key('Main Page'),
-                icon: Icon(Icons.list),
-                label: 'All Classes',
-              ),
-              NavigationDestination(
-                key: Key('Schedule Page'),
-                icon: Icon(Icons.schedule),
-                label: 'Schedule',
-              ),
-              NavigationDestination(
-                key: Key('MyClassHistoryPage'),
-                icon: Icon(Icons.school_outlined),
-                label: 'My Class History',
-              ),
-            ],
           ),
         );
       },
@@ -113,21 +100,5 @@ class LargeViewState extends AbstractViewState {
         ),
       ],
     );
-  }
-
-  Widget _selectedTab() {
-    if (_selectedIndex == 0) {
-      return ClassListPage(
-        header: headerRow(),
-        size: ClassListSize.large,
-        quarters: qtrs,
-      );
-    } else if (_selectedIndex == 1) {
-      return _scheduleView();
-    } else if (_selectedIndex == 2) {
-      return const ClassHistoryPage();
-    } else {
-      return Center(child: Text('Tab $_selectedIndex not found'));
-    }
   }
 }

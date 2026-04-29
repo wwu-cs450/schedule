@@ -1,5 +1,5 @@
-import 'package:client/domain/csv_handler.dart';
-import 'package:client/domain/data_handler.dart';
+import 'package:client/domain/handlers/csv_handler.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

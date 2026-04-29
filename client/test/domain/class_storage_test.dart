@@ -1,8 +1,8 @@
-import 'package:client/domain/class_storage.dart';
 import 'package:client/domain/course.dart';
-import 'package:client/domain/data_handler.dart';
-import 'package:client/domain/models/completed_course.dart';
+import 'package:client/domain/handlers/class_storage.dart';
+import 'package:client/domain/handlers/data_handler.dart';
 import 'package:client/domain/persister.dart';
+import 'package:common/completed_course.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
