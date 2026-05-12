@@ -34,38 +34,6 @@ prepare_dependencies:
     - cd client && flutter pub get --precompile
     - cd ../server && dart pub get
 
-build_client:
-  stage: build
-  needs: [prepare_dependencies]
-  script:
-    - set -e
-    - cd client
-    - flutter --version
-    - flutter config --enable-web
-    - flutter pub get --precompile
-    - flutter build web --release
-    # set ownership to `gitlab-runner` user on schedule-vm server
-    # https://gitlab.cs.wallawalla.edu/wwu/schedule/-/issues/106
-    - chown 998:998 -R build/web
-  artifacts:
-    paths:
-      - client/build/web/
-
-build_server:
-  stage: build
-  needs: [prepare_dependencies]
-  script:
-    - set -e
-    - cd server
-    - dart pub get
-    - dart compile exe -o api_server --target-os linux bin/server.dart
-    # set ownership to `gitlab-runner` user on schedule-vm server
-    # https://gitlab.cs.wallawalla.edu/wwu/schedule/-/issues/106
-    - chown 998:998 /builds/wwu/schedule/server/api_server
-  artifacts:
-    paths:
-      - server/api_server
-
 lint_client:
   stage: test
   needs: [prepare_dependencies]
@@ -113,12 +81,6 @@ deploy_to_dokku:
   script:
     - git remote add dokku dokku@production.cs.wallawalla.edu:$DOKKU_APP
     - git checkout -B ci
-    - 'sed -i "s/^version:.*/version: ${CI_COMMIT_TAG#v}+${CI_COMMIT_SHORT_SHA}/" web_client/pubspec.yaml'
-    - 'sed -i "s/const String version = .*/const String version = ''${CI_COMMIT_TAG#v}+${CI_COMMIT_SHORT_SHA}'';/" common/lib/version.dart'
-    - git config user.email "ci@gitlab.cs.wallawalla.edu"
-    - git config user.name "GitLab CI"
-    - git add web_client/pubspec.yaml api_server/pubspec.yaml common/lib/version.dart
-    - git commit -m "Set version to ${CI_COMMIT_TAG#v}+${CI_COMMIT_SHORT_SHA}"
     - git push -f dokku ci:main
   environment:
     name: production
@@ -140,12 +102,6 @@ staging_to_dokku:
   script:
     - git remote add dokku dokku@staging.cs.wallawalla.edu:$DOKKU_APP
     - git checkout -B ci
-    - 'sed -i "s/^version:.*/version: 0.0.${CI_MERGE_REQUEST_IID#v}+${CI_COMMIT_SHORT_SHA}/" web_client/pubspec.yaml'
-    - 'sed -i "s/const String version = .*/const String version = ''MR${CI_MERGE_REQUEST_IID#v}+${CI_COMMIT_SHORT_SHA}'';/" common/lib/version.dart'
-    - git config user.email "ci@gitlab.cs.wallawalla.edu"
-    - git config user.name "GitLab CI"
-    - git add web_client/pubspec.yaml api_server/pubspec.yaml common/lib/version.dart
-    - git commit -m "Set version to MR${CI_MERGE_REQUEST_IID}+${CI_COMMIT_SHORT_SHA}"
     - git push -f dokku ci:main
   environment:
     name: staging
