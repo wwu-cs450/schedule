@@ -21,7 +21,7 @@ void main(List<String> arguments) async {
   final File dataFile;
   final File dateTimeFile;
   // Change path based on hostname
-  if (Platform.environment['ENVIRONMENT'] == 'production') {
+  if (Platform.environment['ENVIRONMENT'] == 'production' || Platform.environment['ENVIRONMENT'] == 'staging') {
     dataFile = File('/usr/share/nginx/html/assets/class_data.csv');
     dateTimeFile = File('/usr/share/nginx/html/assets/date_time.txt');
   } else {
