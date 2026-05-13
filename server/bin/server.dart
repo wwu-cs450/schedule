@@ -21,9 +21,9 @@ void main(List<String> arguments) async {
   final File dataFile;
   final File dateTimeFile;
   // Change path based on hostname
-  if (Platform.localHostname == 'schedule-vm') {
-    dataFile = File('/var/www/html/assets/class_data.csv');
-    dateTimeFile = File('/var/www/html/assets/date_time.txt');
+  if (Platform.environment['ENVIRONMENT'] == 'production' || Platform.environment['ENVIRONMENT'] == 'staging') {
+    dataFile = File('/usr/share/nginx/html/assets/class_data.csv');
+    dateTimeFile = File('/usr/share/nginx/html/assets/date_time.txt');
   } else {
     dataFile = File('../client/assets/class_data.csv');
     dateTimeFile = File('../client/assets/date_time.txt');
