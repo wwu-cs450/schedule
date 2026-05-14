@@ -6,6 +6,11 @@ variables:
   PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
   FLUTTER_ROOT: "/sdks/flutter"
 
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
 # Global cache configuration - shares dependencies across all jobs
 cache:
   key:
@@ -33,38 +38,6 @@ prepare_dependencies:
   script:
     - cd client && flutter pub get --precompile
     - cd ../server && dart pub get
-
-build_client:
-  stage: build
-  needs: [prepare_dependencies]
-  script:
-    - set -e
-    - cd client
-    - flutter --version
-    - flutter config --enable-web
-    - flutter pub get --precompile
-    - flutter build web --release
-    # set ownership to `gitlab-runner` user on schedule-vm server
-    # https://gitlab.cs.wallawalla.edu/wwu/schedule/-/issues/106
-    - chown 998:998 -R build/web
-  artifacts:
-    paths:
-      - client/build/web/
-
-build_server:
-  stage: build
-  needs: [prepare_dependencies]
-  script:
-    - set -e
-    - cd server
-    - dart pub get
-    - dart compile exe -o api_server --target-os linux bin/server.dart
-    # set ownership to `gitlab-runner` user on schedule-vm server
-    # https://gitlab.cs.wallawalla.edu/wwu/schedule/-/issues/106
-    - chown 998:998 /builds/wwu/schedule/server/api_server
-  artifacts:
-    paths:
-      - server/api_server
 
 lint_client:
   stage: test
@@ -100,18 +73,45 @@ test_server:
     - cd server
     - dart test $PUB_VARS
 
-deploy:
+deploy_to_dokku:
   stage: deploy
-  tags:
-    - schedule
+  image: gitlab.cs.wallawalla.edu:5050/cs_department/docker-images/ssh_deploy
+  variables:
+    GIT_DEPTH: 0
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DOKKU_SSH_KEY" > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - ssh-keyscan -H production.cs.wallawalla.edu >> ~/.ssh/known_hosts
   script:
-    - sudo /bin/systemctl stop api_server.service
-    - rsync -av --delete client/build/web/ /var/www/html/
-    - cp server/api_server /opt/api_server
-    - sudo /bin/systemctl restart api_server.service
+    - git remote add dokku dokku@production.cs.wallawalla.edu:$DOKKU_APP
+    - git checkout -B ci
+    - git push -f dokku ci:main
   environment:
     name: production
-    url: https://schedule.cs.wallawalla.edu
-  only:
-    - main
-  when: manual
+    url: https://$DOKKU_APP.cs.wallawalla.edu
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+
+staging_to_dokku:
+  stage: deploy
+  image: gitlab.cs.wallawalla.edu:5050/cs_department/docker-images/ssh_deploy
+  variables:
+    GIT_DEPTH: 0
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DOKKU_SSH_KEY" > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - ssh-keyscan -H staging.cs.wallawalla.edu >> ~/.ssh/known_hosts
+  script:
+    - git remote add dokku dokku@staging.cs.wallawalla.edu:$DOKKU_APP
+    - git checkout -B ci
+    - git push -f dokku ci:main
+  environment:
+    name: staging
+    url: https://$DOKKU_APP.staging.cs.wallawalla.edu
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
