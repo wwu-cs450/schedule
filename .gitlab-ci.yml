@@ -1,10 +1,8 @@
-image: "ghcr.io/cirruslabs/flutter:3.41.4"
-# https://github.com/cirruslabs/docker-images-flutter/pkgs/container/flutter
+image: gitlab-registry.cs.wallawalla.edu/cs_department/docker-images/flutter:latest
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=6 --test-randomize-ordering-seed=random --reporter=expanded"
   PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
-  FLUTTER_ROOT: "/sdks/flutter"
 
 workflow:
   rules:
