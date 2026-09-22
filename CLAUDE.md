@@ -11,13 +11,13 @@ The Schedule Management application is a Flutter-based Single-Page Application f
 - Academic calendar management
 - Schedule announcements (bulletin)
 - Flutter web UI
-- Dart API server
-- Nginx reverse proxy
+- Dart scraper that generates the schedule data
+- Nginx static file serving
 - Docker containerization
 
 **Key Technologies:**
 - Frontend: Flutter (web)
-- Backend: Dart (Shelf framework)
+- Backend: Dart (scraper loop, no HTTP framework - see "Development Workflow" below)
 - Bulletin: Static schedule data
 - Deployment: Docker, Dokku
 - CI/CD: GitLab CI/CD
@@ -34,26 +34,25 @@ schedule/
 │   ├── test/                  # Tests
 │   └── pubspec.yaml
 │
-├── server/                    # Dart Shelf API server
+├── server/                    # Dart scraper - polls classopen.wallawalla.edu on a loop
 │   ├── bin/
 │   │   └── server.dart        # Entry point
-│   ├── lib/                   # Schedule logic
+│   ├── lib/                   # Scraping/parsing logic
 │   ├── test/
 │   └── pubspec.yaml
 │
-├── bulletin/                  # Schedule announcements/data
-│   └── (static schedule content)
+├── bulletin/                  # PDF-to-text extraction (Python, run manually - see below)
+│   └── main.py
 │
 ├── nginx/
-│   └── nginx.conf             # Routing config
+│   └── nginx.conf             # Static file serving
 │
 ├── Dockerfile                 # Multi-stage build
 ├── supervisord.conf           # Process management
 ├── .dockerignore              # Build optimization
 ├── .gitlab-ci.yml             # CI/CD
 ├── README.md
-├── CLAUDE.md                  # This file
-└── docs/
+└── CLAUDE.md                  # This file
 ```
 
 ## Development Setup
@@ -88,9 +87,14 @@ dart format . --set-exit-if-changed
 
 ## Development Workflow
 
-**API Server (port 8082):**
+`server/bin/server.dart` is not an HTTP server - it's a scraper loop.
+It polls `classopen.wallawalla.edu` every 5 minutes, converts the result to CSV, and writes `class_data.csv`/`date_time.txt` directly into the client's static assets (`../client/assets/` in development, or `/usr/share/nginx/html/assets/` when `ENVIRONMENT` is `production` or `staging`).
+The Flutter client fetches those two files as plain static assets - there is no live API call between client and server at runtime.
+There's no `--port` flag; `PORT` is not read anywhere.
+
+**Scraper (writes into `client/assets/`):**
 ```bash
-cd server && dart run bin/server.dart --port=8082
+cd server && dart run bin/server.dart
 ```
 
 **Web Client (port 8081):**
@@ -100,11 +104,14 @@ cd client && flutter run -d chrome --web-port 8081
 
 **Direct Access:** Visit `http://localhost:8081` (no reverse proxy needed)
 
+**Bulletin PDF extraction** (`bulletin/main.py`, run manually, not part of the Dart build): extracts text from a hardcoded local PDF path into `bulletin.txt` (gitignored), which `server bin/server.dart --bulletin <path>` then consumes in a separate one-off mode.
+This is not currently generalized for any developer to run - see the script before relying on it.
+
 ## Docker Deployment
 
 ```bash
 docker build -t schedule:latest .
-docker run -p 80:80 -e PUBLIC_URL=https://schedule.cs.wallawalla.edu schedule:latest
+docker run -p 80:80 -e ENVIRONMENT=production schedule:latest
 ```
 
 ## CI/CD Pipeline
@@ -117,7 +124,8 @@ docker run -p 80:80 -e PUBLIC_URL=https://schedule.cs.wallawalla.edu schedule:la
 ## Key Differences
 
 - **No common package:** Schedule uses simpler shared models
-- **No reverse proxy:** Direct client-server communication
+- **No live API:** the server is a scraper that writes CSV/txt directly into the client's static assets; the client fetches them as static files, not via HTTP API calls
+- **No login/SSO:** unlike single-sign-on/guidebook/homepage/budget, schedule has no authentication
 - **Bulletin module:** Static schedule data and announcements
 - **Simplified:** Fewer components than homepage/budget
 
