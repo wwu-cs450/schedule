@@ -113,3 +113,31 @@ staging_to_dokku:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
       allow_failure: true
+
+super-linter:
+  # More info at https://github.com/super-linter/super-linter
+  stage: test
+  image: ghcr.io/super-linter/super-linter:slim-latest
+  cache: []
+  script:
+    - "true"
+  variables:
+    GIT_DEPTH: 0
+    RUN_LOCAL: "true"
+    DEFAULT_WORKSPACE: $CI_PROJECT_DIR
+    DEFAULT_BRANCH: "origin/main"
+    VALIDATE_ALL_CODEBASE: "true"
+    VALIDATE_GITLEAKS: "true"
+    VALIDATE_GIT_MERGE_CONFLICT_MARKERS: "true"
+    VALIDATE_HTML: "true"
+    VALIDATE_HTML_PRETTIER: "true"
+    VALIDATE_JSCPD: "true"
+    VALIDATE_JSON: "true"
+    VALIDATE_MARKDOWN: "true"
+    VALIDATE_MARKDOWN_PRETTIER: "true"
+    VALIDATE_NATURAL_LANGUAGE: "true"
+    VALIDATE_YAML: "true"
+    VALIDATE_YAML_PRETTIER: "true"
+    JSCPD_CONFIG_FILE: ".jscpd.json"
+    LINTER_RULES_PATH: "."
+    YAML_CONFIG_FILE: ".yamllint.yml"

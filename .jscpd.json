@@ -1,0 +1,4 @@
+{
+  "ignore": ["**/build/**,analysis_options.yaml,.pub-cache,pubspec.lock"],
+  "gitignore": true
+}

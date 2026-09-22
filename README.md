@@ -8,7 +8,7 @@ This reads the existing `classopen.wallawalla.edu` and creates a CSV file for th
 In production, it is run as a background job to update the CSV file periodically.
 In development, you can stop it using \<Ctrl\>+\<C\> once it generates a CSV file.
 
-```
+```bash
 cd server
 dart test
 dart run
@@ -18,7 +18,7 @@ dart run
 
 This runs the Flutter app that displays the class data.
 
-```
+```bash
 cd client
 flutter test
 flutter run -d chrome
