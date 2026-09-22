@@ -7,6 +7,7 @@ This file provides comprehensive documentation for AI assistants and developers 
 The Schedule Management application is a Flutter-based Single-Page Application for managing course schedules and academic calendars. It uses a simplified architecture compared to other department applications, with a bulletin module for schedule announcements.
 
 **Key Features:**
+
 - Course schedule management
 - Academic calendar management
 - Schedule announcements (bulletin)
@@ -16,6 +17,7 @@ The Schedule Management application is a Flutter-based Single-Page Application f
 - Docker containerization
 
 **Key Technologies:**
+
 - Frontend: Flutter (web)
 - Backend: Dart (scraper loop, no HTTP framework - see "Development Workflow" below)
 - Bulletin: Static schedule data
@@ -26,7 +28,7 @@ The Schedule Management application is a Flutter-based Single-Page Application f
 
 This is a **simplified 3-component project** with bulletin module:
 
-```
+```text
 schedule/
 ├── client/                    # Flutter web UI
 │   ├── lib/                   # Dart source code
@@ -58,12 +60,14 @@ schedule/
 ## Development Setup
 
 ### Prerequisites
+
 - Dart SDK (3.x+)
 - Flutter SDK (3.x+)
 - Git
 - Docker (optional)
 
 ### Clone and Setup
+
 ```bash
 git clone ssh://gitlab.cs.wallawalla.edu:2222/wwu/schedule.git
 cd schedule
@@ -93,11 +97,13 @@ The Flutter client fetches those two files as plain static assets - there is no 
 There's no `--port` flag; `PORT` is not read anywhere.
 
 **Scraper (writes into `client/assets/`):**
+
 ```bash
 cd server && dart run bin/server.dart
 ```
 
 **Web Client (port 8081):**
+
 ```bash
 cd client && flutter run -d chrome --web-port 8081
 ```
