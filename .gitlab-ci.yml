@@ -1,81 +1,79 @@
-image: "ghcr.io/cirruslabs/flutter:3.41.4"
-# https://github.com/cirruslabs/docker-images-flutter/pkgs/container/flutter
+---
+default:
+  image: gitlab-registry.cs.wallawalla.edu/cs_department/docker-images/flutter:latest
+  before_script:
+    - dart --version
+    - flutter --version
+    - dart format --version
+    - export PUB_CACHE=$CI_PROJECT_DIR/.pub-cache
+    - export PATH="$PATH":"$PUB_CACHE/bin"
 
 variables:
   PUB_VARS: "--timeout 30s --concurrency=6 --test-randomize-ordering-seed=random --reporter=expanded"
-  PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
-  FLUTTER_ROOT: "/sdks/flutter"
+
+stages:
+  - test
+  - deploy
 
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_TAG
-# Global cache configuration - shares dependencies across all jobs
-cache:
-  key:
-    files:
-      - client/pubspec.lock
-      - server/pubspec.lock
-  paths:
-    - .pub-cache/
-    - client/.dart_tool/
-    - server/.dart_tool/
-  policy: pull
 
-prepare_dependencies:
-  stage: .pre
+client:
+  stage: test
   cache:
     key:
       files:
         - client/pubspec.lock
-        - server/pubspec.lock
     paths:
-      - .pub-cache/
-      - client/.dart_tool/
-      - server/.dart_tool/
-    policy: pull-push
-  script:
-    - cd client && flutter pub get --precompile
-    - cd ../server && dart pub get
-
-lint_client:
-  stage: test
-  needs: [prepare_dependencies]
+      - $CI_PROJECT_DIR/.pub-cache/
   script:
     - cd client
-    - dart format --output=none --set-exit-if-changed .
-    - flutter analyze
+    - flutter pub get
+    - echo "==================== dart format ===================="
+    - dart format --output=none --set-exit-if-changed . || FORMAT=1
+    - echo "==================== flutter analyze ===================="
+    - flutter analyze || ANALYZE=1
+    - echo "==================== flutter test ===================="
+    - flutter test $PUB_VARS --coverage && lcov --list coverage/lcov.info && genhtml coverage/lcov.info --output=coverage || TEST=1
+    - echo "==================== SUMMARY ===================="
+    - '[ -z "$FORMAT"  ] && echo "  PASS  format"  || echo "  FAIL  format"'
+    - '[ -z "$ANALYZE" ] && echo "  PASS  analyze" || echo "  FAIL  analyze"'
+    - '[ -z "$TEST"    ] && echo "  PASS  test"    || echo "  FAIL  test"'
+    - if [ -n "${FORMAT}${ANALYZE}${TEST}" ]; then exit 1; fi
+  coverage: '/\s*lines.*:\s*([0-9.]+%)/'
+  artifacts:
+    paths:
+      - client/coverage
 
-lint_server:
+server:
   stage: test
-  needs: [prepare_dependencies]
+  cache:
+    key:
+      files:
+        - server/pubspec.lock
+    paths:
+      - $CI_PROJECT_DIR/.pub-cache/
   script:
     - cd server
     - dart pub get
-    - dart format --output=none --set-exit-if-changed .
-    - dart analyze
-
-test_client:
-  stage: test
-  needs: [prepare_dependencies]
-  script:
-    - cd client
-    - flutter --version
-    - flutter test  $PUB_VARS --machine --coverage --concurrency=1
-    - lcov --summary coverage/lcov.info
-    - genhtml coverage/lcov.info --output=coverage
-
-test_server:
-  stage: test
-  needs: [prepare_dependencies]
-  script:
-    - cd server
-    - dart test $PUB_VARS
+    - echo "==================== dart format ===================="
+    - dart format --output=none --set-exit-if-changed . || FORMAT=1
+    - echo "==================== dart analyze ===================="
+    - dart analyze || ANALYZE=1
+    - echo "==================== dart test ===================="
+    - dart test $PUB_VARS || TEST=1
+    - echo "==================== SUMMARY ===================="
+    - '[ -z "$FORMAT"  ] && echo "  PASS  format"  || echo "  FAIL  format"'
+    - '[ -z "$ANALYZE" ] && echo "  PASS  analyze" || echo "  FAIL  analyze"'
+    - '[ -z "$TEST"    ] && echo "  PASS  test"    || echo "  FAIL  test"'
+    - if [ -n "${FORMAT}${ANALYZE}${TEST}" ]; then exit 1; fi
 
 deploy_to_dokku:
   stage: deploy
-  image: gitlab.cs.wallawalla.edu:5050/cs_department/docker-images/ssh_deploy
+  image: gitlab-registry.cs.wallawalla.edu/cs_department/docker-images/ssh_deploy
   variables:
     GIT_DEPTH: 0
   before_script:
@@ -96,7 +94,7 @@ deploy_to_dokku:
 
 staging_to_dokku:
   stage: deploy
-  image: gitlab.cs.wallawalla.edu:5050/cs_department/docker-images/ssh_deploy
+  image: gitlab-registry.cs.wallawalla.edu/cs_department/docker-images/ssh_deploy
   variables:
     GIT_DEPTH: 0
   before_script:
@@ -115,3 +113,31 @@ staging_to_dokku:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
       allow_failure: true
+
+super-linter:
+  # More info at https://github.com/super-linter/super-linter
+  stage: test
+  image: ghcr.io/super-linter/super-linter:slim-latest
+  cache: []
+  script:
+    - "true"
+  variables:
+    GIT_DEPTH: 0
+    RUN_LOCAL: "true"
+    DEFAULT_WORKSPACE: $CI_PROJECT_DIR
+    DEFAULT_BRANCH: "origin/main"
+    VALIDATE_ALL_CODEBASE: "true"
+    VALIDATE_GITLEAKS: "true"
+    VALIDATE_GIT_MERGE_CONFLICT_MARKERS: "true"
+    VALIDATE_HTML: "true"
+    VALIDATE_HTML_PRETTIER: "true"
+    VALIDATE_JSCPD: "true"
+    VALIDATE_JSON: "true"
+    VALIDATE_MARKDOWN: "true"
+    VALIDATE_MARKDOWN_PRETTIER: "true"
+    VALIDATE_NATURAL_LANGUAGE: "true"
+    VALIDATE_YAML: "true"
+    VALIDATE_YAML_PRETTIER: "true"
+    JSCPD_CONFIG_FILE: ".jscpd.json"
+    LINTER_RULES_PATH: "."
+    YAML_CONFIG_FILE: ".yamllint.yml"

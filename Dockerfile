@@ -1,11 +1,11 @@
-FROM ghcr.io/cirruslabs/flutter:3.41.5 AS api_build
+FROM gitlab-registry.cs.wallawalla.edu/cs_department/docker-images/flutter:latest AS api_build
 
 WORKDIR /app
 COPY server/ api_server/
 RUN cd api_server && dart pub get && \
     dart compile exe -o api_server --target-os linux bin/server.dart
 
-FROM ghcr.io/cirruslabs/flutter:3.41.5 AS web_build
+FROM gitlab-registry.cs.wallawalla.edu/cs_department/docker-images/flutter:latest AS web_build
 
 WORKDIR /app
 COPY client/ web_client/

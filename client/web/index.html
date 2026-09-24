@@ -1,47 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+  <head>
+    <base href="$FLUTTER_BASE_HREF" />
 
-<head>
-  <base href="$FLUTTER_BASE_HREF">
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="WWU Class Schedule." />
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="WWU Class Schedule.">
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="schedule" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="schedule">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/icon" href="favicon.ico" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/icon" href="favicon.ico" />
-
-  <title>WWU Class Schedule</title>
-  <link rel="manifest" href="manifest.json">
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .indicator {
-      width: 100px;
-      height: 100px;
-    }
-  </style>
-</head>
-<body>
-  <div id="loading_indicator" class="container">
-    <img class="indicator" src="./loading.gif" />
-  </div>
+    <title>WWU Class Schedule</title>
+    <link rel="manifest" href="manifest.json" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .indicator {
+        width: 100px;
+        height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-indicator" class="container">
+      <img alt="Loading indicator" class="indicator" src="./loading.gif" />
+    </div>
     <!-- Include pdf.js library -->
     <script src="js/pdf.js"></script>
 
     <!-- Include your custom PDF helper -->
     <script src="js/pdf_helper.js"></script>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
+    <script src="flutter_bootstrap.js" async></script>
+  </body>
 </html>
