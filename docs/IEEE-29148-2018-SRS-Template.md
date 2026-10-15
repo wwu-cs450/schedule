@@ -27,15 +27,15 @@ management policies.
 
 # Software Requirements Specification
 
-## for *My Super Cool Software*
+## for *WWU Schedule*
 
 **Version 1.0**
 
-**Prepared by:** Your Name
+**Prepared by:** Jaime Garcia, Gavin Isimbi, Elyssa Sumendap
 
-**Organization:** Company Name
+**Organization:** Walla Walla University
 
-**Date:** YYYY-MM-DD
+**Date:** 2026-10-15
 
 **Keywords:** SRS, ISO/IEC/IEEE 29148:2018
 
@@ -93,6 +93,10 @@ management policies.
 ## 1. Introduction
 
 ### 1.1 Purpose
+
+The purpose of this project is to implement an AI Advisor to the WWU Schedule project hosted by the WWU Computer Science department.
+This project can be found at [schedule.cs.wallawalla.edu](https://schedule.cs.wallawalla.edu), and it was created about 3 years ago with the purpose of being a more user-friendly version of the official schedule website provided by WWU ([classopen.wallawalla.edu](https://classopen.wallawalla.edu)).
+The AI Advisor will assist students in their academic planning by suggesting classes for a selected quarter given the student preferences.
 
 > **[IEEE-29148-2018 9.6.2]** Delineate the purpose of the software to be specified.
 
